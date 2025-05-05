@@ -8,7 +8,7 @@ import random
 
 from helpers import get_constant_variables, get_pseudo_variables
 
-POSSIBLE_CHARACTERS = string.ascii_uppercase + string.ascii_lowercase + string.digits
+POSSIBLE_CHARACTERS = string.digits  # DM3 IDs are typically numeric
 UNCHANGED_VARIABLES = get_pseudo_variables() + get_constant_variables()
 
 
@@ -26,7 +26,7 @@ def generate_secure_bytes(size: int, n_bytes=32):
 
 
 def shuffle_column(variable: pd.Series):
-    """Shuffle values based on random bytes.
+    """Shuffle values based on secure random bytes.
 
     Parameters:
         variable (array-like): Input vector of any length.
@@ -34,14 +34,9 @@ def shuffle_column(variable: pd.Series):
     Returns:
         pandas.Series: The same vector, randomly ordered.
     """
-    # Generate random integers for sorting
     random_integers = generate_secure_bytes(len(variable))
-
-    # Sort variable using the random bytes
-    # Returns the indices that would sort an array.
     sorted_indices = np.argsort(random_integers)
     shuffled_variable = np.array(variable)[sorted_indices]
-
     return pd.Series(shuffled_variable)
 
 
@@ -51,79 +46,76 @@ def assert_k_condition(k: int):
 
 def check_k_single_variable(vector: pd.Series, k: int):
     assert_k_condition(k)
-
     counts = vector.value_counts()
     k_check = all(i >= k for i in counts)
-
     return k_check
 
 
 def force_k(values: pd.Series, value_type: str, k: int):
-    """Shuffle values based on random integers.
+    """Apply k-anonymity by merging or generalizing low-frequency values.
 
     Parameters:
-        values (array-like): Input vector of any length
-        value_type (str): The type of data, as defined in `data_types.csv`
-        k (int): Parameter to fulfill k-anonymity
+        values (array-like): Input vector
+        value_type (str): Type defined in `data_types.csv`
+        k (int): Minimum count for anonymity
 
     Returns:
-        pandas.Series: A vector fulfilling k-anonymity
+        pandas.Series: K-anonymized column
     """
-    # convert series into dataframe for better processing
     df = pd.DataFrame({'values': list(values)})
-    if value_type in ['date', 'year', 'integer', 'float', 'month']:
+
+    if value_type in ['date', 'year', 'integer']:
         while True:
             number_counts = df['values'].value_counts(dropna=False)
-            numbers_to_change = number_counts[number_counts < k].index
-            if numbers_to_change.empty:
+            to_replace = number_counts[number_counts < k].index
+            if to_replace.empty:
                 break
-            numbers_subset = df[df['values'].isin(numbers_to_change)]
-            cur_number = numbers_subset['values'].iloc[0]
-            nearest_number = find_nearest_number(df['values'].dropna(), cur_number)
-            check_nan = True if pd.isnull(cur_number) else False
-            if check_nan:
-                df.fillna(nearest_number, inplace=True)
+            current = df[df['values'].isin(to_replace)].iloc[0, 0]
+            nearest = find_nearest_number(df['values'].dropna(), current)
+            if pd.isnull(current):
+                df['values'] = df['values'].fillna(nearest)
             else:
-                df.loc[df['values'] == cur_number] = nearest_number
-        return pd.Series(df['values'].to_list())
-    elif value_type == 'string':
-        while not check_k_single_variable(values, k):
-            values = [value[:-1] for value in values]
-        return pd.Series(values)
-    elif value_type == 'category' or value_type == 'alphanumeric':
+                df.loc[df['values'] == current, 'values'] = nearest
+        return pd.Series(df['values'])
+
+    elif value_type in ['category', 'alphanumeric']:
         k_not_fulfilled = df['values'].value_counts(dropna=False).loc[lambda x: x < k]
         if not k_not_fulfilled.empty:
+            k_fulfilled = df['values'].value_counts(dropna=False).loc[lambda x: x >= k]
             if len(k_not_fulfilled) == 1 or k > sum(k_not_fulfilled):
-                # if we do have only one category that does not fulfill k,
-                # or several categories where their sum does not fulfill k either,
-                # we merge these values with the smallest valid category
-                # and call it 'Other'
-                k_fulfilled = df['values'].value_counts(dropna=False).loc[lambda x: x >= k]
-                smallest_valid_category = k_fulfilled.index.tolist()[-1]
-                df['Other'] = df['values'].apply(lambda x: x if x in k_fulfilled
-                                                 and x is not smallest_valid_category else 'Other')
+                smallest_valid = k_fulfilled.index.tolist()[-1]
+                df['Other'] = df['values'].apply(
+                    lambda x: x if x in k_fulfilled and x is not smallest_valid else 'Other')
             else:
-                # otherwise, we merge all invalid categories (at least 2) together
-                df['Other'] = df['values'].apply(lambda x: x if x not in k_not_fulfilled else 'Other')
+                df['Other'] = df['values'].apply(
+                    lambda x: x if x not in k_not_fulfilled else 'Other')
             return pd.Series(df['Other'].to_list())
         else:
             return pd.Series(df['values'].to_list())
+
     else:
-        sys.exit(f"Data type {value_type} is not supported.")
+        sys.exit(f"Data type {value_type} is not supported for DM3.")
 
 
 def find_nearest_number(values: pd.Series, single_value):
+    """Find the closest number to `single_value` in `values`."""
     values = [val for val in values if val != single_value]
     if not values:
         return None
-    elif single_value is None:
+    if single_value is None or pd.isnull(single_value):
         return min(values)
-    else:
-        return min(values, key=lambda x: abs(x - single_value))
+    return min(values, key=lambda x: abs(x - single_value))
 
 
-def generate_pseudonym(variable: string, length=19):
-    if variable in ['ARBNR', 'VSID', 'PSID', 'VERANLASSSTELLEPSEUDO']:
-        return ''.join(random.choices(POSSIBLE_CHARACTERS, k=length))
-    else:
-        return ''.join(random.choices(string.digits, k=length))
+def generate_pseudonym(variable: str, length=19):
+    """
+    Generate a pseudonym for DM3 variables.
+
+    Parameters:
+        variable (str): Variable name (e.g., 'BSNRPSEUDO')
+        length (int): Length of generated pseudonym
+
+    Returns:
+        str: Random numeric pseudonym
+    """
+    return ''.join(random.choices(POSSIBLE_CHARACTERS, k=length))

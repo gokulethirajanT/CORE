@@ -1,71 +1,154 @@
-import pandas as pd
-import numpy as np
 import random
+import sys
+import argparse
 from pathlib import Path
-import os
+import csv
+import pandas as pd
+import warnings
+from datetime import datetime
+from multiprocessing import Pool, cpu_count
 
-# --- Configurable paths ---
-REFERENCE_FOLDER = 'reference'
-OUTPUT_FOLDER = 'Data'
+from helpers import (
+    connect_to_database,
+    get_data_types,
+    get_pseudo_variables,
+    get_constant_variables,
+    clean_data,
+    get_pseudo_mapping,
+    get_secondary_pools_dm3
+)
+from functions import force_k, generate_pseudonym, shuffle_column
 
-# --- Load reference metadata ---
-table_info = pd.read_csv(os.path.join(REFERENCE_FOLDER, 'DSB_FDZ_Gesundheit_Tabellen.csv'))
-variable_info = pd.read_csv(os.path.join(REFERENCE_FOLDER, 'DSB_FDZ_Gesundheit_Variablen.csv'))
+warnings.simplefilter(action='ignore', category=UserWarning)
+K = 3
 
-# Clean column names
-table_info.columns = table_info.columns.str.strip()
-variable_info.columns = variable_info.columns.str.strip()
+OUTPUT_DIR = Path("output")
+OUTPUT_DIR.mkdir(exist_ok=True)
 
-# Filter Data Model 3 tables
-data_model_3_tables = table_info[table_info['Data model'].str.strip() == 'DM3']['Table name'].tolist()
+def quote_identifier(identifier: str) -> str:
+    return f'"{identifier}"'
 
-# Create output folder if not exists
-Path(OUTPUT_FOLDER).mkdir(exist_ok=True)
+def get_columns(table: str, cursor) -> list:
+    cursor.execute(f"SELECT column_name FROM information_schema.columns WHERE LOWER(table_name) = LOWER('{table}')")
+    return [row[0] for row in cursor.fetchall()]
 
-# --- Utility Functions ---
-def generate_pseudonym(length=8):
-    return ''.join(random.choices('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', k=length))
+def generate_pool_of_ids(variable: str, source_table: str, cursor) -> list:
+    cursor.execute(f"SELECT DISTINCT {quote_identifier(variable)} FROM {source_table}")
+    return [generate_pseudonym(variable) for _ in cursor.fetchall()]
 
-def generate_column_data(col_type, num_rows):
-    if col_type == 'integer':
-        return np.random.randint(1, 1000, num_rows)
-    elif col_type == 'float':
-        return np.round(np.random.uniform(0, 1000, num_rows), 2)
-    elif col_type == 'string':
-        return [generate_pseudonym(6) for _ in range(num_rows)]
-    elif col_type == 'date':
-        return pd.date_range(start='2020-01-01', periods=num_rows).strftime('%Y-%m-%d')
+def process_column(col: str, table: str, cursor, dtypes, mapping, row_count: int) -> pd.Series:
+    if col in get_constant_variables():
+        cursor.execute(f"SELECT {quote_identifier(col)} FROM {table} LIMIT 1")
+        row = cursor.fetchone()
+        const_val = row[0] if row else None
+        return pd.Series([const_val] * row_count)
+
+    elif col in get_pseudo_variables():
+        pool = mapping.get(col, [generate_pseudonym(col) for _ in range(row_count)])
+        return pd.Series([pool[i % len(pool)] for i in range(row_count)])
+
     else:
-        return ["NA"] * num_rows
+        print(f"Fetching column {col} from database...")
+        cursor.execute(f"SELECT {quote_identifier(col)} FROM {table}")
+        data = pd.Series([row[0] for row in cursor.fetchall()])
 
-# --- Main Processing ---
-print("Starting PUF synthetic data generation for Data Model 3 tables...")
+        dt = dtypes.get(col)
+        if dt:
+            print(f"Cleaning {col}...")
+            data = clean_data(data, dt)
+            print(f"Shuffling {col}...")
+            data = shuffle_column(data)
+            print(f"Applying k-anonymity to {col} (k={K})...")
+            data = force_k(data, dt, k=K)
 
-for table in data_model_3_tables:
-    print(f"Generating synthetic data for table: {table}")
-    
-    # Filter variables for this table
-    columns_info = variable_info[variable_info['Table name'] == table]
-    column_names = columns_info['Data field name'].tolist()
-    
-    num_rows = 100  # Fixed number of rows for synthetic data (can adjust)
-    synthetic_data = {}
+        return data
 
-    for col in column_names:
-        # Example basic mapping: more advanced logic can be added based on variable_info
-        if 'ID' in col or 'PSID' in col or 'VSID' in col:
-            synthetic_data[col] = [generate_pseudonym(10) for _ in range(num_rows)]
-        elif 'JAHR' in col or 'Jahr' in col:
-            synthetic_data[col] = np.random.choice(range(2000, 2025), num_rows)
-        elif 'ICD' in col:
-            synthetic_data[col] = [f"ICD-{random.randint(100,999)}" for _ in range(num_rows)]
+def process_table(table: str, args: argparse.Namespace):
+    conn, cursor = connect_to_database(args.dsn, args.username, args.password)
+    dtypes = get_data_types()
+    columns = get_columns(table, cursor)
+
+    cursor.execute(f"SELECT COUNT(*) FROM {table}")
+    row_count = cursor.fetchone()[0]
+    if row_count <= 1:
+        print(f"⚠️  Skipping {table} — only {row_count} row(s) (likely metadata-only).")
+        conn.close()
+        return
+
+    pseudo_map = get_pseudo_mapping()
+    pools = {key: generate_pool_of_ids(key, pseudo_map[key], cursor) for key in pseudo_map}
+    for key, val in get_secondary_pools_dm3().items():
+        pools[key] = pools[val]
+
+    temp_csvs = []
+
+    for i, col in enumerate(columns):
+        print(f"Processing column {col}...")
+        col_data = process_column(col, table, cursor, dtypes, pools, row_count)
+        temp_path = OUTPUT_DIR / f"{table}_{i}.csv"
+        temp_csvs.append(temp_path)
+
+        if i == 0:
+            with open(temp_path, "w", newline="") as f:
+                writer = csv.writer(f)
+                writer.writerow([col])
+                for val in col_data:
+                    writer.writerow([val])
         else:
-            synthetic_data[col] = generate_column_data('string', num_rows)
+            with open(temp_csvs[i - 1], "r") as f_in, open(temp_path, "w", newline="") as f_out:
+                reader = csv.reader(f_in)
+                writer = csv.writer(f_out)
+                headers = next(reader)
+                writer.writerow(headers + [col])
+                for row, val in zip(reader, col_data):
+                    writer.writerow(row + [val])
+            temp_csvs[i - 1].unlink()
 
-    # Create DataFrame and save CSV
-    df = pd.DataFrame(synthetic_data)
-    output_path = os.path.join(OUTPUT_FOLDER, f"{table}.csv")
-    df.to_csv(output_path, index=False)
-    print(f"Saved synthetic table to {output_path}")
+    final_csv = OUTPUT_DIR / f"{table}.csv"
+    if final_csv.exists():
+        final_csv.unlink()
+    temp_csvs[-1].rename(final_csv)
+    conn.close()
 
-print("All synthetic PUF files generated successfully.")
+def write_table_to_postgres(table: str, args: argparse.Namespace):
+    conn, cursor = connect_to_database(args.dsn, args.username, args.password)
+    csv_file = OUTPUT_DIR / f"{table}.csv"
+    if not csv_file.exists():
+        print(f"⚠️  Skipping write for {table} — no generated CSV.")
+        conn.close()
+        return
+
+    target_table = f"{table}_puf"
+    with csv_file.open("r") as f:
+        reader = csv.reader(f)
+        headers = next(reader)
+        for row in reader:
+            placeholders = ','.join(['%s'] * len(row))
+            quoted_headers = ','.join([quote_identifier(h) for h in headers])
+            cursor.execute(f"INSERT INTO {target_table} ({quoted_headers}) VALUES ({placeholders})", row)
+    conn.commit()
+    conn.close()
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="Generate DM3 PUF data into PostgreSQL")
+    parser.add_argument("--dsn", default="postgres", help="Data source (only 'postgres' supported)")
+    parser.add_argument("--username", required=True, help="Database username")
+    parser.add_argument("--password", required=True, help="Database password")
+    parser.add_argument("--tables", nargs='+', required=True, help="List of table names to process")
+    parser.add_argument("--multi_threading", action='store_true', help="Use multiprocessing for table generation")
+    args = parser.parse_args()
+    args.tables = [t.lower() for t in args.tables]
+
+    begin = datetime.now()
+
+    if args.multi_threading:
+        with Pool(min(len(args.tables), cpu_count())) as pool:
+            pool.map(lambda t: process_table(t, args), args.tables)
+    else:
+        for table in args.tables:
+            print(f"\n--- Processing table: {table} ---")
+            process_table(table, args)
+            print(f"Writing table {table} to database...")
+            write_table_to_postgres(table, args)
+
+    print(f"\n All tables processed in {datetime.now() - begin}.")

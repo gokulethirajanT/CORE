@@ -1,38 +1,119 @@
+import psycopg2
 import pandas as pd
 
-# Set constant variables manually for DM3
-def get_constant_variables_local():
+
+def connect_to_database(dsn: str, username: str, password: str, data_model: int = 3):
+    """
+    Establish a PostgreSQL connection for Data Model 3 only.
+
+    Parameters:
+        dsn (str): Must be 'postgres'
+        username (str): DB user
+        password (str): DB password
+        data_model (int): Fixed at 3
+
+    Returns:
+        tuple: (connection, cursor)
+    """
+    if dsn != "postgres":
+        raise ValueError("This helper supports only PostgreSQL (dsn='postgres').")
+
+    try:
+        cnxn = psycopg2.connect(
+            dbname="CORE_MASTER_THESIS",
+            user=username,        # <- From command line
+            password=password,    # <- From command line
+            host="localhost",
+            port="5432"
+        ) 
+        cursor = cnxn.cursor()
+        return cnxn, cursor
+    except Exception as e:
+        print(f"❌ PostgreSQL connection failed: {e}")
+        return None, None
+
+
+def get_constant_variables(data_model=3):
+    """
+    Return columns with constant values in DM3.
+
+    Returns:
+        list of str
+    """
     return ['BJAHR', 'DATENMODELL']
 
-# Load pseudo variables from data_types.csv
-def get_pseudo_variables_local(data_model=3):
-    df = pd.read_csv("reference/data_types.csv")
-    pseudos = df.query('Type == "pseudo" and Datamodel == @data_model')['Variable'].tolist()
-    return pseudos
 
-# Load data types from data_types.csv
-def get_data_types_local(data_model=3):
-    df = pd.read_csv("reference/data_types.csv")
-    filtered = df.query('Datamodel == @data_model')
-    return dict(zip(filtered['Variable'], filtered['Type']))
+def get_secondary_pools_dm3():
+    """
+    Return dependent pseudo-ID fields using other pools.
 
-# Map pseudo variable names to table names
-def get_pseudo_mapping_local(data_model=3):
-    df = pd.read_csv("reference/data_types.csv")
-    mapping_df = df.query('Type == "pseudo" and Datamodel == @data_model')
-    return dict(zip(mapping_df['Variable'], mapping_df['Table']))
+    Returns:
+        dict
+    """
+    return {
+        "BSNRUEBPSEUDO": "BSNRPSEUDO",
+        "LANRUEBPSEUDO": "LANRPSEUDO",
+        "NBSNRPSEUDO": "BSNRPSEUDO",
+        "TSVGBSNRPSEUDO": "BSNRPSEUDO",
+        "BSNRVOPSEUDO": "BSNRPSEUDO",
+        "EINWEISPSEUDO": "BSNRPSEUDO",
+        "VERANLASSKHPSEUDO": "KHPSEUDO"
+    }
 
-# Clean values based on their expected type
-def clean_data_local(series, dtype):
-    if dtype == "category":
-        return series.astype("category")
-    elif dtype == "date":
-        return pd.to_datetime(series, errors='coerce').dt.date
-    elif dtype == "year":
-        return pd.to_datetime(series, errors='coerce').dt.year
-    elif dtype == "integer":
-        return pd.to_numeric(series, errors='coerce').astype('Int64')
-    elif dtype == "float":
-        return pd.to_numeric(series, errors='coerce').astype(float)
-    else:
-        return series.fillna("NA")
+
+def get_pseudo_variables(data_model=3):
+    """
+    Get list of pseudo-ID variables for DM3.
+
+    Returns:
+        list of str
+    """
+    df = pd.read_csv("data_types.csv")
+    return df.query('Type == "pseudo" and Datamodel == 3').Variable.to_list()
+
+
+def get_data_types(data_model=3):
+    """
+    Return variable -> data type mapping for DM3.
+
+    Returns:
+        dict
+    """
+    df = pd.read_csv("data_types.csv")
+    dm3_df = df.query('Datamodel == 3')
+    return dict(zip(dm3_df.Variable, dm3_df.Type))
+
+
+def get_pseudo_mapping(data_model=3):
+    """
+    Map pseudo-ID variable to its original table name (DM3 only).
+
+    Returns:
+        dict
+    """
+    df = pd.read_csv("data_types.csv")
+    subset = df.query('Type == "pseudo" and Datamodel == 3')
+    return dict(zip(subset.Variable, subset.Table))
+
+
+def clean_data(column_data, dt):
+    """
+    Clean a column based on its declared type.
+
+    Parameters:
+        column_data (pd.Series)
+        dt (str): 'date', 'integer', 'category', 'year', etc.
+
+    Returns:
+        pd.Series
+    """
+    if dt == "category":
+        column_data = column_data.astype('category')
+    elif dt == "date":
+        column_data = pd.to_datetime(column_data, errors='coerce', format='%Y%m%d').dt.date
+        column_data = column_data.apply(lambda x: x if not pd.isnull(x) else None)
+    elif dt == "year":
+        column_data = pd.to_datetime(column_data, format='%Y', errors='coerce').dt.year
+    elif dt == "integer":
+        column_data = pd.to_numeric(column_data, errors='coerce').astype('Int64')
+    return column_data
