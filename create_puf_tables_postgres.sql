@@ -4,13 +4,12 @@
 
 -- Table 1: Basic insurance data
 CREATE TABLE "vers" (
-    "VSID" BIGINT,                            -- Insurance ID
+    "VSID" BIGINT,                           -- Insurance ID
     "PSID" BYTEA NOT NULL,                   -- Person ID (encrypted)
     "GEBJAHR" SMALLINT NOT NULL,             -- Year of birth
     "PLZ" VARCHAR(5),                        -- Postal code
     "VITALSTATUS" SMALLINT NOT NULL,         -- Vital status (e.g. alive/deceased)
-    "STERBEDAT" DATE,                        -- Date of death
-    "NUMBER" INTEGER,                        -- Optional numeric field (unclear purpose)
+    "STERBEDAT" INTEGER,                     -- Date of death (8-digit code)
     "BJAHR" SMALLINT NOT NULL,               -- Report year
     "BNR" INTEGER NOT NULL,                  -- Company number
     "DATENMODELL" SMALLINT NOT NULL          -- Data model number
