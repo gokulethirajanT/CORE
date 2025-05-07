@@ -8,7 +8,7 @@ from mimesis.enums import Locale
 g = Generic(locale=Locale.DE)
 
 def generate_psid():
-    return ''.join(random.choices('0123456789ABCDEF', k=32))  # simulate RAW(32)
+    return bytes.fromhex(''.join(random.choices('0123456789ABCDEF', k=32)))  # ✅ binary format
 
 def seed_vers_table(conn, row_count=100):
     cursor = conn.cursor()
@@ -18,13 +18,13 @@ def seed_vers_table(conn, row_count=100):
         psid = generate_psid()
         gebjahr = random.randint(1920, 2005)
         plz = g.address.postal_code()
-        vitalstatus = random.choice([0, 1])
+        vitalstatus = random.choices([0, 1], weights=[95, 5])[0]  # 95% alive, 5% dead
         sterbedat = (
             int(g.datetime.date(start=2000, end=2022).strftime('%Y%m%d'))
             if vitalstatus == 1 else None
         )
-        bjahr = 2023
-        bnr = random.randint(100, 999)
+        bjahr = random.choice([2019, 2020, 2021, 2022, 2023])
+        bnr = ''.join(random.choices('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', k=8))
         datenmodell = 3
 
         cursor.execute("""
