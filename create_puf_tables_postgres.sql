@@ -11,7 +11,7 @@ CREATE TABLE "vers" (
     "VITALSTATUS" SMALLINT NOT NULL,         -- Vital status (e.g. alive/deceased)
     "STERBEDAT" INTEGER,                     -- Date of death (8-digit code)
     "BJAHR" SMALLINT NOT NULL,               -- Report year
-    "BNR" INTEGER NOT NULL,                  -- Company number
+    "BNR" VARCHAR(8) NOT NULL,                  -- Company number
     "DATENMODELL" SMALLINT NOT NULL          -- Data model number
 );
 
@@ -27,7 +27,7 @@ CREATE TABLE "versq" (
     "VERSTAGEKG" INTEGER NOT NULL,           -- Sick pay days
     "VERSTAGEKOSTERSTWAHLT" INTEGER NOT NULL,-- Optional doctor days
     "BJAHR" SMALLINT NOT NULL,               -- Report year
-    "BNR" INTEGER NOT NULL,                  -- Company number
+    "BNR" VARCHAR(8) NOT NULL,                  -- Company number
     "DATENMODELL" SMALLINT NOT NULL          -- Data model ID
 );
 
@@ -39,7 +39,7 @@ CREATE TABLE "versqdmp" (
     "DMPPROG" VARCHAR(2) NOT NULL,           -- DMP program code
     "DMPTAGE" INTEGER NOT NULL,              -- Days of participation
     "BJAHR" SMALLINT NOT NULL,               -- Report year
-    "BNR" INTEGER NOT NULL,                  -- Company number
+    "BNR" VARCHAR(8) NOT NULL,                  -- Company number
     "DATENMODELL" SMALLINT NOT NULL          -- Data model ID
 );
 
@@ -68,7 +68,7 @@ CREATE TABLE "ambfall" (
     "BEGINNDATAMB" DATE,                    -- Start date
     "ENDEDATAMB" DATE,                      -- End date
     "BJAHR" SMALLINT NOT NULL,              -- Report year
-    "BNR" INTEGER NOT NULL,                 -- Company number
+    "BNR" VARCHAR(8) NOT NULL,                 -- Company number
     "DATENMODELL" SMALLINT NOT NULL         -- Data model ID
 );
 
@@ -83,7 +83,7 @@ CREATE TABLE "ambdiag" (
     "DIAGLOKAL" VARCHAR(1),                 -- Localization
     "DIAGDAT" DATE,                         -- Diagnosis date
     "BJAHR" SMALLINT NOT NULL,              -- Report year
-    "BNR" INTEGER NOT NULL,                 -- Company number
+    "BNR" VARCHAR(8) NOT NULL,                 -- Company number
     "DATENMODELL" SMALLINT NOT NULL         -- Data model ID
 );
 
@@ -111,7 +111,7 @@ CREATE TABLE "ambleist" (
     "ZWEITMEIN" VARCHAR(8),                -- Second opinion indicator
     "GONRBEWERT" NUMERIC(7,2),             -- Fee evaluation amount
     "BJAHR" SMALLINT NOT NULL,              -- Report year
-    "BNR" INTEGER NOT NULL,                 -- Company number
+    "BNR" VARCHAR(8) NOT NULL,                 -- Company number
     "DATENMODELL" SMALLINT NOT NULL         -- Data model ID
 );
 
@@ -124,7 +124,7 @@ CREATE TABLE "ambops" (
     "OPSLOKAL" VARCHAR(1),                  -- Localization indicator
     "OPSDAT" DATE,                          -- Procedure date
     "BJAHR" SMALLINT NOT NULL,               -- Report year
-    "BNR" INTEGER NOT NULL,                  -- Company number
+    "BNR" VARCHAR(8) NOT NULL,                  -- Company number
     "DATENMODELL" SMALLINT NOT NULL          -- Data model ID
 );
 
@@ -145,7 +145,7 @@ CREATE TABLE "zahnfall" (
     "FREMDLABOR" NUMERIC(12,2),             -- External lab costs
     "INANSPRARTZAHN" VARCHAR(1),            -- Service usage type
     "BJAHR" SMALLINT NOT NULL,               -- Report year
-    "BNR" INTEGER NOT NULL,                  -- Company number
+    "BNR" VARCHAR(8) NOT NULL,                  -- Company number
     "DATENMODELL" SMALLINT NOT NULL          -- Data model ID
 );
 
@@ -160,7 +160,7 @@ CREATE TABLE "zahnleist" (
     "GEBPOS" VARCHAR(5),                    -- Position in jaw
     "GEBNRZAHL" INTEGER,                    -- Numeric dental code
     "BJAHR" INTEGER NOT NULL,                -- Report year
-    "BNR" INTEGER NOT NULL,                  -- Company number
+    "BNR" VARCHAR(8) NOT NULL,                  -- Company number
     "DATENMODELL" SMALLINT NOT NULL          -- Data model ID
 );
 
@@ -174,7 +174,7 @@ CREATE TABLE "zahnbef" (
     "REFART" VARCHAR(1),                    -- Reference type
     "BEFNRZAHL" INTEGER,                    -- Numeric finding number
     "BJAHR" SMALLINT NOT NULL,               -- Report year
-    "BNR" INTEGER NOT NULL,                  -- Company number
+    "BNR" VARCHAR(8) NOT NULL,                  -- Company number
     "DATENMODELL" SMALLINT NOT NULL          -- Data model ID
 );
 
@@ -213,7 +213,7 @@ CREATE TABLE "rez" (
     "MEHRKOSTEN" REAL,                      -- Additional costs
     "EIGENBET" REAL,                        -- Out-of-pocket cost
     "BJAHR" SMALLINT NOT NULL,               -- Report year
-    "BNR" INTEGER NOT NULL,                  -- Company number
+    "BNR" VARCHAR(8) NOT NULL,                  -- Company number
     "DATENMODELL" SMALLINT NOT NULL          -- Data model ID
 );
 
@@ -228,7 +228,7 @@ CREATE TABLE "ezd" (
     "FAKTOR" INTEGER NOT NULL,              -- Factor
     "FAKTORKENNZEICHEN" VARCHAR(2) NOT NULL,-- Factor identifier
     "BJAHR" SMALLINT NOT NULL,               -- Report year
-    "BNR" INTEGER NOT NULL,                  -- Company number
+    "BNR" VARCHAR(8) NOT NULL,                  -- Company number
     "DATENMODELL" SMALLINT NOT NULL          -- Data model ID
 );
 
@@ -255,7 +255,7 @@ CREATE TABLE "khfall" (
     "BEATSTD" VARCHAR(4),                   -- Ventilation hours
     "VERANLASSSTELLEPSEUDO" VARCHAR(30),   -- Initiating institution pseudonym
     "BJAHR" SMALLINT NOT NULL,               -- Report year
-    "BNR" INTEGER NOT NULL,                  -- Company number
+    "BNR" VARCHAR(8) NOT NULL,                  -- Company number
     "DATENMODELL" SMALLINT NOT NULL          -- Data model ID
 );
 
@@ -268,7 +268,7 @@ CREATE TABLE "khfa" (
     "ENTLASSDAT" VARCHAR(8) NOT NULL,       -- Discharge date
     "ENTLASSZEIT" VARCHAR(4),               -- Discharge time
     "BJAHR" SMALLINT NOT NULL,               -- Report year
-    "BNR" INTEGER NOT NULL,                  -- Company number
+    "BNR" VARCHAR(8) NOT NULL,                  -- Company number
     "DATENMODELL" SMALLINT NOT NULL          -- Data model ID
 );
 
@@ -285,7 +285,7 @@ CREATE TABLE "khdiag" (
     "SEKICD_ZUSATZ" VARCHAR(9),             -- Secondary ICD additional code
     "SEKICDLOKAL" VARCHAR(1),               -- Secondary localization code
     "BJAHR" SMALLINT NOT NULL,               -- Report year
-    "BNR" INTEGER NOT NULL,                  -- Company number
+    "BNR" VARCHAR(8) NOT NULL,                  -- Company number
     "DATENMODELL" SMALLINT NOT NULL          -- Data model ID
 );
 
@@ -298,7 +298,7 @@ CREATE TABLE "khproz" (
     "PROZDAT" VARCHAR(8),                   -- Procedure date
     "PROZLOKAL" VARCHAR(1),                 -- Localization code
     "BJAHR" SMALLINT NOT NULL,               -- Report year
-    "BNR" INTEGER NOT NULL,                  -- Company number
+    "BNR" VARCHAR(8) NOT NULL,                  -- Company number
     "DATENMODELL" SMALLINT NOT NULL          -- Data model ID
 );
 
@@ -314,6 +314,6 @@ CREATE TABLE "khentg" (
     "ENTGZAHL" VARCHAR(3),                 -- Number of billed items
     "TAGEOBE" VARCHAR(3),                  -- Days above threshold
     "BJAHR" SMALLINT NOT NULL,               -- Report year
-    "BNR" INTEGER NOT NULL,                  -- Company number
+    "BNR" VARCHAR(8) NOT NULL,                  -- Company number
     "DATENMODELL" SMALLINT NOT NULL          -- Data model ID
 );
