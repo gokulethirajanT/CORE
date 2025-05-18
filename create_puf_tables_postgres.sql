@@ -138,8 +138,8 @@ CREATE TABLE "zahnfall" (
     "ZANRABRPSEUDO" BIGINT,                 -- Billing dentist pseudonym
     "ZAKZV" SMALLINT,                        -- Dental insurance association
     "BEHANDARTZAHN" VARCHAR(2),             -- Dental treatment type
-    "BEGINNDATZAHN" DATE,                   -- Treatment start date
-    "ENDEDATZAHN" DATE,                     -- Treatment end date
+    "BEGINNDATZAHN" INTEGER NOT NULL,                   -- Treatment start date
+    "ENDEDATZAHN" INTEGER NOT NULL,                     -- Treatment end date
     "FALLKOZAHN" NUMERIC(12,2),             -- Dental case cost
     "EIGENLABOR" NUMERIC(12,2),             -- In-house lab costs
     "FREMDLABOR" NUMERIC(12,2),             -- External lab costs
