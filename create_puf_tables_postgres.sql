@@ -81,7 +81,7 @@ CREATE TABLE "ambdiag" (
     "ICDAMB_ZUSATZ" VARCHAR(12),            -- Additional code
     "DIAGSICH" VARCHAR(1),                  -- Diagnosis certainty
     "DIAGLOKAL" VARCHAR(1),                 -- Localization
-    "DIAGDAT" DATE,                         -- Diagnosis date
+    "DIAGDAT" INTEGER,                         -- Diagnosis date
     "BJAHR" SMALLINT NOT NULL,              -- Report year
     "BNR" VARCHAR(8) NOT NULL,                 -- Company number
     "DATENMODELL" SMALLINT NOT NULL         -- Data model ID
