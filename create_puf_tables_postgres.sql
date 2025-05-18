@@ -61,12 +61,12 @@ CREATE TABLE "ambfall" (
     "INANSPRARTAMB" VARCHAR(1) NOT NULL,    -- Type of outpatient visit
     "UNFALL" SMALLINT NOT NULL,             -- Accident indicator
     "BEHANDARTAMB" SMALLINT,                -- Treatment type
-    "ENTBINDUNGSDAT" DATE,                  -- Delivery date (if any)
+    "ENTBINDUNGSDAT" INTEGER,                  -- Delivery date (if any)
     "PUNKTZAHL" REAL,                       -- Points
     "FALLKOAMB" REAL,                       -- Case cost
     "DIALYSESACHKO" REAL,                   -- Dialysis cost
-    "BEGINNDATAMB" DATE,                    -- Start date
-    "ENDEDATAMB" DATE,                      -- End date
+    "BEGINNDATAMB" INTEGER,                    -- Start date
+    "ENDEDATAMB" INTEGER,                      -- End date
     "BJAHR" SMALLINT NOT NULL,              -- Report year
     "BNR" VARCHAR(8) NOT NULL,                 -- Company number
     "DATENMODELL" SMALLINT NOT NULL         -- Data model ID
