@@ -122,7 +122,7 @@ CREATE TABLE "ambops" (
     "FALLIDAMB" VARCHAR(11) NOT NULL,       -- Outpatient case ID
     "OPS" VARCHAR(12) NOT NULL,             -- OPS procedure code
     "OPSLOKAL" VARCHAR(1),                  -- Localization indicator
-    "OPSDAT" DATE,                          -- Procedure date
+    "OPSDAT" INTEGER,                          -- Procedure date
     "BJAHR" SMALLINT NOT NULL,               -- Report year
     "BNR" VARCHAR(8) NOT NULL,                  -- Company number
     "DATENMODELL" SMALLINT NOT NULL          -- Data model ID
