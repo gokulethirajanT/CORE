@@ -2,27 +2,43 @@ import random
 import psycopg2
 from datetime import date, timedelta
 
-# ────────────────────── Static Helper Pools ──────────────────────
+# ────────────────────── ICD Extraction Function ──────────────────────
+def extract_icd_parts(code: str):
+    """Splits an ICD code into cleaned code and Zusatz (e.g. '.', '-', '!')."""
+    if not code:
+        return None, None
+    for symbol in ['.', '-', '!']:
+        if symbol in code:
+            return code.replace(symbol, ''), symbol
+    return code, None
+
+# ────────────────────── Extraction function for SEKICD_CODE ──────────
+def get_secondary_icd_pool(conn, total=500):
+    cur = conn.cursor()
+    cur.execute('SELECT "SCHLÜSSELNUMMER" FROM "icd10_catalogue" WHERE "SCHLÜSSELNUMMER" IS NOT NULL;')
+    all_codes = [row[0] for row in cur.fetchall()]
+    return [None] + random.sample(all_codes, min(total, len(all_codes)))
+
+# ────────────────────── Static Helper Pools ──────────────────────────
 LOKAL_POOL = [None, "R", "L", "B"]
-SEK_ICD_POOL = [None, "I10.90", "E66.9", "N39.0", "F17.2"]
 DIAGART_POOL = ["H", "N", "A"]
 
-# ────────────────────── Date Generator ───────────────────────────
+# ────────────────────── Date Generator ───────────────────────────────
 def random_date_in_year(year: int) -> int:
     start = date(year, 1, 1)
     end = date(year, 12, 31)
     d = start + timedelta(days=random.randint(0, (end - start).days))
     return int(d.strftime("%Y%m%d"))
 
-# ────────────────────── FALLID Generator ─────────────────────────
+# ────────────────────── FALLID Generator ─────────────────────────────
 fall_counter: dict[tuple[int, int], int] = {}
 
 def next_fallid(vsid: int, year: int) -> str:
     key = (vsid, year)
     fall_counter[key] = fall_counter.get(key, 0) + 1
-    return f"{year}-{fall_counter[key]:08d}"
+    return f"{year}{fall_counter[key]:08d}"
 
-# ────────────────────── ICD Code Pool from DB ────────────────────
+# ────────────────────── ICD Code Pool from DB ───────────────────────
 def get_weighted_icd_pool(conn, sti_ratio=0.6, total=1000):
     cur = conn.cursor()
     cur.execute('SELECT "SCHLÜSSELNUMMER", "TITEL_LANG" FROM "icd10_catalogue";')
@@ -53,19 +69,19 @@ def get_weighted_icd_pool(conn, sti_ratio=0.6, total=1000):
 
     return random.choices(sti_icd, k=sti_count) + random.choices(non_sti_icd, k=non_sti_count)
 
-# ────────────────────── ICD Zusatz Pool from DB ──────────────────
+# ────────────────────── Zusatz Pool (Optional) ──────────────────────
 def get_icd_extra_pool(conn, limit=20):
     cur = conn.cursor()
     cur.execute('SELECT DISTINCT "VIERSTELLER_MIT_PUNKT" FROM "icd10_catalogue" WHERE "VIERSTELLER_MIT_PUNKT" IS NOT NULL;')
     codes = [row[0] for row in cur.fetchall()]
     return [None] + random.sample(codes, min(limit, len(codes)))
 
-# ────────────────────── Main Seeding Routine ─────────────────────
+# ────────────────────── Main Seeding Routine ────────────────────────
 def seed_khdiag_table(conn, rows: int = 500):
     cur = conn.cursor()
 
     ICD_MAIN_POOL = get_weighted_icd_pool(conn, sti_ratio=0.6, total=1000)
-    ICD_EXTRA_POOL = get_icd_extra_pool(conn, limit=20)
+    SEK_ICD_POOL = get_secondary_icd_pool(conn, total=500)
 
     cur.execute('SELECT "VSID", "PSID", "BJAHR", "BNR" FROM "vers";')
     person_rows = cur.fetchall()
@@ -77,15 +93,16 @@ def seed_khdiag_table(conn, rows: int = 500):
         fallidkh = next_fallid(vsid, bjahr)
 
         diagart = random.choice(DIAGART_POOL)
-        icd_main = random.choice(ICD_MAIN_POOL)
-        icd_zus = random.choice(ICD_EXTRA_POOL)
+
+        raw_icd_main = random.choice(ICD_MAIN_POOL)
+        icd_main, icd_zus = extract_icd_parts(raw_icd_main)
         icd_lok = random.choice(LOKAL_POOL)
 
-        sek_icd = random.choice(SEK_ICD_POOL)
-        sek_zus = None if sek_icd is None else random.choice(ICD_EXTRA_POOL)
+        raw_sek_icd = random.choice(SEK_ICD_POOL)
+        sek_icd, sek_zus = extract_icd_parts(raw_sek_icd) if raw_sek_icd else (None, None)
         sek_lok = None if sek_icd is None else random.choice(LOKAL_POOL)
 
-        datenmodell = 4
+        datenmodell = 3
 
         cur.execute(
             """
@@ -111,7 +128,7 @@ def seed_khdiag_table(conn, rows: int = 500):
     conn.commit()
     print(f"Inserted {rows} rows into 'khdiag'")
 
-# ────────────────────── Script Entrypoint ────────────────────────
+# ────────────────────── Entrypoint ───────────────────────────────
 if __name__ == "__main__":
     conn = psycopg2.connect(
         dbname="CORE_MASTER_THESIS",

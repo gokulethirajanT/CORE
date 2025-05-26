@@ -236,7 +236,7 @@ CREATE TABLE "ezd" (
 CREATE TABLE "khfall" (
     "VSID" BIGINT,                            -- Insurance ID
     "PSID" BYTEA NOT NULL,                   -- Person ID
-    "FALLIDKH" VARCHAR(11) NOT NULL,        -- Hospital case ID
+    "FALLIDKH" VARCHAR(15) NOT NULL,        -- Hospital case ID
     "KHPSEUDO" BIGINT NOT NULL,             -- Hospital pseudonym
     "KHKLASS" SMALLINT NOT NULL,            -- Hospital classification
     "KHREGKZ" SMALLINT NOT NULL,            -- Hospital region code
@@ -263,7 +263,7 @@ CREATE TABLE "khfall" (
 CREATE TABLE "khfa" (
     "VSID" BIGINT,                            -- Insurance ID
     "PSID" BYTEA NOT NULL,                   -- Person ID
-    "FALLIDKH" VARCHAR(11) NOT NULL,        -- Hospital case ID
+    "FALLIDKH" VARCHAR(15) NOT NULL,        -- Hospital case ID
     "FA" VARCHAR(4) NOT NULL,               -- Department
     "ENTLASSDAT" VARCHAR(8) NOT NULL,       -- Discharge date
     "ENTLASSZEIT" VARCHAR(4),               -- Discharge time
@@ -276,7 +276,7 @@ CREATE TABLE "khfa" (
 CREATE TABLE "khdiag" (
     "VSID" BIGINT,                            -- Insurance ID
     "PSID" BYTEA NOT NULL,                   -- Person ID
-    "FALLIDKH" VARCHAR(11) NOT NULL,        -- Hospital case ID
+    "FALLIDKH" VARCHAR(15) NOT NULL,        -- Hospital case ID
     "DIAGART" VARCHAR(1) NOT NULL,          -- Diagnosis type
     "ICDKH_CODE" VARCHAR(9) NOT NULL,       -- ICD diagnosis code
     "ICDKH_ZUSATZ" VARCHAR(9),              -- ICD additional code
@@ -293,7 +293,7 @@ CREATE TABLE "khdiag" (
 CREATE TABLE "khproz" (
     "VSID" BIGINT,                            -- Insurance ID
     "PSID" BYTEA NOT NULL,                   -- Person ID
-    "FALLIDKH" VARCHAR(11) NOT NULL,        -- Hospital case ID
+    "FALLIDKH" VARCHAR(15) NOT NULL,        -- Hospital case ID
     "PROZ" VARCHAR(11) NOT NULL,            -- Procedure code
     "PROZDAT" VARCHAR(8),                   -- Procedure date
     "PROZLOKAL" VARCHAR(1),                 -- Localization code
@@ -306,7 +306,7 @@ CREATE TABLE "khproz" (
 CREATE TABLE "khentg" (
     "VSID" BIGINT,                            -- Insurance ID
     "PSID" BYTEA NOT NULL,                   -- Person ID
-    "FALLIDKH" VARCHAR(11) NOT NULL,        -- Hospital case ID
+    "FALLIDKH" VARCHAR(15) NOT NULL,        -- Hospital case ID
     "ENTGART" VARCHAR(8) NOT NULL,          -- Type of billing
     "ENTGBETRAG" NUMERIC(12,2),            -- Billing amount
     "ABRVONDAT" VARCHAR(8),                -- Billing from date
