@@ -349,3 +349,21 @@ CREATE TABLE "icd10_catalogue" (
     "DIM2_KODE_4" VARCHAR(5)              -- e.g., J
 );
 
+CREATE TABLE "ops_catalogue" (
+    "KAPITELNUMMER" VARCHAR(5),            -- e.g., 4
+    "KLASSART" VARCHAR(5),                 -- e.g., T = Terminalkategorie
+    "DIM1" VARCHAR(5),                     -- Dimension 1 (optional coding structure)
+    "DIM2" VARCHAR(5),                     -- Dimension 2 (optional coding structure)
+    "DREISTELLER" VARCHAR(10),            -- e.g., 5-98
+    "VIERSTELLER_MIT_PUNKT" VARCHAR(10),  -- e.g., 5-987.0
+    "VIERSTELLER_OHNE_PUNKT" VARCHAR(10), -- e.g., 59870
+    "SCHLUESSELNUMMER" VARCHAR(15),       -- e.g., 5-987.0 (full OPS code)
+    "TITEL_LANG" TEXT,                    -- Full procedure description
+    "TITEL_KURZ" TEXT,                    -- Shortened title
+    "HINWEIS" TEXT,                       -- Additional notes (optional)
+    "EXCLUDES" TEXT,                      -- Exclusion information (optional)
+    "GESCHLECHT_1" VARCHAR(5),            -- Gender relevance 1 (e.g., M, W, V)
+    "GESCHLECHT_2" VARCHAR(5),            -- Gender relevance 2
+    "GESCHLECHT_3" VARCHAR(5)             -- Gender relevance 3
+);
+
