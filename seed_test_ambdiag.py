@@ -16,22 +16,18 @@ def seed_ambdiag_table(conn, row_count=100):
     cursor = conn.cursor()
 
     cursor.execute("""
-        SELECT "VSID", "PSID", "BJAHR", "BNR"
-        FROM "vers"
+        SELECT "VSID", "PSID", "FALLIDAMB", "BJAHR", "BNR"
+        FROM "ambfall"
     """)
-    vers_rows = cursor.fetchall()
+    ambfall_rows = cursor.fetchall()
 
-    if not vers_rows:
-        raise ValueError("No data found in 'vers'. Cannot seed 'ambdiag'.")
+    if not ambfall_rows:
+        raise ValueError("No data found in 'ambfall'. Cannot seed 'ambdiag'.")
 
     fallid_tracker = {}
 
     for _ in range(row_count):
-        vsid, psid, bjahr, bnr = random.choice(vers_rows)
-        key = (vsid, bjahr)
-        fallid = fallid_tracker.get(key, 0) + 1
-        fallid_tracker[key] = fallid
-        fallid_str = str(fallid)
+        vsid, psid, fallidamb, bjahr, bnr = random.choice(ambfall_rows)
 
         diagsich = random.choice(['V', 'G', 'Z', 'A'])       # Diagnosis certainty (unspecified made-up values)
         diaglokal = random.choice(['L', 'R', 'B'])                # Left or Right
@@ -48,7 +44,7 @@ def seed_ambdiag_table(conn, row_count=100):
             )
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """, (
-            fallid_str, vsid, psid, diagsich, diaglokal,
+            fallidamb, vsid, psid, diagsich, diaglokal,
             diagdat, icdamb_code, icdamb_zusatz,
             bjahr, bnr, datenmodell
         ))

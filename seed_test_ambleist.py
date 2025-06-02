@@ -99,20 +99,15 @@ def seed_ambleist_table(conn, row_count: int = 100):
     cur = conn.cursor()
 
     # reference patients
-    cur.execute('SELECT "VSID","PSID","BJAHR","BNR" FROM "vers";')
-    vers_rows = cur.fetchall()
-    if not vers_rows:
-        raise ValueError("Table 'vers' is empty – nothing to link to.")
+    cur.execute('SELECT "VSID", "PSID", "FALLIDAMB", "BJAHR", "BNR" FROM "ambfall";')
+    ambfall_rows = cur.fetchall()
+    if not ambfall_rows:
+        raise ValueError("Table 'ambfall' is empty – nothing to link to.")
 
     fallid_tracker: dict[tuple[int,int],int] = {}
 
     for _ in range(row_count):
-        vsid, psid, bjahr, bnr = random.choice(vers_rows)
-
-        # FALLIDAMB increments per (VSID, BJAHR)
-        key = (vsid, bjahr)
-        fallid_tracker[key] = fallid_tracker.get(key, 0) + 1
-        fallid_str = str(fallid_tracker[key])
+        vsid, psid, fallidamb, bjahr, bnr = random.choice(ambfall_rows)
 
         # identifiers
         nbsnr_pseudo = generate_tsvg_bsnr()
@@ -162,7 +157,7 @@ def seed_ambleist_table(conn, row_count: int = 100):
               %s,%s,%s
             );""",
             (
-              vsid, psid, fallid_str,
+              vsid, psid, fallidamb,
               nbsnr_pseudo, nbsnr_kv,
               lanr_pseudo, lanr_fg,
               gonr, gonr_dat,
@@ -187,6 +182,6 @@ if __name__ == "__main__":
         port     = "5432"
     )
     try:
-        seed_ambleist_table(conn, row_count=100)
+        seed_ambleist_table(conn, row_count=1)
     finally:
         conn.close()

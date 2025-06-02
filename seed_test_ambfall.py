@@ -63,6 +63,8 @@ def seed_ambfall_table(conn, row_count=100):
         dialysesachko = generate_dialyse_cost()
         beginndatamb = generate_random_date_int()
         endedatamb = generate_random_date_int()
+        if endedatamb < beginndatamb:
+            beginndatamb, endedatamb = endedatamb, beginndatamb
         datenmodell = 3
 
         cursor.execute("""

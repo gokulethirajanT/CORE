@@ -2,6 +2,17 @@ from datetime import date, timedelta, datetime
 import random
 import string
 import psycopg2
+from dotenv import load_dotenv
+import os
+
+# ───── Load environment variables ─────
+load_dotenv()
+
+DB_NAME = os.getenv("DB_NAME")
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_HOST = os.getenv("DB_HOST", "localhost")
+DB_PORT = os.getenv("DB_PORT", "5432")
 
 def random_date_in_year(year: int) -> str:
     """Returns a random date in YYYYMMDD format within the given year."""
@@ -33,7 +44,6 @@ def seed_rez_table(conn, rows: int = 500):
         vsid, psid, bjahr, bnr = random.choice(ref_rows)
         datenmodell = 3
 
-        # Ensure unique REZNR
         while True:
             reznr = random.randint(100_000_000, 999_999_999)
             if reznr not in reznr_set:
@@ -42,7 +52,6 @@ def seed_rez_table(conn, rows: int = 500):
 
         pznrez = generate_pznrez()
 
-        # Date handling
         vodat_str = random_date_in_year(bjahr)
         abgabedat_str = random_date_in_year(bjahr)
         vodat = datetime.strptime(vodat_str, "%Y%m%d").date()
@@ -52,7 +61,6 @@ def seed_rez_table(conn, rows: int = 500):
         vodat_int = int(vodat.strftime("%Y%m%d"))
         abgabedat_int = int(abgabedat.strftime("%Y%m%d"))
 
-        # Field values
         bsnrvopseudo = generate_id(12)
         bsnrvovb = random.randint(10, 99)
         bsnrvoregknz = random.randint(10, 99)
@@ -73,7 +81,6 @@ def seed_rez_table(conn, rows: int = 500):
         zuzahlges = generate_amount(5, 20)
         eigenbet = generate_amount(0, 15)
 
-        # Insert statement
         cur.execute("""
             INSERT INTO rez (
                 "VSID", "PSID", "REZNR", "PZNREZ", "VODAT",
@@ -106,21 +113,21 @@ def seed_rez_table(conn, rows: int = 500):
         ))
 
     conn.commit()
-    print(f" Inserted {rows} rows into 'rez'.")
+    print(f"Inserted {rows} rows into 'rez'.")
 
 # ────────────────────── Entrypoint ───────────────────────────────
 if __name__ == "__main__":
     try:
         conn = psycopg2.connect(
-            dbname="CORE_MASTER_THESIS",
-            user="postgres",
-            password="London@123",
-            host="localhost",
-            port="5432",
+            dbname=DB_NAME,
+            user=DB_USER,
+            password=DB_PASSWORD,
+            host=DB_HOST,
+            port=DB_PORT,
         )
-        seed_rez_table(conn, rows=500)
+        seed_rez_table(conn, rows=100)
     except Exception as e:
-        print(f" Error: {e}")
+        print(f"Error: {e}")
     finally:
         if 'conn' in locals():
             conn.close()
