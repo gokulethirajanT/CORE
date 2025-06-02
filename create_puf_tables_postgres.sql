@@ -178,44 +178,38 @@ CREATE TABLE "zahnbef" (
     "DATENMODELL" SMALLINT NOT NULL          -- Data model ID
 );
 
--- Table 11: Prescriptions
-CREATE TABLE "rez" (
-    "VSID" BIGINT,                            -- Insurance ID
-    "PSID" BYTEA NOT NULL,                   -- Person ID
-    "REZNR" BIGINT NOT NULL,                -- Prescription number
-    "PZNREZ" VARCHAR(10) NOT NULL,          -- Pharmaceutical central number
-    "VODAT" DATE NOT NULL,                  -- Date of prescription
-    "BSNRVOPSEUDO" BIGINT,                  -- Prescriber BSNR (pseudonymized)
-    "BSNRVOVB" SMALLINT,                     -- Prescriber KV code
-    "BSNRVOREGKNZ" SMALLINT,                -- Prescriber region code
-    "LENRVOPSEUDO" BIGINT,                  -- Provider pseudonym
-    "LENRVOFG" SMALLINT,                     -- Specialty code
-    "LENRVOPRUEF" VARCHAR(1),               -- Validation flag
-    "LENRVOPSEUDOARZTNR" VARCHAR(1),        -- Doctor number pseudonymized
-    "ABGABEDAT" DATE NOT NULL,              -- Dispense date
-    "BEGRUENDUNG" VARCHAR(1),               -- Reason code
-    "VERTRAGSKZ" VARCHAR(25),               -- Contract code
-    "APOPSEUDO" BIGINT NOT NULL,            -- Pharmacy pseudonym
-    "APOKLASS" SMALLINT NOT NULL,           -- Pharmacy classification
-    "APOREGKNZ" SMALLINT NOT NULL,          -- Pharmacy region code
-    "APOPRUEF" VARCHAR(1),                  -- Validation flag
-    "APOSITZ" VARCHAR(1),                   -- Pharmacy site type
-    "APOTYP" VARCHAR(1),                    -- Pharmacy type
-    "MENGE" INTEGER NOT NULL,               -- Quantity
-    "NOCTU" VARCHAR(1),                     -- Night service indicator
-    "AUTIDEM" VARCHAR(1) NOT NULL,          -- Aut-idem mark
-    "WIRKSTOFFVO" VARCHAR(1),               -- Active ingredient prescription
-    "AMBETRAG" REAL NOT NULL,               -- Medication cost
-    "ABSCHLAEGE" REAL NOT NULL,             -- Discounts
-    "ZUZAHLKZ" VARCHAR(1) NOT NULL,         -- Co-payment mark
-    "ZUZAHLGES" REAL NOT NULL,              -- Total co-payment
-    "ZUZAHL" REAL,                          -- Individual co-payment
-    "MEHRKOSTEN" REAL,                      -- Additional costs
-    "EIGENBET" REAL,                        -- Out-of-pocket cost
-    "BJAHR" SMALLINT NOT NULL,               -- Report year
-    "BNR" VARCHAR(8) NOT NULL,                  -- Company number
-    "DATENMODELL" SMALLINT NOT NULL          -- Data model ID
-);
+    -- Table 11: Prescriptions
+    CREATE TABLE "rez" (
+        "VSID" BIGINT,                            -- Insurance ID
+        "PSID" BYTEA NOT NULL,                   -- Person ID
+        "REZNR" BIGINT NOT NULL,                -- Prescription number
+        "PZNREZ" VARCHAR(10) NOT NULL,          -- Pharmaceutical central number
+        "VODAT" INTEGER NOT NULL,                  -- Date of prescription
+        "BSNRVOPSEUDO" BIGINT,                  -- Prescriber BSNR (pseudonymized)
+        "BSNRVOVB" SMALLINT,                     -- Prescriber KV code
+        "BSNRVOREGKNZ" SMALLINT,                -- Prescriber region code
+        "LENRVOPSEUDO" BIGINT,                  -- Provider pseudonym
+        "LENRVOFG" SMALLINT,                     -- Specialty code
+        "ABGABEDAT" INTEGER NOT NULL,              -- Dispense date
+        "VERTRAGSKZ" VARCHAR(25),               -- Contract code
+        "APOPSEUDO" BIGINT NOT NULL,            -- Pharmacy pseudonym
+        "APOKLASS" SMALLINT NOT NULL,           -- Pharmacy classification
+        "APOREGKNZ" SMALLINT NOT NULL,          -- Pharmacy region code
+        "APOSITZ" VARCHAR(1),                   -- Pharmacy site type
+        "MENGE" INTEGER NOT NULL,               -- Quantity
+        "NOCTU" VARCHAR(1),                     -- Night service indicator
+        "AUTIDEM" VARCHAR(1) NOT NULL,          -- Aut-idem mark
+        "WIRKSTOFFVO" VARCHAR(1),               -- Active ingredient prescription
+        "AMBETRAG" REAL NOT NULL,               -- Medication cost
+        "ABSCHLAEGE" REAL NOT NULL,             -- Discounts
+        "ZUZAHLKZ" VARCHAR(1) NOT NULL,         -- Co-payment mark
+        "ZUZAHLGES" REAL NOT NULL,              -- Total co-payment
+        "MEHRKOSTEN" REAL,                      -- Additional costs
+        "EIGENBET" REAL,                        -- Out-of-pocket cost
+        "BJAHR" SMALLINT NOT NULL,               -- Report year
+        "BNR" VARCHAR(8) NOT NULL,                  -- Company number
+        "DATENMODELL" SMALLINT NOT NULL          -- Data model ID
+    );
 
 -- Table 12: Prescription components
 CREATE TABLE "ezd" (
