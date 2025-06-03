@@ -52,7 +52,7 @@ def seed_ambops_table(conn, row_count: int = 100):
         ops_code   = generate_ops_code()
         ops_lokal  = generate_ops_lokal()
         ops_date   = yyyymmdd_int(random_service_date())
-        datenmodell = 7  # DM-7 identifier
+        datenmodell = 3  # DM-7 identifier
 
         cur.execute(
             """
