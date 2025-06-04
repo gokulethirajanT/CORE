@@ -83,6 +83,6 @@ if __name__ == "__main__":
         port     = "5432"
     )
     try:
-        seed_ambops_table(conn, row_count=1)
+        seed_ambops_table(conn, row_count=100)
     finally:
         conn.close()

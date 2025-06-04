@@ -114,6 +114,6 @@ if __name__ == "__main__":
         port     = "5432"
     )
     try:
-        seed_ezd_table(conn, row_count=1000)
+        seed_ezd_table(conn, row_count=100)
     finally:
         conn.close()

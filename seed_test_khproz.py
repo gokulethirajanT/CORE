@@ -39,7 +39,7 @@ def seed_khproz_table(conn, rows: int = 500):
         prozdat = random_date_in_year(bjahr)
         prozlokal = random.choice(PROZLOKAL_POOL)
 
-        datenmodell = 4
+        datenmodell = 3
 
         cur.execute("""
             INSERT INTO "khproz" (
@@ -70,6 +70,6 @@ if __name__ == "__main__":
         port="5432",
     )
     try:
-        seed_khproz_table(conn, rows=500)
+        seed_khproz_table(conn, rows=100)
     finally:
         conn.close()
