@@ -8,7 +8,7 @@ g = Generic(locale=Locale.DE)
 def seed_zahnbef_table(conn, row_count=100):
     cursor = conn.cursor()
 
-    # 🔁 Fetch required join values from vers
+    # Fetch required join values from vers
     cursor.execute("""
         SELECT "VSID", "PSID", "BJAHR", "BNR"
         FROM "vers"

@@ -78,7 +78,7 @@ def seed_ezd_table(conn, row_count: int = 1000):
         faktor  = random_faktor(fkenn)
         zaehler = None if random.random() < 0.9 else 1
         einheit = random.choice(EINHEIT_POOL)
-        datenmodell = 8
+        datenmodell = 3
 
         params = (
             vsid, psid, reznr,          # 1-3
