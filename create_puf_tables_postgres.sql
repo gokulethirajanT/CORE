@@ -1,7 +1,6 @@
 -- ===============================
 -- PostgreSQL Schema for DM3 Data
 -- ===============================
-
 -- Table 1: Basic insurance data
 CREATE TABLE "vers" (
     "VSID" BIGINT,                           -- Insurance ID
