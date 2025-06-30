@@ -1,0 +1,20 @@
+Table Name,Column Name,Description
+VERS,VSID,Unique identifier for each insured individual; primary key linking other tables.
+VERS,PSID,Person-specific identifier used for linking longitudinal data across years.
+VERS,BJAHR,Reporting year for the dataset.
+VERS,DATENMODELL,"Indicates the data model version (e.g., DM3)."
+VERS,GEBJAHR,Year of birth for the insured person.
+VERS,GESCHLECHT,Gender of the insured person.
+VERS,VERSTAGE,Number of insurance days within the reporting year.
+VERS,VERSTATUS,"Insurance status (e.g., active, retired)."
+VERS,VITALSTATUS,Indicates whether the person is alive or deceased.
+VERS,STERBEDAT,Date of death (if applicable).
+KHFALL,FALLIDKH,"Unique identifier for an inpatient case; links to related tables (e.g., KHDIAG, KHPROZ)."
+KHFALL,AUFNAHME,Admission date for the inpatient case.
+KHFALL,ENTLASSDAT,Discharge date for the inpatient case.
+KHDIAG,FALLIDKH,Links to KHFALL to associate diagnoses with inpatient cases.
+KHDIAG,ICDNR_CODE,Diagnosis code based on the ICD (International Classification of Diseases) standard.
+AMBFALL,FALLIDAMB,"Unique identifier for an outpatient case; links to related tables (e.g., AMBDIAG, AMBLEIST)."
+AMBDIAG,FALLIDAMB,Links to AMBFALL to associate diagnoses with outpatient cases.
+REZ,REZNR,Unique identifier for a prescription; links to EZD for detailed information.
+EZD,REZNR,Links to REZ for electronic prescription details.

@@ -1,0 +1,87 @@
+HIV-prEP DART Anonymization Protocols & Checklist,,,
+Gokul Thothathri,Anonymization Technique (Class 1),Description ,Metrics
+,k-Anonymization,Ensures each record is indistinguishable from at least k?1 others.,"k-Anonymity Score, Re-identification Risk, l-Diversity, t-Closeness, Variance Retention, Information Loss (%), Processing Time, Memory Usage"
+,Pseudonymization,Replaces sensitive identifiers with randomly generated pseudonyms,"Re-identification Risk, Variance Retention, Processing Time, Memory Usage"
+,Random Shuffling,Disrupts the natural order of data to obscure relationships,"Re-identification Risk, Variance Retention, Processing Time, Memory Usage"
+,Generalization,Likely reduces the granularity of data to make it less identifiable,"Re-identification Risk, Variance Retention, Information Loss (%), Information Loss (%), Processing Time, Memory Usage"
+,Suppression,"Replaces constant values across all rows, removing variability","Re-identification Risk, Variance Retention, Information Loss (%), Processing Time, Memory Usage"
+,Secondary Pseudonym Pools,Adds additional layers of abstraction for pseudonymized data,"Re-identification Risk, Variance Retention, Processing Time, Memory Usage"
+,Column Segmentation,Processes columns separately to reduce the risk of relational re-identification,"Re-identification Risk, Variance Retention, Processing Time, Memory Usage"
+,Anonymization Technique (Class 2),,
+,Top- or Bottom-Coding,"Limits extreme values to prevent identification (e.g., age > 90 ? ""90+"").","Re-identification Risk, Variance Retention, Processing Time, Memory Usage"
+,Micro-aggregation,Groups similar records and replaces individual values with group averages.,"Re-identification Risk, l-Diversity, Variance Retention, Correlation Analysis, Processing Time, Memory Usage"
+,Bucketing (Binning),"Converts continuous variables into discrete groups (e.g., income ranges)","Re-identification Risk, Variance Retention, Correlation Analysis, Processing Time, Memory Usage"
+,Masking & Reduction,Hides or replaces sensitive text data to prevent exposure.,"Re-identification Risk, Variance Retention, Processing Time,Memory Usage"
+,Noise Addition (Data Perturbation),Introduces small random variations to numeric values to obscure exact data.,"Re-identification Risk, Mean Absolute Error (MAE), Variance Retention, Processing Time, Memory Usage"
+,Data Swapping,Replaces selected values with those from other records to break linkability.,"Re-identification Risk, Variance Retention, Processing Time, Memory Usage"
+,Anonymization Technique (Class 3),,
+,Differential Privacy,"Adds mathematically calibrated noise to queries, ensuring privacy while preserving statistical integrity.","Re-identification Risk, t-Closeness, Differential Privacy Level (?-DP), Variance Retention, Processing Time,Memory Usage"
+,Homomorphic Encryption,"Allows computations to be performed on encrypted data without needing decryption, ensuring data privacy during processing.","Re-identification Risk, Encryption Strength, Variance Retention, Processing Time, Memory Usage, Encryption Overhead"
+,,,
+Data Preparation Checklist ,,,
+1. What type of public data structure will be used to generate synthetic data ?,,,
+2. Are there sensitive attributes in the dataset ?,,,
+"            a. If yes, what are they ?",,,
+3. How the statistical properties of the synthetic data structure is maintained ?,,,
+4. How the quality of the generated synthetic data structure is maintained ?,,,
+5. What are the dependencies or relationships between the variables that needs to be preserved ?,,,
+6. What are the domain-specific contraints on synthetic data on HIV-prEP level ?,,,
+7. How will the missing data will be handled ?,,,
+8. What is the expected size of the missing data?,,,
+9. How many versions of the synthetic data will be generated ?,,,
+Anonymization Class 1 Checklist (Basic Anonymization),,,
+"1. What are the key anonymization benchmarks ? (e.g., k-Anonymity, l-Diversity, t-Closeness)",,,
+2. What attributes need k-anonymization and what is k-value ?,,,
+3. Which identifiers undergo pseudonymizations ?,,,
+4. What the numerical attributes that require random shuffling ?,,,
+6. How much generalization will be applied to categorical variables ?,,,
+7. Will supression be applied to constant or highly sensitive variables ?,,,
+8. How will the effectiveness of these anonymization techniques be evaluated ?,,,
+9. What are the expected computational overhead of these techniques ?,,,
+Anonymization Class 2 Checklist (Intermediate Anonymization Techniques),,,
+1.  Which attributes need top-bottom coding ?,,,
+2. Are there extreme values that should be truncated to prevent identification ?,,,
+3. Will microaggregation be applied to numerical data? If so what group size should be used?,,,
+4. Are there continuous attributes that need bucketing ?,,,
+5. Are text fields being masked or reduced to remove identifiable information ?,,,
+6. Will noise addition (data perturbation) be applied to numerical attributes ?,,,
+"7. Which columns need data swapping, what are the contraints on swaps ?",,,
+8. How will the correlations be preserved when performing anonymization ?,,,
+9. How will the re-identification risk be measured post-anonymization ? ,,,
+10. What is the impact of these techniques on data utility and variance retention ? ,,,
+Anonymization Class 3 Checklist (Advanced),,,
+1. Will differential privacy be implemented ?,,,
+"            a. If yes, what will be the epsilon (?) value ?",,,
+2. Will homomorphic encryption be used for computation on encrpted data ?,,,
+3. What level of encrption overhead is expected in homomorphic encrption ?,,,
+4. Are anonymized queries subject to noise injection for additional privacy ?,,,
+5. What are the trade-off between privacy and accuracy for these advanced techniques ?,,,
+6. How will adversarial testing be performed against differential privacy models ?,,,
+7. What are compliance requirements can you find and does these technique fit into it ?,,,
+Performanace and Evaluation Checklist,,,
+1. How good these techniques fit for the HIV-prEP pipeline ?,,,
+2. What are the metrics used to measure anonymization effectiveness ?,,,
+3. How will you benchmark different anonymization strategies ?,,,
+4. How will information loss be quantified due to anonymization ?,,,
+5. How will memory and processing time be monitored for anonymization steps ?,,,
+6. How will false positives/negatives will be handled in privacy risk assessments ?,,,
+7. What are the visualizations availbale to assess anonymization impact on distributions ?,,,
+,,,
+How Different Anonymization Algorithms Affect Results,,,
+Anonymization Algorithm  (Class 1),Question ,,
+K-anonymity,Does it but keeps group-level trends after removing unique identifiers ?,,
+Psedunymization,Does it prevent attribute disclosure ?,,
+   Random shuffling,Does it reduce co-relational-based inferences ?,,
+   Generalization ,Does it reduces Granularity ? ,,
+   Supression ,Does it lead to loss of key-records ?,,
+   Secondary pseudonym pools,Does it preserves linkability ?,,
+   Column segmentation,How does the multi-variable correlation distribution ?,,
+Anonymization Algorithm  (Class 2),Question ,,
+Top-/Bottom-Coding,Does it affect statistical distribution ?,,
+Micro-Aggregation,How does the variablity change ? Does does increases or decreases ?,,
+Bucketing (Binning),Does it reduces Granularity ? ,,
+Masking & Reduction,Does it preserves readability ?,,
+Data Swapping,Does the row-wise consistency preserved ?,,
+Anonymization Algorithm  (Class 3),Question ,,
+Differential Privacy,How does the low-count statistics acts out ?,,
+Homomorphic Encryption,Does this techniques increase the processing overhead ?,,
