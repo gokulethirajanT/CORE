@@ -5,28 +5,22 @@ from mimesis.enums import Locale
 
 g = Generic(locale=Locale.DE)
 
-def seed_zahnbef_table(conn, row_count=100):
+def seed_zahnbef_table(conn, row_count=1):
     cursor = conn.cursor()
 
-    # Fetch required join values from vers
+    #  Fetch FALLIDZAHN and associated values from zahnfall
     cursor.execute("""
-        SELECT "VSID", "PSID", "BJAHR", "BNR"
-        FROM "vers"
+        SELECT "VSID", "PSID", "FALLIDZAHN", "BJAHR", "BNR"
+        FROM "zahnfall"
     """)
-    vers_rows = cursor.fetchall()
+    zahnfall_rows = cursor.fetchall()
 
-    if not vers_rows:
-        raise ValueError("No rows found in 'vers'. Cannot seed 'zahnbef'.")
-
-    fallid_tracker = {}
+    if not zahnfall_rows:
+        raise ValueError("No rows found in 'zahnfall'. Cannot seed 'zahnbef'.")
 
     for _ in range(row_count):
-        vsid, psid, bjahr, bnr = random.choice(vers_rows)
-        key = (vsid, bjahr)
-        fallid = fallid_tracker.get(key, 0) + 1
-        fallid_tracker[key] = fallid
+        vsid, psid, fallid_str, bjahr, bnr = random.choice(zahnfall_rows)
 
-        fallid_str = str(fallid)  # VARCHAR(11)
         valid_befnr = [
             '1.1', '1.2', '1.3', '1.4', '1.5',
             '2.1', '2.2', '2.3', '2.4', '2.5', '2.6', '2.7',
@@ -35,10 +29,11 @@ def seed_zahnbef_table(conn, row_count=100):
             '5.1', '5.2', '5.3', '5.4',
             '6.1', '6.2', '6.3',
             '7.1', '7.2', '7.5', '7.6', '7.7',
-            '8.1']
+            '8.1'
+        ]
         befnr = random.choice(valid_befnr)
 
-        # Permanent: 11–48, Primary: 51–55, 61–65, 71–75, 81–85
+        # Tooth positions
         zahn = str(random.choice(
             list(range(11, 49)) +   # Permanent
             list(range(51, 56)) +   # Primary upper right
@@ -47,9 +42,8 @@ def seed_zahnbef_table(conn, row_count=100):
             list(range(81, 86))     # Primary lower right
         ))
 
-        # 1% of rows will be retrospective findings
         refart = random.choices([None, "1"], weights=[99, 1])[0]
-        befnrzahl = random.randint(1, 9999)  # 0.01 to 99.99
+        befnrzahl = random.randint(1, 9999)
         datenmodell = 3
 
         cursor.execute("""
@@ -64,7 +58,7 @@ def seed_zahnbef_table(conn, row_count=100):
         ))
 
     conn.commit()
-    print(f" Inserted {row_count} complete rows into 'zahnbef'")
+    print(f"Inserted {row_count} rows into 'zahnbef'")
 
 
 if __name__ == "__main__":

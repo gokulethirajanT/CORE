@@ -13,21 +13,25 @@ def generate_versq():
     quarter = random.randint(1, 4)                        # Quarters 1 to 4
     return int(f"{year}{quarter}")
 
-def seed_versq_table(conn, row_count=100):
+def seed_versq_table(conn, row_count=1):
     cursor = conn.cursor()
 
+    # Get existing VSID, PSID, BJAHR, BNR from the vers table
+    cursor.execute('SELECT "VSID", "PSID", "BJAHR", "BNR" FROM "vers";')
+    vers_rows = cursor.fetchall()
+
+    if not vers_rows:
+        raise ValueError("vers table is empty; seed 'vers' first before 'versq'.")
+
     for _ in range(row_count):
-        vsid = random.randint(1000000, 9999999)
-        psid = generate_psid()
+        vsid, psid, bjahr, bnr = random.choice(vers_rows)
         versq = generate_versq()
-        geschlecht = random.choice([1, 2, 3, 4])  # 1=F, 2=M, 3=Unknown, 4=Diverse (per FDZ)
-        verstage = random.randint(1, 99)  # full technical range, even rare edge cases
+        geschlecht = random.choice([1, 2, 3, 4])
+        verstage = random.randint(1, 99)
         verstageausl = random.randint(0, verstage // 4)
         versstatus = random.choice([10001, 10002, 10003, 99999])
         verstagekg = random.randint(0, verstage)
         verstagekosterstwahlt = random.randint(0, verstage)
-        bjahr = random.choice([2019, 2020, 2021, 2022, 2023])
-        bnr = ''.join(random.choices('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', k=8))
         datenmodell = 3
 
         cursor.execute("""

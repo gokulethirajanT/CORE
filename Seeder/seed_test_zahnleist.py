@@ -6,34 +6,26 @@ def generate_random_date(start_year=2019, end_year=2023):
     start = datetime(start_year, 1, 1)
     end = datetime(end_year, 12, 31)
     random_date = start + timedelta(days=random.randint(0, (end - start).days))
-    return int(random_date.strftime("%Y%m%d"))  # returns YYYYMMDD as integer
+    return int(random_date.strftime("%Y%m%d"))  # YYYYMMDD
 
-def seed_zahnleist_table(conn, row_count=100):
+def seed_zahnleist_table(conn, row_count=1):
     cursor = conn.cursor()
 
-    # 🧩 Join data from `vers`
+    # Pull valid combinations from zahnfall (since FALLIDZAHN must exist)
     cursor.execute("""
-        SELECT "VSID", "PSID", "BJAHR", "BNR"
-        FROM "vers"
+        SELECT "VSID", "PSID", "FALLIDZAHN", "BJAHR", "BNR"
+        FROM "zahnfall"
     """)
-    vers_rows = cursor.fetchall()
+    zahnfall_rows = cursor.fetchall()
 
-    if not vers_rows:
-        raise ValueError("No rows found in 'vers'. Cannot seed 'zahnleist'.")
-
-    fallid_tracker = {}
+    if not zahnfall_rows:
+        raise ValueError("No rows found in 'zahnfall'. Cannot seed 'zahnleist'.")
 
     for _ in range(row_count):
-        vsid, psid, bjahr, bnr = random.choice(vers_rows)
-        key = (vsid, bjahr)
-        fallid = fallid_tracker.get(key, 0) + 1
-        fallid_tracker[key] = fallid
-        fallid_str = str(fallid)
+        vsid, psid, fallid_str, bjahr, bnr = random.choice(zahnfall_rows)
 
         leistungsdatum = generate_random_date()
 
-        # Tooth positions: use adult + child mixed
-        # Permanent: 11–48, Primary: 51–55, 61–65, 71–75, 81–85
         tooth_id = str(random.choice(
             list(range(11, 49)) +   # Permanent
             list(range(51, 56)) +   # Primary upper right
@@ -59,7 +51,7 @@ def seed_zahnleist_table(conn, row_count=100):
         ))
 
     conn.commit()
-    print(f"Inserted {row_count} synthetic rows into 'zahnleist'")
+    print(f"Inserted {row_count} rows into 'zahnleist'")
 
 if __name__ == "__main__":
     conn = psycopg2.connect(

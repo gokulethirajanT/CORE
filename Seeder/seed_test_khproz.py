@@ -70,6 +70,6 @@ if __name__ == "__main__":
         port="5432",
     )
     try:
-        seed_khproz_table(conn, rows=100)
+        seed_khproz_table(conn, rows=1)
     finally:
         conn.close()

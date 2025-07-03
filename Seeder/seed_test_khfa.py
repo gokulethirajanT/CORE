@@ -63,6 +63,6 @@ if __name__ == "__main__":
         port="5432",
     )
     try:
-        seed_khfa_table(conn, rows=500)
+        seed_khfa_table(conn, rows=1)
     finally:
         conn.close()

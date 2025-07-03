@@ -12,7 +12,7 @@ def generate_diag_date(start_year=2019, end_year=2023):
     end = datetime(end_year, 12, 31)
     return int((start + timedelta(days=random.randint(0, (end - start).days))).strftime('%Y%m%d'))
 
-def seed_ambdiag_table(conn, row_count=100):
+def seed_ambdiag_table(conn, row_count=1):
     cursor = conn.cursor()
 
     cursor.execute("""

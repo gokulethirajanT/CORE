@@ -30,14 +30,6 @@ def random_date_in_year(year: int) -> int:
     d = start + timedelta(days=random.randint(0, (end - start).days))
     return int(d.strftime("%Y%m%d"))
 
-# ────────────────────── FALLID Generator ─────────────────────────────
-fall_counter: dict[tuple[int, int], int] = {}
-
-def next_fallid(vsid: int, year: int) -> str:
-    key = (vsid, year)
-    fall_counter[key] = fall_counter.get(key, 0) + 1
-    return f"{year}{fall_counter[key]:08d}"
-
 # ────────────────────── ICD Code Pool from DB ───────────────────────
 def get_weighted_icd_pool(conn, sti_ratio=0.6, total=1000):
     cur = conn.cursor()
@@ -83,14 +75,13 @@ def seed_khdiag_table(conn, rows: int = 500):
     ICD_MAIN_POOL = get_weighted_icd_pool(conn, sti_ratio=0.6, total=1000)
     SEK_ICD_POOL = get_secondary_icd_pool(conn, total=500)
 
-    cur.execute('SELECT "VSID", "PSID", "BJAHR", "BNR" FROM "vers";')
+    cur.execute('SELECT "VSID", "PSID", "FALLIDKH", "BJAHR", "BNR" FROM "khfall";')
     person_rows = cur.fetchall()
     if not person_rows:
-        raise ValueError("vers table empty, cannot seed khdiag")
+        raise ValueError("khfall table is empty; cannot seed khdiag.")
 
     for _ in range(rows):
-        vsid, psid, bjahr, bnr = random.choice(person_rows)
-        fallidkh = next_fallid(vsid, bjahr)
+        vsid, psid, fallidkh, bjahr, bnr = random.choice(person_rows)
 
         diagart = random.choice(DIAGART_POOL)
 
@@ -138,6 +129,6 @@ if __name__ == "__main__":
         port="5432",
     )
     try:
-        seed_khdiag_table(conn, rows=500)
+        seed_khdiag_table(conn, rows=1)
     finally:
         conn.close()

@@ -125,7 +125,7 @@ if __name__ == "__main__":
             host=DB_HOST,
             port=DB_PORT,
         )
-        seed_rez_table(conn, rows=100)
+        seed_rez_table(conn, rows=1)
     except Exception as e:
         print(f"Error: {e}")
     finally:

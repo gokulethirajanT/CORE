@@ -2,6 +2,7 @@ import random
 import psycopg2
 from datetime import datetime, timedelta
 import string
+import uuid
 
 def generate_random_date_int(start_year=2019, end_year=2023):
     start = datetime(start_year, 1, 1)
@@ -25,7 +26,7 @@ def generate_dialyse_cost():
     value = max(80000000, min(value, 110000000))       # Clamp to 80M–110M EUR
     return round(value, 2)
 
-def seed_ambfall_table(conn, row_count=100):
+def seed_ambfall_table(conn, row_count=1):
     cursor = conn.cursor()
 
     cursor.execute("""SELECT "VSID", "PSID", "BJAHR", "BNR" FROM "vers" """)
@@ -39,8 +40,7 @@ def seed_ambfall_table(conn, row_count=100):
     for _ in range(row_count):
         vsid, psid, bjahr, bnr = random.choice(vers_rows)
         key = (vsid, bjahr)
-        fallid = fallid_tracker.get(key, 0) + 1
-        fallid_tracker[key] = fallid
+        fallid = ''.join(random.choices(string.ascii_uppercase + string.digits, k=11))
 
         year = random.randint(2019, 2023)         # Valid years from the dataset
         quarter = random.randint(1, 4)            # Valid quarters: 1 to 4

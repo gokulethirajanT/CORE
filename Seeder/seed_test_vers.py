@@ -10,7 +10,7 @@ g = Generic(locale=Locale.DE)
 def generate_psid():
     return bytes.fromhex(''.join(random.choices('0123456789ABCDEF', k=32)))  # ✅ binary format
 
-def seed_vers_table(conn, row_count=100):
+def seed_vers_table(conn, row_count=1):
     cursor = conn.cursor()
 
     for _ in range(row_count):
@@ -33,7 +33,7 @@ def seed_vers_table(conn, row_count=100):
         """, (vsid, psid, gebjahr, plz, vitalstatus, sterbedat, bjahr, bnr, datenmodell))
 
     conn.commit()
-    print(f"✅ Inserted {row_count} synthetic rows into 'vers'")
+    print(f"Inserted {row_count} rows into 'vers'")
 
 
 if __name__ == "__main__":

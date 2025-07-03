@@ -13,18 +13,22 @@ def generate_versq():
     quarter = random.randint(1, 4)
     return int(f"{year}{quarter}")  # Format: YYYYQ
 
-def seed_versqdmp_table(conn, row_count=100):
+def seed_versqdmp_table(conn, row_count=1):
     cursor = conn.cursor()
 
+    # Get valid FK combinations from versq
+    cursor.execute('SELECT "VSID", "PSID", "VERSQ", "BJAHR", "BNR" FROM "versq";')
+    versq_rows = cursor.fetchall()
+
+    if not versq_rows:
+        raise ValueError("versq table is empty; cannot seed versqdmp.")
+
     for _ in range(row_count):
-        vsid = random.randint(1_000_000, 9_999_999)  # 7-digit pseudonym
-        psid = generate_psid()                       # 32-byte pseudonym (as bytea)
-        versq = generate_versq()                     # YYYYQ
+        vsid, psid, versq, bjahr, bnr = random.choice(versq_rows)
+
         dmpprog = ''.join(random.choices('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', k=2))  # varchar(2)
-        dmptage = random.randint(1, 99)                        # duration of program in days
-        bjahr = random.choice([2019, 2020, 2021, 2022, 2023])
-        bnr = ''.join(random.choices('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', k=8))
-        datenmodell = 3                              # fixed value
+        dmptage = random.randint(1, 99)
+        datenmodell = 3
 
         cursor.execute("""
             INSERT INTO "versqdmp" (
@@ -38,8 +42,7 @@ def seed_versqdmp_table(conn, row_count=100):
         ))
 
     conn.commit()
-    print(f" Inserted {row_count} synthetic rows into 'versqdmp'")
-
+    print(f"Inserted {row_count} synthetic rows into 'versqdmp'")
 
 if __name__ == "__main__":
     conn = psycopg2.connect(

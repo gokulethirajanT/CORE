@@ -11,7 +11,7 @@ def generate_random_date_yyyymmdd(start_year=2019, end_year=2023):
     start = datetime(start_year, 1, 1)
     end = datetime(end_year, 12, 31)
     random_date = start + timedelta(days=random.randint(0, (end - start).days))
-    return int(random_date.strftime('%Y%m%d'))  # ✅ returns 8-digit integer
+    return int(random_date.strftime('%Y%m%d'))  #  returns 8-digit integer
 
 
 def generate_end_date(beginn_yyyymmdd: int) -> int:
@@ -19,10 +19,10 @@ def generate_end_date(beginn_yyyymmdd: int) -> int:
     end_date = beginn_date + timedelta(days=random.randint(0, 30))  # within ~1 month
     return int(end_date.strftime('%Y%m%d'))
 
-def seed_zahnfall_table(conn, row_count=100):
+def seed_zahnfall_table(conn, row_count=1):
     cursor = conn.cursor()
     
-    # 🔁 Fetch required join values from vers
+    #  Fetch required join values from vers
     cursor.execute("""
         SELECT "VSID", "PSID", "BJAHR", "BNR"
         FROM "vers"
@@ -39,7 +39,7 @@ def seed_zahnfall_table(conn, row_count=100):
         key = (vsid, bjahr)
         fallid = fallid_tracker.get(key, 0) + 1
         fallid_tracker[key] = fallid
-        fallid_str = str(fallid)
+        fallid_str = f"{str(bjahr)[-2:]}{vsid % 100000:05d}{fallid % 100:02d}"
 
         zanr_pseudo = random.randint(1, 999)
         zanr_abr_pseudo = random.randint(1, 999)
@@ -73,7 +73,7 @@ def seed_zahnfall_table(conn, row_count=100):
         ))
 
     conn.commit()
-    print(f" Inserted {row_count} synthetic rows into 'zahnfall'")
+    print(f" Inserted {row_count} rows into 'zahnfall'")
 
 if __name__ == "__main__":
     conn = psycopg2.connect(
