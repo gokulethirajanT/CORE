@@ -34,7 +34,7 @@ def generate_ops_lokal():
 
 # ───────────────────── main seeding routine ────────────────────────────────
 
-def seed_ambops_table(conn, row_count: int = 100):
+def seed_ambops_table(conn, row_count: int = 1):
     cur = conn.cursor()
 
     # reference patients (same as DM-3)
@@ -71,7 +71,7 @@ def seed_ambops_table(conn, row_count: int = 100):
         )
 
     conn.commit()
-    print(f"Inserted {row_count} rows into 'ambops'")
+    print(f"Inserted {row_count} synthetic rows into 'ambops'")
 
 # ───────────────────── run directly ─────────────────────────────────────────
 if __name__ == "__main__":

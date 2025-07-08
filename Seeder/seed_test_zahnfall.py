@@ -32,14 +32,29 @@ def seed_zahnfall_table(conn, row_count=1):
     if not vers_rows:
         raise ValueError("No rows found in 'vers'. Cannot seed 'zahnfall'.")
 
-    fallid_tracker = {}
+    # Step 1: Fetch all existing FALLIDZAHN values
+    cursor.execute('SELECT "FALLIDZAHN" FROM "zahnfall";')
+    existing_ids = set(row[0] for row in cursor.fetchall())
+
+    # Step 2: Track counters based on vsid+bjahr to prevent duplicates
+    fallid_counters = {}  # key: (vsid, bjahr) → int
 
     for _ in range(row_count):
         vsid, psid, bjahr, bnr = random.choice(vers_rows)
         key = (vsid, bjahr)
-        fallid = fallid_tracker.get(key, 0) + 1
-        fallid_tracker[key] = fallid
-        fallid_str = f"{str(bjahr)[-2:]}{vsid % 100000:05d}{fallid % 100:02d}"
+
+        if key not in fallid_counters:
+            # Find max fallid so far for this person-year
+            prefix = f"{str(bjahr)[-2:]}{vsid % 100000:05d}"
+            max_suffix = max(
+                [int(fid[-2:]) for fid in existing_ids if fid.startswith(prefix)],
+                default=0
+            )
+            fallid_counters[key] = max_suffix
+
+        fallid_counters[key] += 1
+        fallid_str = f"{str(bjahr)[-2:]}{vsid % 100000:05d}{fallid_counters[key]:02d}"
+
 
         zanr_pseudo = random.randint(1, 999)
         zanr_abr_pseudo = random.randint(1, 999)

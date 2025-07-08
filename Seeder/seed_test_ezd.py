@@ -66,7 +66,7 @@ def seed_ezd_table(conn, rows: int = 100):
         )
 
     conn.commit()
-    print(f"Inserted {rows} rows into 'ezd'.")
+    print(f"Inserted {rows} synthetic rows into 'ezd'.")
 
 # ─────────────── Entrypoint ────────────────
 if __name__ == "__main__":

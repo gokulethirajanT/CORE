@@ -61,7 +61,7 @@ def generate_veranlassstellepseudo() -> str:
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
 
 # ────────────────────── Main Seeding Routine ─────────────────────
-def seed_khfall_table(conn, rows: int = 500):
+def seed_khfall_table(conn, rows: int = 1):
     cur = conn.cursor()
     cur.execute('SELECT "VSID", "PSID", "BJAHR", "BNR" FROM "vers";')
     ref_rows = cur.fetchall()
@@ -70,10 +70,29 @@ def seed_khfall_table(conn, rows: int = 500):
 
     fall_records = []
 
-    for i in range(rows):
+    # Step 1: Get existing FALLIDKHs from database
+    cur.execute('SELECT "FALLIDKH" FROM "khfall";')
+    existing_fallids = set(row[0] for row in cur.fetchall())
+
+    # Step 2: Track the current counter per year
+    fallid_counters = {}  # {bjahr: max_counter_so_far}
+
+    for _ in range(rows):
         vsid, psid, bjahr, bnr = random.choice(ref_rows)
-        fallidkh = f"{bjahr}{i+1:08d}"
+        year_prefix = str(bjahr)
+
+        # Initialize counter for the year based on existing IDs
+        if bjahr not in fallid_counters:
+            fallid_counters[bjahr] = max(
+                [int(fid[4:]) for fid in existing_fallids if fid.startswith(year_prefix)],
+                default=0
+            )
+
+        # Generate next available FALLIDKH
+        fallid_counters[bjahr] += 1
+        fallidkh = f"{year_prefix}{fallid_counters[bjahr]:08d}"
         fall_records.append((vsid, psid, fallidkh, bjahr, bnr))
+
 
         khpseudo = random.randint(10000000, 99999999)
         khklass = random.choice(KHKLASS_POOL)
