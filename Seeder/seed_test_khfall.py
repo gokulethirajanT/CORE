@@ -61,7 +61,7 @@ def generate_veranlassstellepseudo() -> str:
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
 
 # ────────────────────── Main Seeding Routine ─────────────────────
-def seed_khfall_table(conn, rows: int = 1):
+def seed_khfall_table(conn, rows: int = 200):
     cur = conn.cursor()
     cur.execute('SELECT "VSID", "PSID", "BJAHR", "BNR" FROM "vers";')
     ref_rows = cur.fetchall()
@@ -155,6 +155,6 @@ if __name__ == "__main__":
         port="5432",
     )
     try:
-        seed_khfall_table(conn, rows=500)
+        seed_khfall_table(conn, rows=1)
     finally:
         conn.close()
