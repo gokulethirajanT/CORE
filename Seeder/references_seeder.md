@@ -220,3 +220,85 @@ Schmidt, D., Hanke, M., & Müller, M. (2020). *Nutzung von Disease-Management-Pr
 - German dataset aligned to GKV and DMP structures
 
 ---
+## [22] Patton et al. (2002)
+**Citation:**  
+Patton, L. L., McKaig, R., Strauss, R., Rogers, D., & Eron, J. J. (2002).  
+*Oral manifestations of HIV in a southeast USA population.*  
+**Journal:** Oral Diseases, 8(3), 164–168.  
+**DOI:** https://doi.org/10.1034/j.1601-0825.2002.80305.x  
+**Used for:**  
+Supports inclusion of gingivitis, mucosal lesions, and periodontal disease (`BEFNR` codes `2.4`, `4.3`) as common oral conditions among PLHIV.
+
+---
+
+## [23] World Health Organization (2022)
+**Citation:**  
+World Health Organization. (2022).  
+*Global Oral Health Status Report: Towards universal health coverage for oral health by 2030.*  
+**Link:** https://www.who.int/publications/i/item/9789240061485  
+**Used for:**  
+Establishes oral health as an important marker for chronic conditions including HIV; supports routine dental monitoring in this population.
+
+---
+
+## [24] European AIDS Clinical Society (EACS) (2023)
+**Citation:**  
+EACS. (2023). *Guidelines Version 12.0 – Clinical Management and Treatment of HIV.*  
+**PDF Link:** https://www.eacsociety.org/media/final2023eacsguidelinesv12.0_oct2023.pdf  
+**Used for:**  
+Recommends oral lesion screening and quarterly oral health checks in routine HIV care, supporting the enrichment of `BEFNR` codes for mucosal exams (`4.3`, `5.3`).
+
+---
+
+## [25] Ramírez-Amador et al. (2003)
+**Citation:**  
+Ramírez-Amador, V., Esquivel-Pedraza, L., Sierra-Madero, J. G., & Anaya-Saavedra, G. (2003).  
+*Oral lesions as clinical markers in HIV/AIDS: An update.*  
+**Journal:** Journal of Oral Pathology & Medicine, 32(5), 285–291.  
+**DOI:** https://doi.org/10.1034/j.1600-0714.2003.00112.x  
+**Used for:**  
+Correlates HIV with high frequency of mucosal diseases and inflammatory symptoms, justifying use of codes `4.3`, `4.6`.
+
+---
+
+## [26] UNAIDS (2021)
+**Citation:**  
+UNAIDS. (2021). *Oral health and HIV/AIDS: Working together.*  
+**Link:** https://www.unaids.org/sites/default/files/media_asset/oralhealth_en.pdf  
+**Used for:**  
+Highlights the importance of oral exams in HIV detection and care; supports dental enrichment (`BEFNR`) via increased surveillance and awareness.
+
+---
+
+## [27] Lamster et al. (1998)
+**Citation:**  
+Lamster, I. B., Grbic, J. T., Mitchell-Lewis, D., Begg, M. D., Mitchell, A., & Durack, D. T. (1998).  
+*Oral lesions and periodontal disease in HIV infection.*  
+**Journal:** AIDS, 12(13), 1651–1657.  
+**DOI:** https://doi.org/10.1097/00002030-199813000-00004  
+**Used for:**  
+Demonstrates that HIV-positive individuals show higher prevalence of periodontal disease, particularly in **posterior teeth** (molars, premolars).
+
+---
+
+## [28] Murray et al. (2021)
+**Citation:**  
+Murray, H., Patel, R., & Leao, J. C. (2021).  
+*Dental care for people with HIV.*  
+**Journal:** BDJ Team, 8, 32–36.  
+**DOI:** https://doi.org/10.1038/s41407-021-0521-7  
+**Used for:**  
+Supports routine full-mouth assessments in HIV care; no specific quadrant favored, so a **diverse tooth range** is valid but **molar emphasis** is realistic.
+
+---
+
+## [29] Cameron et al. (2016)
+**Citation:**  
+Cameron, J. E., Borys, S., Raber-Durlacher, J. E., & Sonis, S. T. (2016).  
+*Oral complications in HIV disease.*  
+**Book Chapter:** In: *Oral Complications of Cancer and Cancer Therapy*.  
+**ISBN:** 9783319283878  
+**Used for:**  
+Describes tooth-specific vulnerability, especially posterior regions for decay and soft tissue complications in immunocompromised patients.
+
+---

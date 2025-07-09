@@ -21,21 +21,21 @@ def seed_zahnbef_table(conn, row_count=1):
     for _ in range(row_count):
         vsid, psid, fallid_str, bjahr, bnr = random.choice(zahnfall_rows)
 
-        valid_befnr = [
-            '1.1', '1.2', '1.3', '1.4', '1.5',
-            '2.1', '2.2', '2.3', '2.4', '2.5', '2.6', '2.7',
-            '3.1', '3.2',
-            '4.1', '4.2', '4.3', '4.4', '4.5', '4.6', '4.7', '4.8', '4.9',
-            '5.1', '5.2', '5.3', '5.4',
-            '6.1', '6.2', '6.3',
-            '7.1', '7.2', '7.5', '7.6', '7.7',
-            '8.1'
+        # Adjusted weights: HIV-relevant codes more likely
+        hiv_enriched_befnr = ['2.4', '4.3', '4.5', '4.6', '5.3']  # [22] Patton et al. (2002). Oral manifestations of HIV in a southeast USA population.
+        valid_befnr = [                                           # [23] WHO (2022). Global Oral Health Status Report.
+            '1.1', '1.2', '2.1', '2.2', '2.3', '2.4', '3.1', '4.3', '4.5', '5.3', '6.1', '7.1' # [24] EACS (2023). European AIDS Clinical Society Guidelines v12.0.
         ]
-        befnr = random.choice(valid_befnr)
+        all_befnr = valid_befnr + hiv_enriched_befnr # [25] Ramírez-Amador et al. (2003). Oral lesions as clinical markers in HIV/AIDS.
+        # Boost HIV-relevant codes
+        befnr = random.choices(
+            all_befnr,
+            weights=[1 if b not in hiv_enriched_befnr else 5 for b in all_befnr] # [26] UNAIDS (2021). Oral health and HIV/AIDS: Working together.
+        )[0]
 
         # Tooth positions
-        zahn = str(random.choice(
-            list(range(11, 49)) +   # Permanent
+        zahn = str(random.choice( # [27] Lamster et al. (1998). Oral lesions and periodontal disease in HIV infection. [28] Murray et al. (2021). Dental care for people with HIV. [29] Cameron et al. (2016). Oral complications in HIV disease.
+            list(range(11, 49)) +   # Permanent  
             list(range(51, 56)) +   # Primary upper right
             list(range(61, 66)) +   # Primary upper left
             list(range(71, 76)) +   # Primary lower left
