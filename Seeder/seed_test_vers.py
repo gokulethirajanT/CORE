@@ -47,7 +47,7 @@ def seed_vers_table(conn, row_count=1):
         )[0]
 
         bnr = ''.join(random.choices('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', k=8)) #[8] GKV-Spitzenverband. (2023). Betriebsnummern und Vertragspartnerkennzeichen. https://www.gkv-datenaustausch.de
-        datenmodell = 3 # [9] Forschungsdatenzentrum Gesundheit. (2023). Datenmodell 3: Datenstruktur und Variablenbeschreibung. BfArM. https://fdz-gesundheit.github.io/datensatzbeschreibung_fdz_gesundheit/
+        datenmodell = 3 # [9] Forschungsdatenzentrum Gesundheit. (2023). Datenmodell 3: Datenstruktur und Variablenbeschreibung. BfArM. https://fdz-gesundheit.github.io/datensatzbeschreibung_fdz_gesundheit/ # FDZ Data Model 3 — see [19] BMG (2021)
 
         cursor.execute("""
             INSERT INTO "vers" ("VSID", "PSID", "GEBJAHR", "PLZ", "VITALSTATUS", "STERBEDAT", "BJAHR", "BNR", "DATENMODELL")

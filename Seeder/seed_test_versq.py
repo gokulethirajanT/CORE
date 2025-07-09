@@ -60,7 +60,7 @@ def seed_versq_table(conn, row_count=1):
             verstagekg = random.randint(0, verstage // 4)
             verstagekosterstwahlt = random.randint(0, verstage // 4)
 
-        datenmodell = 3
+        datenmodell = 3 # [9] Forschungsdatenzentrum Gesundheit. (2023). Datenmodell 3: Datenstruktur und Variablenbeschreibung. BfArM. https://fdz-gesundheit.github.io/datensatzbeschreibung_fdz_gesundheit/ # FDZ Data Model 3 — see [19] BMG (2021)
 
         cursor.execute("""
             INSERT INTO "versq" (

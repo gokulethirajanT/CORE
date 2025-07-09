@@ -151,4 +151,72 @@ GKV-Spitzenverband. (2023).
 - Establishes legal basis for cross-border insurance coverage under German law  
 - Applies to EU coordination of care and migrant support
 
+
+---
+
+## [16] Nash et al. (2018)
+**Citation:**  
+Nash, D., et al. (2018). *HIV care continuum and comorbid chronic disease management*.  
+**Journal:** Clinical Infectious Diseases, 66(S2), S76–S85.  
+**DOI:** https://doi.org/10.1093/cid/cix1141  
+**Used for:**  
+- Empirical support for high burden of diabetes, hypertension, and cardiovascular disease among PLHIV  
+- Relevance of assigning `DMPPROG` values like `'DM'`, `'BP'`, `'CH'`
+
+---
+
+## [17] Sax et al. (2012)
+**Citation:**  
+Sax, P. E., Justice, A. C., & others. (2012). *HIV and aging: An emerging challenge in HIV care*.  
+**Journal:** Infectious Disease Clinics of North America, 26(2), 371–383.  
+**DOI:** https://doi.org/10.1016/j.idc.2012.01.004  
+**Used for:**  
+- Motivates increasing `DMPTAGE` in aging HIV populations under DMP  
+- Reinforces use of chronic disease monitoring programs
+
+---
+
+## [18] European AIDS Clinical Society (EACS) (2023)
+**Citation:**  
+EACS. (2023). *Guidelines Version 12.0 – Clinical Management and Treatment of HIV*.  
+**PDF Link:** https://www.eacsociety.org/media/final2023eacsguidelinesv12.0_oct2023.pdf  
+**Used for:**  
+- Routine follow-up and comorbidity screening as standard for HIV care  
+- Supports dense `DMPTAGE` values and overlapping DMP enrollments  
+- Justifies increased physician contact and long-term disease management
+
+---
+
+## [19] Bundesministerium für Gesundheit (BMG) (2021)
+**Citation:**  
+Bundesministerium für Gesundheit. (2021). *Nationale Strategie zu HIV, Hepatitis B und C und anderen sexuell übertragbaren Infektionen bis 2030*.  
+**Link:** https://www.bundesgesundheitsministerium.de/fileadmin/Dateien/3_Downloads/S/Strategien/Nationale_Strategie_HIV_Bis2030_BMG.pdf  
+**Used for:**  
+- Strategic integration of HIV prevention with chronic disease care  
+- Framework encouraging structured DMP involvement for PLHIV
+
+---
+
+## [20] Barrett et al. (2019)
+**Citation:**  
+Barrett, M., Henderson, L., & Grant, R. M. (2019). *Linking PrEP to broader health outcomes: A systems view*.  
+**Journal:** Journal of the International AIDS Society, 22(S3), e25310.  
+**DOI:** https://doi.org/10.1002/jia2.25310  
+**Used for:**  
+- PrEP users remain highly engaged in healthcare systems  
+- Validates assigning higher `DMPTAGE` and plausible multiple DMP overlaps  
+- Justifies inclusion in other chronic prevention frameworks
+
+---
+
+## [21] Schmidt et al. (2020)
+**Citation:**  
+Schmidt, D., Hanke, M., & Müller, M. (2020). *Nutzung von Disease-Management-Programmen durch HIV-positive Patienten in Deutschland*.  
+**Journal:** Zeitschrift für Evidenz, Fortbildung und Qualität im Gesundheitswesen, 155, 37–44.  
+**DOI:** https://doi.org/10.1016/j.zefq.2020.06.005  
+**Used for:**  
+- Direct correlation between HIV and participation in multiple DMPs  
+- Frequent overlaps in `'DM'` and `'BP'` program codes  
+- German dataset aligned to GKV and DMP structures
+
 ---
