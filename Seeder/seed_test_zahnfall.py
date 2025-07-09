@@ -13,7 +13,6 @@ def generate_random_date_yyyymmdd(start_year=2019, end_year=2023):
     random_date = start + timedelta(days=random.randint(0, (end - start).days))
     return int(random_date.strftime('%Y%m%d'))  #  returns 8-digit integer
 
-
 def generate_end_date(beginn_yyyymmdd: int) -> int:
     beginn_date = datetime.strptime(str(beginn_yyyymmdd), "%Y%m%d")
     end_date = beginn_date + timedelta(days=random.randint(0, 30))  # within ~1 month
@@ -58,15 +57,23 @@ def seed_zahnfall_table(conn, row_count=1):
 
         zanr_pseudo = random.randint(1, 999)
         zanr_abr_pseudo = random.randint(1, 999)
-        zakzv = random.choice([None] + list(range(1, 100)))  # includes NULL and valid values 1–99
+        zakzv = random.choices( # [30] Lodi et al. (2014)
+            population=[None] + list(range(1, 100)),
+            weights=[1] + [5] * 99,  # NULL has low weight, valid values favored
+            k=1
+        )[0]
 
-        behandart = random.choice(['KC', 'KB', 'KF', 'PA', 'ZE'])
-
+        
+        behandart = random.choices( # [30] Lodi et al. (2014) – Enrichment for PA and ZE due to HIV-associated dental risks
+            population=['KC', 'KB', 'KF', 'PA', 'ZE'],
+            weights=[1, 1, 1, 4, 4],  # PA and ZE favored
+            k=1
+        )[0]
 
         beginn = generate_random_date_yyyymmdd()
         ende = generate_end_date(beginn)
 
-        fallkost = round(random.uniform(100.00, 9000.00), 2)
+        fallkost = round(random.uniform(300.00, 12000.00), 2)
         eigenlabor = round(random.uniform(0.00, 1.2 * fallkost), 2)
         # Fremdlabor: realistic range between 0 and 80% of fall cost
         fremdlabor = round(random.uniform(0.00, 0.8 * fallkost), 2)

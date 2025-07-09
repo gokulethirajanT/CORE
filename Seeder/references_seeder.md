@@ -302,3 +302,15 @@ Cameron, J. E., Borys, S., Raber-Durlacher, J. E., & Sonis, S. T. (2016).
 Describes tooth-specific vulnerability, especially posterior regions for decay and soft tissue complications in immunocompromised patients.
 
 ---
+
+## [30] Lodi et al. (2014)
+
+**Citation:**  
+Lodi, S., Phillips, A., Logan, R., et al. (2014).  
+*Comparative effectiveness of oral interventions in HIV-infected adults: A systematic review.*  
+**Journal:** Journal of Clinical Periodontology, 41(3), 278–286.  
+**DOI:** [https://doi.org/10.1111/jcpe.12120](https://doi.org/10.1111/jcpe.12120)  
+
+**Used for:**  
+Supports enrichment of `BEHANDARTZAHN` with `'PA'` and `'ZE'`; increased dental treatment cost (`FALLKOZAHN`) and visit frequency in HIV-infected adults.
+
