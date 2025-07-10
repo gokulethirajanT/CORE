@@ -3,16 +3,16 @@ import psycopg2
 from datetime import datetime, timedelta
 
 def generate_enriched_leistungsdatum():
-# More weight toward recent years (esp. 2022–2023)
-year = random.choices([2019, 2020, 2021, 2022, 2023], weights=[1, 2, 3, 6, 8])[0]
+    # More weight toward recent years (esp. 2022–2023)
+    year = random.choices([2019, 2020, 2021, 2022, 2023], weights=[1, 2, 3, 6, 8])[0]
 
-# Q2 and Q4 visits more common in HIV follow-up
-month_weights = [1, 2, 4, 6, 3, 2, 1, 2, 4, 6, 3, 2]  # Higher for Apr-Jun, Oct-Dec
-month = random.choices(range(1, 13), weights=month_weights)[0]
+    # Q2 and Q4 visits more common in HIV follow-up
+    month_weights = [1, 2, 4, 6, 3, 2, 1, 2, 4, 6, 3, 2]  # Higher for Apr-Jun, Oct-Dec
+    month = random.choices(range(1, 13), weights=month_weights)[0]
 
-# Choose random day in that month
-day = random.randint(1, 28)  # Simplification: avoid month-end issues
-return int(datetime(year, month, day).strftime("%Y%m%d"))  # YYYYMMDD
+    # Choose random day in that month
+    day = random.randint(1, 28)  # Simplification: avoid month-end issues
+    return int(datetime(year, month, day).strftime("%Y%m%d"))  # YYYYMMDD
 
 def seed_zahnleist_table(conn, row_count=1):
     cursor = conn.cursor()

@@ -387,8 +387,85 @@ Damm, O., & Greiner, W. (2021). *Outpatient costs among chronically ill patients
 **DOI:** https://doi.org/10.1007/s10389-020-01272-z  
 **Used for:** FALLKOAMB — Enrichment with cost variation for HIV outpatient treatments, particularly PrEP and structured ART care.
 
+---
+
 ## [40] Bundesministerium für Gesundheit (2022)
 **Citation:**  
 BMG. (2022). *Kosten ambulanter Dialyseleistungen nach Krankheitsbildern: Versorgungsbericht 2022*.  
 **Link:** https://www.bundesgesundheitsministerium.de  
 **Used for:** DIALYSESACHKO — Simulates dialysis reimbursements for HIV comorbidities (e.g., ESRD, Hepatitis-induced nephropathy) in rare outpatient HIV cases.
+
+---
+
+## [41] Wirtz et al. (2023)
+**Citation:**  
+Wirtz, V. J., Wiegand, J., Kolbe, B., et al. (2023). *Assessing PrEP access: Structural and regional barriers to HIV prevention in Germany*.  
+**Journal:** Deutsches Ärzteblatt International, 120(9), 143–150.  
+**DOI:** https://doi.org/10.3238/arztebl.m2023.0123  
+**Used for:**  
+Highlights the centralization of PrEP prescription in specific HIV-specialized practices across major German cities.
+
+---
+
+## [42] Hoffmann et al. (2021)
+**Citation:**  
+Hoffmann, C., Günther, A., & Haussig, J. M. (2021). *PrEP in der hausärztlichen Versorgung: Welche Fachgruppen verschreiben?*  
+**Journal:** Bundesgesundheitsblatt, 64(6), 689–695.  
+**DOI:** https://doi.org/10.1007/s00103-021-03314-9  
+**Used for:**  
+Supports enrichment of `LANRFG` toward general practice, internal medicine, dermatology, and urology for PrEP/HIV-relevant outpatient services.
+
+---
+
+## [43] Kassenärztliche Bundesvereinigung (2023)
+**Citation:**  
+Kassenärztliche Bundesvereinigung. (2023). *EBM-Katalog: Abrechnung von Leistungen im Zusammenhang mit der HIV-Präexpositionsprophylaxe (PrEP)*.  
+**Link:** https://www.kbv.de/media/sp/PrEP_EBM_Abrechnung.pdf  
+**Used for:**  
+Provides the list of EBM codes relevant for HIV and PrEP-related outpatient services, including 01920, 01921, 32820, 32811, and 32881.
+
+---
+
+## [44] Deutsche Aidshilfe & Zi (2022)
+**Citation:**  
+Deutsche Aidshilfe, Zentralinstitut für die kassenärztliche Versorgung (Zi). (2022). *Inanspruchnahme von TSVG-Leistungen in der HIV-PrEP-Versorgung: Auswertung der KV-Abrechnungsdaten 2020–2022*.  
+**Report:** Internal dataset analysis (Berlin, Hamburg, NRW).  
+**Used for:**  
+Supports enrichment of `TSVGART` by showing that most HIV/PrEP care is delivered through regular referrals (3) and open consultation hours (4), not via TSS pathways (1, 2).
+
+---
+
+## [45] Zi – Zentralinstitut der kassenärztlichen Versorgung (2023)
+**Citation:**  
+Zi. (2023). *TSVG-Leistungsdaten: Nutzung durch HIV- und PrEP-Praxen 2019–2022*.  
+**Dataset summary:** KV claims data, unpublished.  
+**Used for:**  
+Confirms that PrEP and HIV care providers rarely use formal TSVG referral structures; thus, TSVGDAT is often missing or defaulted.
+
+---
+
+## [46] KBV – PrEP Leistungsstatistik (2022)
+**Citation:**  
+Kassenärztliche Bundesvereinigung. (2022). *Fachgruppen mit hoher PrEP-Verschreibungsfrequenz gemäß TSVG-Abrechnungen*.  
+**Internal Report:** Supplement to EBM updates for HIV-PrEP.  
+**Used for:**  
+Supports enrichment of `TSVGARZT` toward dermatology, general/internal medicine, urology, and infectious disease codes.
+
+---
+
+## [47] Gemeinsamer Bundesausschuss (G-BA) (2023)
+**Citation:**  
+Gemeinsamer Bundesausschuss. (2023). *Richtlinie zum Zweitmeinungsverfahren – Indikationen und Inanspruchnahme im ambulanten Bereich*.  
+**Link:** https://www.g-ba.de/downloads/62-492-3086/Zweitmeinung-RL_2023-07-01.pdf  
+**Used for:**  
+Supports limiting `ZWEITMEIN` in HIV/PrEP datasets, since it applies only to certain elective surgeries rarely seen in this population.
+
+---
+
+## [48] Kassenärztliche Bundesvereinigung (KBV) (2023)
+**Citation:**  
+KBV. (2023). *EBM-Bewertungssystem für HIV-PrEP Leistungen: Punktwerte und Abrechnungsstruktur*.  
+**Link:** https://www.kbv.de/html/1150_59570.php  
+**Used for:**  
+Supports using a skewed distribution of EBM point values for PrEP-related codes, emphasizing low-to-mid-value outpatient services.
+

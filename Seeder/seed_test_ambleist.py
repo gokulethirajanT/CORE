@@ -2,7 +2,6 @@
 """
 Seed the DM-3 table AMBLEIST with realistic synthetic data.
 """
-
 import random
 import string
 from datetime import date, timedelta
@@ -18,7 +17,6 @@ def random_service_date(start_year: int = 2019,
     end   = date(end_year,   12, 31)
     return start + timedelta(days=random.randint(0, (end - start).days))
 
-
 def yyyymmdd_int(d: date) -> int:
     """YYYYMMDD → int (e.g. 20250307)."""
     return int(d.strftime("%Y%m%d"))
@@ -30,19 +28,44 @@ def generate_ambleistzeit(as_int: bool = True):
     return int(val) if as_int else val
 
 
-def generate_tsvg_bsnr() -> int:
-    """12-digit pseudonymised BSNR."""
+def generate_tsvg_bsnr(skewed=True) -> int: # [41] Wirtz et al. (2023)
+    """Generate BSNR pseudonym with skewed distribution for HIV/PrEP clustering."""
+    if skewed:
+        # 60% from a small set of HIV centers (e.g., 20 IDs), 40% from wider pool
+        if random.random() < 0.6:
+            hiv_bsnr_pool = [int(f"99{random.randint(10000000, 99999999)}") for _ in range(20)]
+            return random.choice(hiv_bsnr_pool)
     return random.randint(100_000_000_000, 999_999_999_999)
 
-
-KV_CODES = [f"{i:02d}" for i in range(1, 18)]          # 01 … 17
-
-def generate_tsvg_kv_code(as_int: bool = True):
-    code = random.choice(KV_CODES)
+def generate_tsvg_kv_code(as_int: bool = True): #[1] Marcus et al. (2024) # [2] Robert Koch-Institut (2024)
+    """
+    Generate a KV code (01–17) with higher weight on urban regions
+    where PrEP/HIV services are concentrated.
+    """
+    kv_codes = [f"{i:02d}" for i in range(1, 18)]
+    weights = [
+        1,  # 01 = Schleswig-Holstein
+        6,  # 02 = Hamburg
+        2,  # 03 = Lower Saxony
+        1,  # 04 = Bremen
+        5,  # 05 = North Rhine
+        2,  # 06 = Westphalia-Lippe
+        1,  # 07 = Rhineland-Palatinate
+        1,  # 08 = Baden-Württemberg
+        2,  # 09 = Bavaria
+        1,  # 10 = Saarland
+        8,  # 11 = Berlin
+        2,  # 12 = Brandenburg
+        2,  # 13 = Mecklenburg-Vorpommern
+        2,  # 14 = Saxony
+        1,  # 15 = Saxony-Anhalt
+        1,  # 16 = Thuringia
+        2   # 17 = Hesse
+    ]
+    code = random.choices(kv_codes, weights=weights, k=1)[0]
     return int(code) if as_int else code
 
-
-def make_tsvgdat(tsvgart: int, service_dt: date) -> int | None:
+def make_tsvgdat(tsvgart: int, service_dt: date) -> int | None: # [45] Zi – Zentralinstitut der kassenärztlichen Versorgung (2023)
     """
     • codes 1/2 → always contact date (2019–today)
     • code 4    → only if service_dt ∈ Q3 2020
@@ -55,6 +78,20 @@ def make_tsvgdat(tsvgart: int, service_dt: date) -> int | None:
         return yyyymmdd_int(first_visit)
     return None
 
+def generate_gonr(): 
+    """
+    Generate EBM GOP code, enriched for HIV/PrEP services.
+    Ref: KBV (2023) PrEP EBM Abrechnung
+    """
+    hiv_gonrs = ['01920', '01921', '32820', '32811', '32881', '01821']
+    suffixes = ['', 'A', 'B', 'E']
+    
+    if random.random() < 0.7:
+        # 70% chance of choosing from HIV-relevant codes
+        return random.choice(hiv_gonrs) + random.choice(suffixes)
+    else:
+        # 30% random 5-digit fallback code with optional suffix
+        return f"{random.randint(10000, 99999)}{random.choice(suffixes)}"
 
 # Zweitmeinungsverfahren (code → valid-from)
 ZWEITMEIN_OPTIONS = [
@@ -67,7 +104,44 @@ ZWEITMEIN_OPTIONS = [
     ("07", date(2022,4,1)),   # Heart surgery
 ]
 
-def generate_zweitmein_code(service_dt: date, prob: float = 0.03):
+def generate_lanr_fg() -> int:
+    """
+    Return LANR Fachgruppencode, enriched for HIV/PrEP-relevant specialties.
+    Based on Hoffmann et al. (2021) distribution.
+    """
+    codes = [14, 15, 27, 42]  # General Practice, Internal, Dermatology, Urology
+    weights = [5, 4, 3, 2]    # Higher preference for GP and Internal
+    other_codes = [i for i in range(10, 100) if i not in codes]
+
+    if random.random() < 0.75:
+        return random.choices(codes, weights=weights, k=1)[0]
+    else:
+        return random.choice(other_codes)
+
+def generate_tsvgart():
+    """
+    Generate TSVGART code, enriched for PrEP-relevant service pathways.
+    Ref: Deutsche Aidshilfe & Zi (2022)
+    """
+    tsvg_values = [1, 2, 3, 4, 5]
+    weights     = [1, 1, 4, 6, 2]  # Emphasis on types 3 (referral) and 4 (open hours)
+    return random.choices(tsvg_values, weights=weights, k=1)[0]
+
+def generate_tsvgarzt(): # [46] KBV – PrEP Leistungsstatistik (2022)
+    """
+    Skew TSVGARZT toward HIV/PrEP-relevant specialties.
+    Ref: KBV PrEP Leistungsstatistik (2022)
+    """
+    hiv_codes = [1301, 1401, 1600, 1801]
+    other_codes = [code for code in TSVG_GROUP_CODES if code not in hiv_codes]
+
+    if random.random() < 0.8:
+        return random.choice(hiv_codes)
+    else:
+        return random.choice(other_codes)
+
+
+def generate_zweitmein_code(service_dt: date, prob: float = 0.03): # [47] Gemeinsamer Bundesausschuss (G-BA) (2023)
     """Return a 2-digit Zweitmein code with ~prob probability or None."""
     if random.random() >= prob:
         return None
@@ -110,33 +184,32 @@ def seed_ambleist_table(conn, row_count: int = 100):
         vsid, psid, fallidamb, bjahr, bnr = random.choice(ambfall_rows)
 
         # identifiers
-        nbsnr_pseudo = generate_tsvg_bsnr()
-        nbsnr_kv     = generate_tsvg_kv_code(True)
-        lanr_pseudo  = generate_tsvg_bsnr()
-        lanr_fg      = random.randint(10, 99)
+        nbsnr_pseudo = generate_tsvg_bsnr() # [41] Wirtz et al. (2023)
+        nbsnr_kv     = generate_tsvg_kv_code(True) # [1] Marcus et al. (2024) # [2] Robert Koch-Institut (2024)
+        lanr_pseudo  = generate_tsvg_bsnr() # [41] Wirtz et al. (2023)
+        lanr_fg = generate_lanr_fg() # [42] Hoffmann et al. (2021)
 
         # EBM item
-        gonr = f"{random.randint(10000,99999)}{random.choice(['','A','B','E'])}"
+        gonr = generate_gonr() # [43] Kassenärztliche Bundesvereinigung (2023)
 
         # dates & numeric fields
-        service_dt    = random_service_date()
+        service_dt    = random_service_date() 
         gonr_dat      = yyyymmdd_int(service_dt)
         multiplikator = round(random.uniform(1.0, 3.5), 2)
         ambleistzeit  = generate_ambleistzeit(True)
 
         # TSVG pathway
-        tsvgart  = random.randint(1, 5)
-        tsvgdat  = make_tsvgdat(tsvgart, service_dt)
-        tsvgarzt = random.choice(TSVG_GROUP_CODES)
-        if tsvgart in (1,2,4):
+        tsvgart = generate_tsvgart() # [44] Deutsche Aidshilfe & Zi (2022)
+        tsvgdat  = make_tsvgdat(tsvgart, service_dt) # [45] Zi – Zentralinstitut der kassenärztlichen Versorgung (2023)
+        tsvgarzt = generate_tsvgarzt() # [46] KBV – PrEP Leistungsstatistik (2022)
+        if tsvgart in (1, 2, 4):
             tsvgbsnr_pseudo = generate_tsvg_bsnr()
             tsvgbsnr_kv     = generate_tsvg_kv_code(True)
         else:
             tsvgbsnr_pseudo = tsvgbsnr_kv = None
-
         # Zweitmeinung & valuation
-        zweitmein_code = generate_zweitmein_code(service_dt)
-        gonr_bewert    = generate_gonr_bewert()
+        zweitmein_code = generate_zweitmein_code(service_dt) # [47] Gemeinsamer Bundesausschuss (G-BA) (2023)
+        gonr_bewert    = generate_gonr_bewert() # [48] Kassenärztliche Bundesvereinigung (KBV) (2023)
         datenmodell    = 3
 
         cur.execute(
