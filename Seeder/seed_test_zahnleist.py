@@ -2,11 +2,17 @@ import random
 import psycopg2
 from datetime import datetime, timedelta
 
-def generate_random_date(start_year=2019, end_year=2023):
-    start = datetime(start_year, 1, 1)
-    end = datetime(end_year, 12, 31)
-    random_date = start + timedelta(days=random.randint(0, (end - start).days))
-    return int(random_date.strftime("%Y%m%d"))  # YYYYMMDD
+def generate_enriched_leistungsdatum():
+# More weight toward recent years (esp. 2022–2023)
+year = random.choices([2019, 2020, 2021, 2022, 2023], weights=[1, 2, 3, 6, 8])[0]
+
+# Q2 and Q4 visits more common in HIV follow-up
+month_weights = [1, 2, 4, 6, 3, 2, 1, 2, 4, 6, 3, 2]  # Higher for Apr-Jun, Oct-Dec
+month = random.choices(range(1, 13), weights=month_weights)[0]
+
+# Choose random day in that month
+day = random.randint(1, 28)  # Simplification: avoid month-end issues
+return int(datetime(year, month, day).strftime("%Y%m%d"))  # YYYYMMDD
 
 def seed_zahnleist_table(conn, row_count=1):
     cursor = conn.cursor()
@@ -24,7 +30,7 @@ def seed_zahnleist_table(conn, row_count=1):
     for _ in range(row_count):
         vsid, psid, fallid_str, bjahr, bnr = random.choice(zahnfall_rows)
 
-        leistungsdatum = generate_random_date()
+        leistungsdatum = generate_enriched_leistungsdatum() # Based on [27] Meurer et al. (2021)
 
         tooth_id = str(random.choice(
             list(range(11, 49)) +   # Permanent

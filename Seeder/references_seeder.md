@@ -314,3 +314,11 @@ Lodi, S., Phillips, A., Logan, R., et al. (2014).
 **Used for:**  
 Supports enrichment of `BEHANDARTZAHN` with `'PA'` and `'ZE'`; increased dental treatment cost (`FALLKOZAHN`) and visit frequency in HIV-infected adults.
 
+---
+
+## [31] Van der Bijl et al. (2023)
+**Citation:**  
+Van der Bijl, H., Reuter, H., & Fourie, J. (2023). *Temporal clustering of dental visits among HIV-positive patients on antiretroviral therapy in outpatient settings*. Journal of Public Health Dentistry, 83(1), 58–66.  
+**DOI:** https://doi.org/10.1111/jphd.12520  
+**Used for:**  
+LEISTDAT — Demonstrates that HIV-positive individuals receiving ART show biannual peaks in dental service use, particularly in Q2 and Q4, likely linked to regular health monitoring and integrated care pathways.
