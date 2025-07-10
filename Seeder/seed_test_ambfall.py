@@ -10,21 +10,52 @@ def generate_random_date_int(start_year=2019, end_year=2023):
     return int((start + timedelta(days=random.randint(0, (end - start).days))).strftime('%Y%m%d'))
 
 def generate_punktzahl():
-    # Fit within observed FDZ test dataset distribution
-    value = random.gauss(mu=440, sigma=150)
-    value = max(4.4, min(value, 900))  # match min/max bounds
+    # Tiered random generation for HIV outpatient billing
+    category = random.choices(
+        ['low', 'medium', 'high'],
+        weights=[1, 3, 2]  # Most PrEP visits fall into medium–high zone
+    )[0]
+
+    if category == 'low':
+        value = random.uniform(50, 200)
+    elif category == 'medium':
+        value = random.gauss(440, 80)
+    else:  # high
+        value = random.gauss(700, 100)
+
+    value = max(4.4, min(value, 900))  # Clamp to FDZ bounds
     return round(value, 1)
 
-def generate_fallkoamb():
-    # Simulate skewed outpatient cost range, center around ~3000 EUR
-    value = random.gauss(mu=4000, sigma=3000)
-    value = max(50.0, min(value, 25000.0))  # Clamp between 50–25,000 EUR
+
+def generate_fallkoamb(): 
+    category = random.choices(
+        ['low', 'medium', 'high', 'very_high'], # [39] Damm et al. (2021)
+        weights=[1, 5, 3, 1]
+    )[0]
+
+    if category == 'low':
+        value = random.uniform(50, 500)  # Simple test visit
+    elif category == 'medium':
+        value = random.gauss(3000, 500)  # Typical PrEP or HIV outpatient care
+    elif category == 'high':
+        value = random.gauss(7000, 1000)  # Bundled lab + multiple consults
+    else:  # very high
+        value = random.gauss(15000, 3000)  # Rare but possible high complexity
+
+    value = max(50.0, min(value, 25000.0))
     return round(value, 2)
 
-def generate_dialyse_cost():
-    value = random.gauss(mu=95000000, sigma=7000000)  # Mean ~95M EUR
-    value = max(80000000, min(value, 110000000))       # Clamp to 80M–110M EUR
-    return round(value, 2)
+def generate_dialyse_cost(): # [40] Bundesministerium für Gesundheit (2022)
+    # Simulate dialysis Sachkosten only in rare HIV comorbid cases
+    include_dialysis = random.choices([True, False], weights=[2, 98])[0]
+
+    if include_dialysis:
+        value = random.gauss(mu=30000, sigma=10000)  # Typical range €20k–40k
+        value = max(5000, min(value, 60000))          # Clamp to real-world costs
+        return round(value, 2)
+    else:
+        return 0.0  # No dialysis billed in majority of cases
+
 
 def seed_ambfall_table(conn, row_count=1):
     cursor = conn.cursor()
@@ -47,20 +78,23 @@ def seed_ambfall_table(conn, row_count=1):
         abrq = int(f"{year}{quarter}")            # Combine as YYYYQ
 
         svnr = ''.join(random.choices(string.ascii_uppercase + string.digits, k=11)) # https://www.bundesgesundheitsministerium.de/service/begriffe-von-a-z/s/selektivvertrag.html
-        svtyp = random.choice([1, 2])  
+        svtyp = random.choices([1, 2], weights=[2, 5])[0] # [32] German Federal Ministry of Health (2020)
         bsnrpseudo = random.randint(1, 9999)
-        bsnrkv = random.randint(1, 99)
+        bsnrkv = random.choices([1, 2, 3, 6, 8, 9], weights=[5, 4, 3, 3, 2, 3])[0] #[33] Brauner et al. (2021)
         bsnruebpseudo = random.randint(100, 999)
-        bsnruebkv = random.randint(1, 99)
+        bsnruebkv = random.choices([1, 2, 3, 5, 6, 8, 9, 11], weights=[5, 4, 3, 1, 2, 2, 3, 1])[0] #[34] European Centre for Disease Prevention and Control (2023)
         lanruebpseudo = random.randint(100000000000, 999999999999)  # 12-digit pseudonym
-        lanruebfg = random.randint(1, 99)
-        inansprartamb = random.choice(['0', 'O', 'V', 'N', 'Z', 'K', 'M', '7', '8'])
-        unfall = random.choice([0, 2, 3])
-        behandartamb = random.choice([1, 2]) # 1 = unspecified treatment type A, 2 = treatment type B
-        entbindungsdat = generate_random_date_int()
-        punktzahl = generate_punktzahl()
-        fallkoamb = generate_fallkoamb()
-        dialysesachko = generate_dialyse_cost()
+        lanruebfg = random.choices([1, 5, 7, 13, 17, 23, 40], weights=[6, 4, 3, 3, 2, 2, 1])[0] # [35] Oppong et al. (2019)
+        inansprartamb = random.choices(
+            ['O', 'V', 'K', 'M', 'Z', '7', '8', '0', 'N'], # [36] Reuter et al. (2023)
+            weights=[4, 4, 3, 3, 2, 1, 1, 1, 1]
+        )[0]
+        unfall = random.choices([0, 2], weights=[98, 2])[0] # [37] Burch et al. (2020)
+        behandartamb = random.choices([1, 2], weights=[3, 7])[0] # 1 = unspecified treatment type A, 2 = treatment type B
+        entbindungsdat = generate_random_date_int() # [3] Marcus et al. (2023)
+        punktzahl = generate_punktzahl() # [38] PrEP Monitoring Team, BZgA (2023)
+        fallkoamb = generate_fallkoamb() # [39] Damm et al. (2021)
+        dialysesachko = generate_dialyse_cost() # [40] Bundesministerium für Gesundheit (2022)
         beginndatamb = generate_random_date_int()
         endedatamb = generate_random_date_int()
         if endedatamb < beginndatamb:
