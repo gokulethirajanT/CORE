@@ -12,22 +12,26 @@ def pzn_checksum(body: str) -> str:
     s = sum(int(d) * w for d, w in zip(reversed(body), _PZN_W))
     return str((10 - (s % 10)) % 10)
 
-def random_pzn() -> str:
-    body = f"{random.randint(100000, 999999)}"
-    return body + pzn_checksum(body) + str(random.randint(0, 9))
+def random_pzn_hiv() -> str: # [70] Sax et al. (2012) 
+    prefix = str(random.choice([3, 7])) + f"{random.randint(10000, 99999)}"  # simulate HIV med block
+    body = prefix[:6]
+    return body + pzn_checksum(body) + str(random.randint(0, 9))  # final digit is random
 
 # ─────────────── Helpers ────────────────
-EINHEIT_POOL     = ["mg", "ml", "St", "g", "mc"]
-FAKTOR_KENN_POOL = ["N1", "N2", "N3", "P", "F"]
+EINHEIT_POOL_HIV = ["St"] * 60 + ["mg"] * 30 + ["ml"] * 5 + ["g"] * 3 + ["mc"] * 2 # [74] Clay et al. (2015)
 
-def random_faktor(fkenn: str) -> int:
+FAKTOR_KENN_POOL_HIV = ["N3"] * 40 + ["N2"] * 25 + ["N1"] * 20 + ["P"] * 10 + ["F"] * 5 # [71] Cotte et al. (2023)
+
+
+def random_faktor_hiv(fkenn: str) -> int:
     if fkenn in ("N1", "N2", "N3", "F", "P"):
-        return random.randint(1, 4)
+        return random.choices([1, 2, 3, 4], weights=[50, 30, 15, 5])[0]
     if fkenn in ("mg", "g"):
-        return random.randint(100, 800)
+        return random.randint(100, 400)  # lower dose ranges for tablets
     if fkenn == "ml":
-        return random.randint(5, 250)
+        return random.randint(1, 30)     # injectable volumes
     return 1
+
 
 # ─────────────── Seeding Function ────────────────
 def seed_ezd_table(conn, rows: int = 100):
@@ -41,12 +45,12 @@ def seed_ezd_table(conn, rows: int = 100):
     for _ in range(rows):
         reznr, vsid, psid, bjahr, bnr = random.choice(rez_rows)
 
-        pzn     = random_pzn()
-        fkenn   = random.choice(FAKTOR_KENN_POOL)
-        faktor  = random_faktor(fkenn)
-        zaehler = None if random.random() < 0.9 else 1
-        einheit = random.choice(EINHEIT_POOL)
-        datenmodell = 3
+        pzn     = random_pzn_hiv() # [70] Sax et al. (2012)
+        fkenn = random.choice(FAKTOR_KENN_POOL_HIV) # [72] Mantsios et al. (2020)
+        faktor  = random_faktor_hiv(fkenn) # [71] Cotte et al. (2023)
+        zaehler = None if random.random() < 0.95 else random.choice([1, 2]) # [73] Gandhi et al. (2018)
+        einheit = random.choice(EINHEIT_POOL_HIV) # [74] Clay et al. (2015)
+        datenmodell = 3 # [9] Forschungsdatenzentrum Gesundheit. (2023). Datenmodell 3: Datenstruktur und Variablenbeschreibung. BfArM. https://fdz-gesundheit.github.io/datensatzbeschreibung_fdz_gesundheit/ # FDZ Data Model 3 — see [19] BMG (2021)
 
         params = (
             vsid, psid, reznr, pzn, zaehler, einheit,

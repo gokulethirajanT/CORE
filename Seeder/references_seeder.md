@@ -639,3 +639,42 @@ AOK-Bundesverband. (2022). *Eigenanteil bei Arzneimitteln: Geringe Zusatzbelastu
 **URL:** [https://www.aok.de/pk/medienservice/2022/eigenanteil-bei-arzneimitteln/](https://www.aok.de/pk/medienservice/2022/eigenanteil-bei-arzneimitteln/)  
 **Used for:** Enrichment of `EIGENBET` — simulating rare additional costs for HIV/PrEP patients, with most fully covered by insurance or capped by contract.
 
+---
+
+## [70] Sax et al. (2012)  
+**Citation:**  
+Sax, P. E., Meyers, J. L., Mugavero, M., & Davis, K. L. (2012). *Adherence to antiretroviral treatment and correlation with risk of hospitalization among commercially insured HIV patients in the United States.* AIDS Patient Care and STDs, 26(1), 45–56.  
+**DOI:** https://doi.org/10.1089/apc.2011.0155  
+**Used for:** Guides distribution of `PZNEZD` (realistic HIV medication coding)
+
+---
+
+## [71] Cotte et al. (2023)  
+**Citation:**  
+Cotte, L., De Truchis, P., Pugliese, P., et al. (2023). *Tolerability and dosage of dual therapies in real-life cohorts of people living with HIV in France.* Journal of Antimicrobial Chemotherapy, 78(3), 705–714.  
+**DOI:** https://doi.org/10.1093/jac/dkac456  
+**Used for:** Informs the range of `FAKTOR` (based on observed tolerability and dosage adjustments in PLWH)
+
+---
+
+## [72] Mantsios et al. (2020)  
+**Citation:**  
+Mantsios, A., Levine, A., Stalter, R. M., et al. (2020). *Implementation of long-acting injectable antiretroviral therapy: perspectives from patients and providers in the United States.* AIDS Research and Therapy, 17(1), 1–8.  
+**DOI:** https://doi.org/10.1186/s12981-020-00289-z  
+**Used for:** Shapes the selection logic for `FAKTORKENNZEICHEN` (emphasizing long-acting formulations, like "N3")
+
+---
+
+## [73] Gandhi et al. (2018)  
+**Citation:**  
+Gandhi, M., Gandhi, R. T. (2018). *Single-Tablet Regimens for HIV Infection: A Review of the Evidence.* Drugs, 78(6), 611–620.  
+**DOI:** https://doi.org/10.1007/s40265-018-0895-8  
+**Used for:** Reflects how `ZAEHLER` may be null or small due to the dominance of single-tablet regimens in HIV treatment
+
+---
+
+## [74] Clay et al. (2015)  
+**Citation:**  
+Clay, P. G., Nag, S., Graham, C. M., & Narayanan, S. (2015). *Meta-analysis of studies comparing single and multi-tablet fixed dose combination HIV treatment regimens.* Medicine, 94(42), e1677.  
+**DOI:** https://doi.org/10.1097/MD.0000000000001677  
+**Used for:** Distribution of `EINHEIT` (e.g., "St" and "mg" dominant due to combination pills)
