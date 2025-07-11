@@ -469,3 +469,33 @@ KBV. (2023). *EBM-Bewertungssystem für HIV-PrEP Leistungen: Punktwerte und Abre
 **Used for:**  
 Supports using a skewed distribution of EBM point values for PrEP-related codes, emphasizing low-to-mid-value outpatient services.
 
+---
+
+## [49] Kojic et al. (2011)  
+**Citation:**  
+Kojic, E. M., Kang, M., Cespedes, M. S., Umbleja, T., Godfrey, C., & Hammer, S. M. (2011). *Prevalence and incidence of human papillomavirus infection in HIV-infected women: Longitudinal analysis from the Women's Interagency HIV Study*.  
+**Journal:** AIDS, 25(13), 1733–1741.  
+**DOI:** https://doi.org/10.1097/QAD.0b013e328349b7d9  
+**Used for:**  
+Supports enrichment of `DIAGSICH` toward higher rates of uncertain (‘V’) or probable (‘G’) diagnoses in HIV+ patients, reflecting syndromic overlap and common co-infections such as HPV.
+
+---
+
+## [50] BZgA – PrEP Monitoring Report (2023)  
+**Citation:**  
+Bundeszentrale für gesundheitliche Aufklärung. (2023). *Monitoring der HIV-Präexpositionsprophylaxe (PrEP) in Deutschland: Jahresbericht 2023*.  
+**Internal Report:** Köln: BZgA.  
+**Used for:**  
+Supports enrichment of `DIAGDAT` toward 2020–2023 diagnosis dates, especially in Q2–Q4, reflecting regular quarterly HIV screenings as required by PrEP reimbursement regulations post-TSVG (2019).
+
+---
+
+## [51] Robert Koch-Institut (2023)  
+**Citation:**  
+Robert Koch-Institut. (2023). *ICD-10-Kodierung häufiger sexuell übertragbarer Infektionen im Rahmen der HIV-Präexpositionsprophylaxe (PrEP) – Dokumentationshinweise für die ambulante Versorgung.*  
+**Internal Report:** Berlin: RKI HIV Surveillance and Coding Standards Division.  
+**Used for:**  
+Supports enrichment of `ICDAMB_CODE` using STI-focused ICD-10 terms (e.g., HIV, gonorrhea, chlamydia, syphilis) to reflect diagnosis trends observed in German PrEP cohorts. Ensures synthetically generated ICD codes mirror realistic outpatient coding distributions under PrEP guidelines.
+
+---
+
