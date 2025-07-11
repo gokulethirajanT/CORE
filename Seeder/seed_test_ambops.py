@@ -16,27 +16,36 @@ def random_service_date(start_year: int = 2019, end_year: int | None = None) -> 
 def yyyymmdd_int(d: date) -> int:
     return int(d.strftime("%Y%m%d"))
 
-# Simple generator for German OPS code strings (max 12 chars)
-OPS_MAIN_CATEGORIES = ["1", "3", "5", "6", "8"]  # diagnostics, endoscopy, surgery, etc.
+# Define function to generate OPS Codes from the ops_catalogue  
+def get_ops_code_pool(conn, limit=500): # [52] DIMDI / BfArM (2023)
+    cur = conn.cursor()
+    cur.execute('SELECT DISTINCT "SCHLUESSELNUMMER" FROM "ops_catalogue" WHERE "SCHLUESSELNUMMER" IS NOT NULL;')
+    raw_codes = [row[0] for row in cur.fetchall()]
+    # Clean: remove dash and dot to match FDZ rules (e.g., '5-987.0' → '59870')
+    cleaned = [code.replace("-", "").replace(".", "") for code in raw_codes if isinstance(code, str)]
+    return random.sample(cleaned, min(limit, len(cleaned)))
 
-def generate_ops_code() -> str:
-    chapter     = random.choice(OPS_MAIN_CATEGORIES)
-    group       = f"{random.randint(100,999)}"   # 3-digit group
-    sub_section = random.choice(["",
-                                  f".{random.randint(0,99):02d}",
-                                  f".{random.randint(0,99):02d}.{random.randint(0,9)}"])
-    return f"{chapter}-{group}{sub_section}"
 
-OPS_LOKAL_VALUES = [None, "R", "L", "B"]  # right, left, both, non-side-specific
+OPS_LOKAL_VALUES = [None, "R", "L", "B"]  # None = unspecified; R = right, L = left, B = both sides
 
-def generate_ops_lokal():
-    return random.choice(OPS_LOKAL_VALUES)
+def generate_ops_lokal(): #[53] Martinez et al. (2006)
+    """
+    Randomly select OPS localization:
+    - 95% chance of being None (not side-specific)
+    - 5% chance split equally among 'R', 'L', 'B'
+    """
+    return random.choices(
+        population=[None, "R", "L", "B"],
+        weights=[95, 1.67, 1.67, 1.66],  # Adds up to 100
+        k=1
+    )[0]
+
 
 # ───────────────────── main seeding routine ────────────────────────────────
 
 def seed_ambops_table(conn, row_count: int = 1):
     cur = conn.cursor()
-
+    OPS_CODE_POOL = get_ops_code_pool(conn)
     # reference patients (same as DM-3)
     cur.execute('SELECT "VSID", "PSID", "FALLIDAMB", "BJAHR", "BNR" FROM "ambfall";')
     ambfall_rows = cur.fetchall()
@@ -47,12 +56,11 @@ def seed_ambops_table(conn, row_count: int = 1):
 
     for _ in range(row_count):
         vsid, psid, fallidamb, bjahr, bnr = random.choice(ambfall_rows)
-
-
-        ops_code   = generate_ops_code()
-        ops_lokal  = generate_ops_lokal()
+ 
+        ops_code = random.choice(OPS_CODE_POOL) # [52] DIMDI / BfArM (2023)
+        ops_lokal  = generate_ops_lokal() # [53] Martinez et al. (2006)
         ops_date   = yyyymmdd_int(random_service_date())
-        datenmodell = 3  #
+        datenmodell = 3  
 
         cur.execute(
             """

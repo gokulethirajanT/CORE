@@ -79,7 +79,7 @@ def seed_zahnfall_table(conn, row_count=1):
         fremdlabor = round(random.uniform(0.00, 0.8 * fallkost), 2)
 
         inanspruch = random.choice(['L', 'A', 'R', 'N', 'D', 'F'])
-        datenmodell = 3
+        datenmodell = 3 # [9] Forschungsdatenzentrum Gesundheit. (2023). Datenmodell 3: Datenstruktur und Variablenbeschreibung. BfArM. https://fdz-gesundheit.github.io/datensatzbeschreibung_fdz_gesundheit/ # FDZ Data Model 3 — see [19] BMG (2021)
 
         cursor.execute("""
             INSERT INTO "zahnfall" (

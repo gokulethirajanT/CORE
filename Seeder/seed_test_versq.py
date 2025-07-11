@@ -20,7 +20,6 @@ def choose_geschlecht():
         k=1
     )[0]
 
-
 def seed_versq_table(conn, row_count=1):
     cursor = conn.cursor()
 
@@ -31,36 +30,52 @@ def seed_versq_table(conn, row_count=1):
     if not vers_rows:
         raise ValueError("vers table is empty; seed 'vers' first before 'versq'.")
 
-    for _ in range(row_count):
+    used_combinations = set()
+    inserted = 0
+    attempts = 0
+    max_attempts = row_count * 10
+
+    while inserted < row_count and attempts < max_attempts:
         vsid, psid, bjahr, bnr = random.choice(vers_rows)
         versq = generate_versq()
+        key = (psid, versq)
+
+        if key in used_combinations:
+            attempts += 1
+            continue
+
+        used_combinations.add(key)
+
         geschlecht = choose_geschlecht()
+
         # Enrichment for VERSTAGE: Higher duration for stable PrEP-related coverage
         if geschlecht == 1 and 1975 <= bjahr <= 2003:
             verstage = random.randint(180, 365)  # Simulate full-year coverage for likely PrEP users  
-        else:                                    # [10] Spinner, C. D., Boesecke, C., Zink, A., Jessen, H., Stellbrink, H.-J., & Rockstroh, J. K. (2018). [11] World Health Organization (2015). [12] Grant, R. M., Lama, J. R., Anderson, P. L., et al. (2010). 
+        else:                                    # [10] Spinner, C. D., Boesecke, C., Zink, A., Jessen, H., Stellbrink, H.-J., & Rockstroh, J. K. (2018). [11] WHO (2015). [12] Grant et al. (2010)
             verstage = random.randint(30, 180)   # Less stable or short-term coverage 
-        # VERSTAGEAUSL enrichment: Assign foreign care days to 10–15% of cases. Increased Cross-Border Treatment Days
+
+        # VERSTAGEAUSL enrichment: Assign foreign care days to 10–15% of cases
         if random.random() < 0.12:
-            verstageausl = random.randint(1, verstage // 4)  # [14] European Centre for Disease Prevention and Control (ECDC). (2023). https://www.ecdc.europa.eu/en/publications-data/hiv-prevention-and-care-among-migrants-europe
+            verstageausl = random.randint(1, verstage // 4)  # [14] ECDC (2023)
         else:
-            verstageausl = 0  # [15] GKV-Spitzenverband. Grenzüberschreitende Gesundheitsversorgung: https://www.gkv-spitzenverband.de/krankenversicherung/ausland/ausland.jsp
+            verstageausl = 0  # [15] GKV-Spitzenverband (2023)
 
         # Enrichment for VERSSTATUS: Stable insurance bias for HIV/PrEP-relevant population
         versstatus = random.choices(
-            population=[10001, 10002, 10003, 99999], # [13] GKV-Spitzenverband (2022). https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer/ambulanter_bereich/Verzeichnis_Schluesselzahlen.pdf
-            weights=[70, 20, 8, 2],  # [3] Marcus, U., Kollan, C., Bremer, V., & Zimmermann, R. (2023). HIV-Präexpositionsprophylaxe (PrEP) in Deutschland – Eine Analyse der Versorgungsdaten und Nutzungscharakteristika. Bundesgesundheitsblatt – Gesundheitsforschung – Gesundheitsschutz, 66(10), 1081–1091. https://doi.org/10.1007/s00103-023-03733-0  & [9] Forschungsdatenzentrum Gesundheit. (2023). Datenmodell 3: Datenstruktur und Variablenbeschreibung. BfArM. https://fdz-gesundheit.github.io/datensatzbeschreibung_fdz_gesundheit/
+            population=[10001, 10002, 10003, 99999], # [13] GKV-Spitzenverband (2022)
+            weights=[70, 20, 8, 2],  # [3] Marcus et al. (2023), [9] FDZ DM3 (2023)
             k=1                       
         )[0]
-        # Enrichment for specialized care days (PrEP users may use clinics, STI centers, etc.), Higher for PrEP patients
+
+        # Enrichment for specialized care days (PrEP users may use clinics, STI centers, etc.)
         if geschlecht == 1 and 1975 <= bjahr <= 2003:
-            verstagekg = random.randint(15, verstage // 2)              # [3] Marcus et al. (2023). https://doi.org/10.1007/s00103-023-03733-0
-            verstagekosterstwahlt = random.randint(10, verstage // 2)   # [10] Spinner et al. (2018). https://doi.org/10.1007/s15010-018-1185-5
+            verstagekg = random.randint(15, verstage // 2)              # [3] Marcus et al. (2023)
+            verstagekosterstwahlt = random.randint(10, verstage // 2)   # [10] Spinner et al. (2018)
         else:
             verstagekg = random.randint(0, verstage // 4)
             verstagekosterstwahlt = random.randint(0, verstage // 4)
 
-        datenmodell = 3 # [9] Forschungsdatenzentrum Gesundheit. (2023). Datenmodell 3: Datenstruktur und Variablenbeschreibung. BfArM. https://fdz-gesundheit.github.io/datensatzbeschreibung_fdz_gesundheit/ # FDZ Data Model 3 — see [19] BMG (2021)
+        datenmodell = 3  # [9] FDZ Datenmodell 3
 
         cursor.execute("""
             INSERT INTO "versq" (
@@ -73,8 +88,10 @@ def seed_versq_table(conn, row_count=1):
             versstatus, verstagekg, verstagekosterstwahlt, bjahr, bnr, datenmodell
         ))
 
+        inserted += 1
+
     conn.commit()
-    print(f"Inserted {row_count} synthetic rows into 'versq'")
+    print(f"Inserted {inserted} unique synthetic rows into 'versq'")
 
 if __name__ == "__main__":
     conn = psycopg2.connect(

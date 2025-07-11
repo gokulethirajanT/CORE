@@ -210,7 +210,7 @@ def seed_ambleist_table(conn, row_count: int = 100):
         # Zweitmeinung & valuation
         zweitmein_code = generate_zweitmein_code(service_dt) # [47] Gemeinsamer Bundesausschuss (G-BA) (2023)
         gonr_bewert    = generate_gonr_bewert() # [48] Kassenärztliche Bundesvereinigung (KBV) (2023)
-        datenmodell    = 3
+        datenmodell    = 3 # [9] Forschungsdatenzentrum Gesundheit. (2023). Datenmodell 3: Datenstruktur und Variablenbeschreibung. BfArM. https://fdz-gesundheit.github.io/datensatzbeschreibung_fdz_gesundheit/ # FDZ Data Model 3 — see [19] BMG (2021)
 
         cur.execute(
             """

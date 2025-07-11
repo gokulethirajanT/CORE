@@ -99,7 +99,7 @@ def seed_ambfall_table(conn, row_count=1):
         endedatamb = generate_random_date_int()
         if endedatamb < beginndatamb:
             beginndatamb, endedatamb = endedatamb, beginndatamb
-        datenmodell = 3
+        datenmodell = 3 # [9] Forschungsdatenzentrum Gesundheit. (2023). Datenmodell 3: Datenstruktur und Variablenbeschreibung. BfArM. https://fdz-gesundheit.github.io/datensatzbeschreibung_fdz_gesundheit/ # FDZ Data Model 3 — see [19] BMG (2021)
 
         cursor.execute("""
             INSERT INTO "ambfall" (

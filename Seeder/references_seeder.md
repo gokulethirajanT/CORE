@@ -499,3 +499,19 @@ Supports enrichment of `ICDAMB_CODE` using STI-focused ICD-10 terms (e.g., HIV, 
 
 ---
 
+## [52] DIMDI / BfArM (2023)
+**Citation:**  
+Bundesinstitut für Arzneimittel und Medizinprodukte (BfArM). (2023). *Operationen- und Prozedurenschlüssel (OPS) Version 2023 – Systematik*. Köln: BfArM.  
+**URL:** https://www.bfarm.de/DE/Kodiersysteme/Operationen-und-Prozedurenschluessel/_node.html  
+**Used for:**  
+Authoritative source for procedural coding in Germany. The OPS system uses hierarchical codes with dashes and dots (e.g., `5-987.0`). The FDZ-Gesundheit data model requires standardized numeric representations without formatting symbols. This justifies cleaning operations like `5-987.0` → `59870`.
+
+---
+## [53] Martinez et al. (2006)
+**Citation:**  
+Martinez, E., Milinkovic, A., Buira, E., de Lazzari, E., Leon, A., Larrousse, M., ... & Gatell, J. M. (2006). *Incidence and causes of peripheral neuropathy in HIV-infected patients on antiretroviral therapy*. AIDS, 20(18), 2487–2494.  
+**DOI:** https://doi.org/10.1097/QAD.0b013e32801086ba  
+**Used for:**  
+Demonstrates higher incidence of **unilateral** (and bilateral) peripheral neuropathies and neurological complications in HIV-positive patients. Justifies the inclusion of laterality (left/right/both) when simulating OPS procedure localization (e.g., nerve biopsies or abscess drainage).
+
+

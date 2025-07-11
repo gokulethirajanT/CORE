@@ -103,7 +103,7 @@ def seed_ambdiag_table(conn, row_count=1):
         diagdat = generate_diag_date()                      # [50] BZgA – PrEP Monitoring Report (2023)
         raw_icdamb_code = random.choice(ICD_POOL)
         icdamb_code, icdamb_zusatz = extract_icd_parts(raw_icdamb_code)# [51] Robert Koch-Institut (2023) #referenced from the TABLE icd10_catalogue
-        datenmodell = 3
+        datenmodell = 3 # [9] Forschungsdatenzentrum Gesundheit. (2023). Datenmodell 3: Datenstruktur und Variablenbeschreibung. BfArM. https://fdz-gesundheit.github.io/datensatzbeschreibung_fdz_gesundheit/ # FDZ Data Model 3 — see [19] BMG (2021)
 
         cursor.execute("""
             INSERT INTO "ambdiag" (
