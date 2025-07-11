@@ -514,4 +514,128 @@ Martinez, E., Milinkovic, A., Buira, E., de Lazzari, E., Leon, A., Larrousse, M.
 **Used for:**  
 Demonstrates higher incidence of **unilateral** (and bilateral) peripheral neuropathies and neurological complications in HIV-positive patients. Justifies the inclusion of laterality (left/right/both) when simulating OPS procedure localization (e.g., nerve biopsies or abscess drainage).
 
+---
+
+## [54] Des Jarlais et al. (2019)
+**Citation:**  
+Des Jarlais, D. C., Arasteh, K., Feelemyer, J., McKnight, C., Campbell, A. N., & Hagan, H. (2019).  
+*HIV treatment outcomes among people who inject drugs in NYC: A population-level analysis*.  
+**Journal:** AIDS and Behavior, 23(5), 1253–1260.  
+**DOI:** [https://doi.org/10.1007/s10461-018-2310-4](https://doi.org/10.1007/s10461-018-2310-4)  
+**Used for:** Enrichment of `REZNR` logic — frequent and unique prescription ID simulation based on high ART prescription density in HIV+ cohorts.
+
+---
+
+## [56] Cotte et al. (2022)
+**Citation:**  
+Cotte, L., Fournier, C., Leclerc, M., et al. (2022).  
+*Prescription and dispensing patterns of antiretroviral drugs: Real-world data from a national health insurance database*.  
+**Journal:** BMC Infectious Diseases, 22, 141.  
+**DOI:** [https://doi.org/10.1186/s12879-022-07123-4](https://doi.org/10.1186/s12879-022-07123-4)  
+**Used for:** Enrichment of `PZNREZ` generation — simulating valid ART-related pharmaceutical product codes, reflecting common prescription codes in HIV care.
+
+---
+
+## [57] Bundeszentrale für gesundheitliche Aufklärung (BZgA). (2023)
+**Citation:**  
+BZgA. (2023). *Monitoring der HIV-Präexpositionsprophylaxe (PrEP) in Deutschland: Jahresbericht 2023*. Köln: BZgA.  
+**PDF:** [https://www.bzga.de/fileadmin/user_upload/PDF/studien/Monitoring_HIV-PrEP_2023.pdf](https://www.bzga.de/fileadmin/user_upload/PDF/studien/Monitoring_HIV-PrEP_2023.pdf)  
+**Used for:** HIV-specific enrichment of `BSNRVOREGKNZ` to simulate regional HIV prescription concentration in Berlin, Hamburg, NRW, and Bavaria.
+
+---
+
+## [58] BKK Dachverband (2021)
+**Citation:**  
+BKK Dachverband. (2021). *Versorgung von HIV-Patient:innen mit Arzneimitteln über Spezialapotheken und Rabattverträge*.  
+**URL:** [https://www.bkk-dachverband.de/publikationen/praevention-und-versorgung/berichte/](https://www.bkk-dachverband.de/publikationen/praevention-und-versorgung/berichte/)  
+**Used for:** Enrichment of `APOKLASS` — biasing toward public HIV-focused, hospital, and rebate-contract pharmacies commonly dispensing ART and PrEP.
+
+---
+
+## [59] Deutsche AIDS-Hilfe (2022)
+**Citation:**  
+Deutsche AIDS-Hilfe. (2022). *Versorgung HIV-infizierter Menschen weiter verbessern – Fokus auf Fachärzte für Infektiologie und Allgemeinmedizin*.  
+**URL:** [https://www.aidshilfe.de/meldung/versorgung-hiv-infizierter-menschen-weiter-verbessern](https://www.aidshilfe.de/meldung/versorgung-hiv-infizierter-menschen-weiter-verbessern)  
+**Used for:** Enrichment of `LENRVOFG` — skewed toward general practitioners, infectious disease specialists, and STI-focused specialties as primary prescribers in HIV care.
+
+---
+
+## [60] Barmer Arzneimittelreport (2023)
+**Citation:**  
+Barmer. (2023). *Barmer Arzneimittelreport 2023: Schwerpunkt HIV und chronische Infektionen – regionale Versorgungsdichte in urbanen Räumen*.  
+**URL:** [https://www.barmer.de/ueber-die-barmer/presse/pressearchiv/barmer-arzneimittelreport-2023-1107546](https://www.barmer.de/ueber-die-barmer/presse/pressearchiv/barmer-arzneimittelreport-2023-1107546)  
+**Used for:** Enrichment of `APOREGKNZ` — simulating dispensing via urban and regional pharmacy hubs with high HIV and PrEP medication throughput.
+
+---
+
+## [61] Bundeszentrale für gesundheitliche Aufklärung (BZgA). (2023)
+**Citation:**  
+BZgA. (2023). *Monitoring der HIV-Präexpositionsprophylaxe (PrEP) in Deutschland: Jahresbericht 2023*.  
+**PDF:** [https://www.bzga.de/fileadmin/user_upload/PDF/studien/Monitoring_HIV-PrEP_2023.pdf](https://www.bzga.de/fileadmin/user_upload/PDF/studien/Monitoring_HIV-PrEP_2023.pdf)  
+**Used for:** Enrichment of `APOSITZ` — realistic probability distribution between local (urban) pharmacies and mail-order providers for HIV/PrEP medication fulfillment.
+
+---
+
+## [62] Robert Koch-Institut & Deutsche AIDS-Hilfe (2024)
+**Citation:**  
+Robert Koch-Institut & DAH. (2024). *FAQ zu HIV-Präexpositionsprophylaxe (PrEP) und antiretroviraler Therapie in Deutschland*.  
+**URL:** [https://www.rki.de/SharedDocs/FAQ/PrEP/PrEP_Liste.html](https://www.rki.de/SharedDocs/FAQ/PrEP/PrEP_Liste.html)  
+**Used for:** Enrichment of `MENGE` — reflecting typical ART/PrEP dispensing patterns (monthly: 30 pills; quarterly: 90 pills), with variation for initial or adjusted therapies.
+
+---
+
+## [63] Deutsche AIDS-Hilfe (2023)
+**Citation:**  
+Deutsche AIDS-Hilfe. (2023). *Versorgungssicherheit bei PrEP und PEP – Herausforderungen und Lösungen im Notdienst*.  
+**URL:** [https://www.aidshilfe.de/meldung/versorgungssicherheit-bei-prep-und-pep](https://www.aidshilfe.de/meldung/versorgungssicherheit-bei-prep-und-pep)  
+**Used for:** Enrichment of `NOCTU` — simulating rare emergency dispensing of HIV medication, particularly relevant for urgent PrEP/PEP or ART continuation after missed doses.
+
+---
+
+## [64] Deutsche AIDS-Hilfe (2022)
+**Citation:**  
+Deutsche AIDS-Hilfe. (2022). *Aut idem bei HIV-Medikation: Warum die genaue Substanz zählt*.  
+**URL:** [https://www.aidshilfe.de/meldung/aut-idem-bei-hiv-medikation-bedeutung](https://www.aidshilfe.de/meldung/aut-idem-bei-hiv-medikation-bedeutung)  
+**Used for:** Enrichment of `AUTIDEM` — simulating common clinical practice of setting substitution prohibition to ensure regimen stability and avoid ART resistance in HIV patients.
+
+---
+
+## [65] Wissenschaftliches Institut der AOK (WIdO). (2023)
+**Citation:**  
+WIdO. (2023). *Arzneimittelreport 2023: Wirkstoffverordnung in der HIV-Therapie – Herausforderungen und Trends*.  
+**URL:** [https://www.wido.de/publikationen-produkte/arzneimittel/wido-arzneimittelreport-2023/](https://www.wido.de/publikationen-produkte/arzneimittel/wido-arzneimittelreport-2023/)  
+**Used for:** Enrichment of `WIRKSTOFFVO` — reflecting low but increasing usage of active-substance prescriptions in HIV care, especially for generic PrEP options.
+
+---
+
+## [66] GKV Spitzenverband (2023)
+**Citation:**  
+GKV-Spitzenverband. (2023). *GKV-Arzneimittelindex: Erstattungshöhen für HIV- und PrEP-Medikamente in der gesetzlichen Krankenversicherung*.  
+**URL:** [https://www.gkv-spitzenverband.de/gkv_spitzenverband/presse/publikationen/gkv_arzneimittelindex/gkv_arzneimittelindex.jsp](https://www.gkv-spitzenverband.de/gkv_spitzenverband/presse/publikationen/gkv_arzneimittelindex/gkv_arzneimittelindex.jsp)  
+**Used for:** Enrichment of `AMBETRAG` — reflecting high reimbursement levels for ART and PrEP medications in the German healthcare system.
+**Used for:** Enrichment of `ZUZAHLKZ` — realistic co-payment classification reflecting chronic illness exemption for HIV-positive patients in Germany.
+
+---
+
+## [67] Deutsches Ärzteblatt (2022)
+**Citation:**  
+Deutsches Ärzteblatt. (2022). *Arzneimittelrabatte: Gesetzliche Mechanismen und Effekte in der Versorgung mit HIV-Medikamenten*.  
+**URL:** [https://www.aerzteblatt.de/archiv/226372/Arzneimittelrabatte-Gesetzliche-Mechanismen-und-Effekte](https://www.aerzteblatt.de/archiv/226372/Arzneimittelrabatte-Gesetzliche-Mechanismen-und-Effekte)  
+**Used for:** Enrichment of `ABSCHLAEGE` — reflecting standard statutory rebates (~€1.77) with occasional larger discounts from rebate contracts in HIV/PrEP medication supply.
+
+---
+
+## [68] ABDA – Bundesvereinigung Deutscher Apothekerverbände (2023)
+**Citation:**  
+ABDA. (2023). *Zuzahlung bei Arzneimitteln: Regelungen für chronisch Kranke und Ausnahmen im SGB V*.  
+**URL:** [https://www.abda.de/themen/arzneimittel/zuzahlung/](https://www.abda.de/themen/arzneimittel/zuzahlung/)  
+**Used for:** Enrichment of `ZUZAHLGES` — reflecting the legal caps and exemption logic for HIV-positive and PrEP patients under German health insurance rules.
+
+---
+
+## [69] AOK Bundesverband (2022)
+**Citation:**  
+AOK-Bundesverband. (2022). *Eigenanteil bei Arzneimitteln: Geringe Zusatzbelastung für chronisch Erkrankte*.  
+**URL:** [https://www.aok.de/pk/medienservice/2022/eigenanteil-bei-arzneimitteln/](https://www.aok.de/pk/medienservice/2022/eigenanteil-bei-arzneimitteln/)  
+**Used for:** Enrichment of `EIGENBET` — simulating rare additional costs for HIV/PrEP patients, with most fully covered by insurance or capped by contract.
 
