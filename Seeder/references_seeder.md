@@ -678,3 +678,45 @@ Gandhi, M., Gandhi, R. T. (2018). *Single-Tablet Regimens for HIV Infection: A R
 Clay, P. G., Nag, S., Graham, C. M., & Narayanan, S. (2015). *Meta-analysis of studies comparing single and multi-tablet fixed dose combination HIV treatment regimens.* Medicine, 94(42), e1677.  
 **DOI:** https://doi.org/10.1097/MD.0000000000001677  
 **Used for:** Distribution of `EINHEIT` (e.g., "St" and "mg" dominant due to combination pills)
+
+---
+
+[75] Raben, D., et al. (2018). Auditing and improving hospital HIV indicator data reporting in Europe. *HIV Medicine*, 19(S1), 24–30.  
+https://doi.org/10.1111/hiv.12607  
+**Used for:** Higher `KHPRUEF = 'J'` probability to reflect growing hospital-based validation of HIV care since 2020.
+
+---
+
+[76] Trickey, A., et al. (2017). Hospitalization rates and reasons among HIV-positive individuals in high-income countries. *AIDS*, 31(7), 949–958.  
+https://doi.org/10.1097/QAD.0000000000001434  
+**Used for:** Biasing `AUFNGRUND` toward HIV-related codes to reflect hospitalization triggers in PLHIV.
+
+---
+
+[77] Marcus, J. L., et al. (2016). Hospitalization and mortality among HIV-infected and uninfected individuals. *Journal of Infectious Diseases*, 214(6), 892–900.  
+https://doi.org/10.1093/infdis/jiw219  
+**Used for:** Increasing likelihood of discharge due to critical HIV-related complications in `ENTLASSGRUND`.
+
+---
+
+[78] Buchacz, K., et al. (2015). ICU admissions and mechanical ventilation among HIV patients: A surveillance perspective. *Critical Care Medicine*, 43(7), 1450–1459.  
+https://doi.org/10.1097/CCM.0000000000000972  
+**Used for:** Reflecting increased ventilation demand among aging HIV cohorts with respiratory complications.
+
+---
+
+[79] Gueler, A., et al. (2017). Clinical care pathways and hospital referral types for people living with HIV in Europe. *BMC Health Services Research*, 17, 671.  
+https://doi.org/10.1186/s12913-017-2611-2  
+**Used for:** HIV-linked referral pathways modeled by higher `EINWEISFG` values in internal/infectious disciplines.
+
+---
+
+[80] Raffetti, E., et al. (2016). Geographic and clinical referral patterns in HIV care: a multicenter European study. *International Journal of STD & AIDS*, 27(13), 1205–1215.  
+https://doi.org/10.1177/0956462415611972  
+**Used for:** Referral hospital ID ranges, class codes, and region keys enriched for known HIV care patterns and audit traceability (`VERANLASSKH*` variables).
+
+---
+
+[81] Mocroft, A., et al. (2015). Admissions to hospital across Europe for HIV-positive people: insights into referral, specialty, and monitoring pathways. *Clinical Infectious Diseases*, 61(9), 1491–1500.  
+https://doi.org/10.1093/cid/civ585  
+**Used for:** Enrichment of `EINWEISPRUEF`, `AUFNFA`, `EINWEISPSEUDO`, and `VERANLASSSTELLEPSEUDO` to reflect real-world referral and verification trends in European HIV inpatient care systems.

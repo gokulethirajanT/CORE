@@ -83,6 +83,10 @@ def generate_amount(min_val=5.00, max_val=200.00) -> float:
     """Generate a random float rounded to 2 decimal places."""
     return round(random.uniform(min_val, max_val), 2)
 
+def generate_id(length: int = 9) -> str:
+    """Generate a random numeric string of specified length."""
+    return ''.join(random.choices(string.digits, k=length))
+    
 def generate_bsnrvoregknz_hiv_enriched() -> int:
     """Return a REGKNZ with HIV-aware regional bias."""
     hiv_kv_regions = [9, 11, 15, 17, 23]  # Bayern, Berlin, Hamburg, NRW
