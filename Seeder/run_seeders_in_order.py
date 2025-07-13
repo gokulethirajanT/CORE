@@ -1,6 +1,7 @@
 # This script runs all synthetic data seeder scripts (`seed_test_<table>.py`) in the correct dependency order.
 # Find the attached documentation below 
 import subprocess
+import time
 
 # Seeder files listed in the correct order: parent tables first
 SEEDER_FILES = [
@@ -26,7 +27,13 @@ SEEDER_FILES = [
 # Run each seeder script in order
 for file in SEEDER_FILES:
     print(f"\n▶ Running: {file}")
-    subprocess.run(["python3", file], check=True)
+    try:
+        subprocess.run(["python3", file], check=True)
+        time.sleep(0.5)  # Add delay to allow DB to fully flush writes
+    except subprocess.CalledProcessError as e:
+        print(f" Error while running {file}:")
+        print(e)
+        break  # Stop further execution if any seeder fails
 
 """
 Seeder Execution Script for Data Model 3 (DM3)

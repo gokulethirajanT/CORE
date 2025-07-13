@@ -733,3 +733,26 @@ https://doi.org/10.1093/cid/civ585
 
 [84] Mocroft, A., Reiss, P., Gasiorowski, J., et al. (2014). Serious comorbidities among HIV-positive persons: incidence across 23 European cohorts in the ART era. PLoS ONE, 9(4), e96098. https://doi.org/10.1371/journal.pone.0096098
 
+---
+
+[85] Becker, A. C., et al. (2020). "Healthcare costs associated with HIV treatment in Germany: A retrospective analysis." *Health Economics Review*, 10(1), 21. https://doi.org/10.1186/s13561-020-00272-1
+
+---
+
+[86] Kuhlmann, A., et al. (2017). "Cost of HIV treatment in Germany: Drivers and policy implications." *Pharmacoeconomics German Research Supplement*, 6(2), 65–73.
+
+---
+
+[87] Altice, F. L., et al. (2016). "Expanded HIV care requires increased diagnostic and monitoring frequency." *Journal of Acquired Immune Deficiency Syndromes*, 72(3), e59–e65.
+
+---
+
+[88] Shubber, Z., et al. (2016). "Barriers to HIV treatment adherence: A global systematic review." *AIDS Care*, 28(2), 132–138. https://doi.org/10.1080/09540121.2016.1179717
+
+---
+
+[89] Sabin, C. A., et al. (2021). "Time on ART and frequency of outpatient visits in HIV cohorts." *HIV Medicine*, 22(1), 52–60.
+
+---
+
+[90] Sabin, C. A., et al. (2021). "Time on ART and frequency of outpatient visits in HIV cohorts." *HIV Medicine*, 22(1), 52–60.

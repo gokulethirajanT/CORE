@@ -32,7 +32,7 @@ def seed_khfa_table(conn, rows: int = 500):
         vsid, psid, fallidkh, bjahr, bnr = random.choice(ref_rows)
         fa = generate_fa()
         aufndat = random_date_in_year(bjahr)
-        datenmodell = 3
+        datenmodell = 3 # [9] Forschungsdatenzentrum Gesundheit. (2023). Datenmodell 3: Datenstruktur und Variablenbeschreibung. BfArM. https://fdz-gesundheit.github.io/datensatzbeschreibung_fdz_gesundheit/ # FDZ Data Model 3 — see [19] BMG (2021)
         entlassdat = random_date_in_year(bjahr)
         if entlassdat < aufndat:
             aufndat, entlassdat = entlassdat, aufndat

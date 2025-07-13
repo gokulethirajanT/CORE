@@ -6,7 +6,7 @@ from mimesis.enums import Locale
 g = Generic(locale=Locale.DE)
 
 def generate_psid():
-    return bytes.fromhex(''.join(random.choices('0123456789ABCDEF', k=32)))  # ✅ binary format
+    return bytes.fromhex(''.join(random.choices('0123456789ABCDEF', k=32)))  # binary format
 
 def generate_versq():
     year = random.choice([2019, 2020, 2021, 2022, 2023])  # Only valid FDZ years
@@ -30,7 +30,13 @@ def seed_versq_table(conn, row_count=1):
     if not vers_rows:
         raise ValueError("vers table is empty; seed 'vers' first before 'versq'.")
 
-    used_combinations = set()
+    cursor.execute('SELECT "PSID", "VERSQ" FROM "versq";')
+    used_combinations = set(cursor.fetchall())
+
+
+    if not vers_rows:
+        raise ValueError("vers table is empty; seed 'vers' first before 'versq'.")
+
     inserted = 0
     attempts = 0
     max_attempts = row_count * 10
@@ -92,6 +98,7 @@ def seed_versq_table(conn, row_count=1):
 
     conn.commit()
     print(f"Inserted {inserted} unique synthetic rows into 'versq'")
+
 
 if __name__ == "__main__":
     conn = psycopg2.connect(
