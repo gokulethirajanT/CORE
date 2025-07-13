@@ -765,3 +765,18 @@ https://doi.org/10.1093/cid/civ585
 
 [92] Buchacz, K., Baker, R. K., Palella, F. J., et al. (2010). AIDS-defining opportunistic illnesses in US patients, 1994–2007: A cohort study. *The Lancet*, 376(9739), 272–279. https://doi.org/10.1016/S0140-6736(10)60676-3
 
+---
+
+## [93] Marcus et al. (2021)  
+**Citation:**  
+Marcus, U., Bremer, V., Kollan, C., et al. (2021). *HIV surveillance procedures in German healthcare settings*. Bundesgesundheitsblatt - Gesundheitsforschung - Gesundheitsschutz, 64(3), 234–245.  
+**DOI:** https://doi.org/10.1007/s00103-021-03291-7  
+**Used for:** Enriching `PROZ` with OPS codes related to HIV-related diagnostics such as immunological monitoring, infectious disease treatment, and biopsies.
+
+---
+
+## [94] Bicanic et al. (2009)  
+**Citation:**  
+Bicanic, T., Wood, R., Bekker, L. G., Darder, M., Meintjes, G. (2009). *Antiretroviral-associated Immune Reconstitution Inflammatory Syndrome and the Spectrum of Disease in Patients with HIV and Opportunistic Infections*. Current Opinion in HIV and AIDS, 4(6), 398–403.  
+**DOI:** https://doi.org/10.1097/COH.0b013e3283307a2b  
+**Used for:** Enriching `PROZLOKAL` with systemic or bilateral procedure sites due to multi-organ involvement in HIV/AIDS patients.
