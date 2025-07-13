@@ -756,3 +756,12 @@ https://doi.org/10.1093/cid/civ585
 ---
 
 [90] Sabin, C. A., et al. (2021). "Time on ART and frequency of outpatient visits in HIV cohorts." *HIV Medicine*, 22(1), 52–60.
+
+---
+
+[91] Deutsche AIDS-Hilfe (2021). Versorgung von Menschen mit HIV in deutschen Krankenhäusern: Fachabteilungen und Behandlungsschwerpunkte. https://www.aidshilfe.de
+
+---
+
+[92] Buchacz, K., Baker, R. K., Palella, F. J., et al. (2010). AIDS-defining opportunistic illnesses in US patients, 1994–2007: A cohort study. *The Lancet*, 376(9739), 272–279. https://doi.org/10.1016/S0140-6736(10)60676-3
+
