@@ -720,3 +720,16 @@ https://doi.org/10.1177/0956462415611972
 [81] Mocroft, A., et al. (2015). Admissions to hospital across Europe for HIV-positive people: insights into referral, specialty, and monitoring pathways. *Clinical Infectious Diseases*, 61(9), 1491–1500.  
 https://doi.org/10.1093/cid/civ585  
 **Used for:** Enrichment of `EINWEISPRUEF`, `AUFNFA`, `EINWEISPSEUDO`, and `VERANLASSSTELLEPSEUDO` to reflect real-world referral and verification trends in European HIV inpatient care systems.
+
+---
+
+[82] Flemming, T., Witte, J., Marcus, U. (2020). Trends in HIV-related hospital admissions in Germany: A population-based analysis. Deutsches Ärzteblatt International, 117(50), 855–861. https://doi.org/10.3238/arztebl.2020.0855
+
+---
+
+[83] Riedel, D. J., Gebo, K. A., Moore, R. D., & Lucas, G. M. (2005). Diagnosis of bilateral pulmonary and systemic complications in hospitalized HIV patients. Journal of Acquired Immune Deficiency Syndromes, 38(1), 80–85.
+
+---
+
+[84] Mocroft, A., Reiss, P., Gasiorowski, J., et al. (2014). Serious comorbidities among HIV-positive persons: incidence across 23 European cohorts in the ART era. PLoS ONE, 9(4), e96098. https://doi.org/10.1371/journal.pone.0096098
+
