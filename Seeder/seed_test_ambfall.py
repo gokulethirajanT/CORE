@@ -26,8 +26,8 @@ def generate_punktzahl():
     value = max(4.4, min(value, 900))  # Clamp to FDZ bounds
     return round(value, 1)
 
-
 def generate_fallkoamb(): 
+    # Simulate total cost of outpatient case with HIV-specific enrichments
     category = random.choices(
         ['low', 'medium', 'high', 'very_high'], # [39] Damm et al. (2021)
         weights=[1, 5, 3, 1]
@@ -56,7 +56,6 @@ def generate_dialyse_cost(): # [40] Bundesministerium für Gesundheit (2022)
     else:
         return 0.0  # No dialysis billed in majority of cases
 
-
 def seed_ambfall_table(conn, row_count=1):
     cursor = conn.cursor()
 
@@ -69,36 +68,74 @@ def seed_ambfall_table(conn, row_count=1):
     fallid_tracker = {}
 
     for _ in range(row_count):
+        # Inherit ID values from 'vers' parent table
         vsid, psid, bjahr, bnr = random.choice(vers_rows)
-        key = (vsid, bjahr)
+
+        # Generate unique 11-char outpatient case ID
         fallid = ''.join(random.choices(string.ascii_uppercase + string.digits, k=11))
 
+        # Create quarter (ABRQ) based on year and quarter
         year = random.randint(2019, 2023)         # Valid years from the dataset
         quarter = random.randint(1, 4)            # Valid quarters: 1 to 4
         abrq = int(f"{year}{quarter}")            # Combine as YYYYQ
 
+        # Random pseudonym contract number
         svnr = ''.join(random.choices(string.ascii_uppercase + string.digits, k=11)) # https://www.bundesgesundheitsministerium.de/service/begriffe-von-a-z/s/selektivvertrag.html
+
+        # Contract type: more weight on PrEP-relevant types
         svtyp = random.choices([1, 2], weights=[2, 5])[0] # [32] German Federal Ministry of Health (2020)
+
+        # Pseudonymized practice number
         bsnrpseudo = random.randint(1, 9999)
-        bsnrkv = random.choices([1, 2, 3, 6, 8, 9], weights=[5, 4, 3, 3, 2, 3])[0] #[33] Brauner et al. (2021)
+
+        # KV region code for billing — skewed toward HIV-capable practices
+        bsnrkv = random.choices([1, 2, 3, 6, 8, 9], weights=[5, 4, 3, 3, 2, 3])[0] # [33] Kassenärztliche Vereinigung Berlin (2023) 
+
+        # Referral practice pseudonym
         bsnruebpseudo = random.randint(100, 999)
+
+        # Referral region — enriched to urban HIV networks
         bsnruebkv = random.choices([1, 2, 3, 5, 6, 8, 9, 11], weights=[5, 4, 3, 1, 2, 2, 3, 1])[0] #[34] European Centre for Disease Prevention and Control (2023)
+
+        # Referring physician pseudonym
         lanruebpseudo = random.randint(100000000000, 999999999999)  # 12-digit pseudonym
+
+        # Physician specialty group — skewed toward HIV-relevant fields
         lanruebfg = random.choices([1, 5, 7, 13, 17, 23, 40], weights=[6, 4, 3, 3, 2, 2, 1])[0] # [35] Oppong et al. (2019)
+
+        # Ambulatory care type — weighted toward STI/HIV types
         inansprartamb = random.choices(
             ['O', 'V', 'K', 'M', 'Z', '7', '8', '0', 'N'], # [36] Reuter et al. (2023)
             weights=[4, 4, 3, 3, 2, 1, 1, 1, 1]
         )[0]
+
+        # Very few HIV outpatient visits are trauma-related
         unfall = random.choices([0, 2], weights=[98, 2])[0] # [37] Burch et al. (2020)
+
+        # Treatment type, weighted to favor structured STI/PrEP codes
         behandartamb = random.choices([1, 2], weights=[3, 7])[0] # 1 = unspecified treatment type A, 2 = treatment type B
+
+        # Randomized obstetric date for edge-case scenarios
         entbindungsdat = generate_random_date_int() # [3] Marcus et al. (2023)
+
+        # PrEP-specific outpatient billing code enrichment
         punktzahl = generate_punktzahl() # [38] PrEP Monitoring Team, BZgA (2023)
+
+        # Total case-level euro cost with Gaussian enrichment
         fallkoamb = generate_fallkoamb() # [39] Damm et al. (2021)
+
+        # Inject dialysis cost in rare comorbidity edge cases
         dialysesachko = generate_dialyse_cost() # [40] Bundesministerium für Gesundheit (2022)
+
+        # Randomize service start date
         beginndatamb = generate_random_date_int()
+
+        # Randomize service end date and fix temporal order if needed
         endedatamb = generate_random_date_int()
         if endedatamb < beginndatamb:
             beginndatamb, endedatamb = endedatamb, beginndatamb
+
+        # Mark as part of FDZ Data Model 3
         datenmodell = 3 # [9] Forschungsdatenzentrum Gesundheit. (2023). Datenmodell 3: Datenstruktur und Variablenbeschreibung. BfArM. https://fdz-gesundheit.github.io/datensatzbeschreibung_fdz_gesundheit/ # FDZ Data Model 3 — see [19] BMG (2021)
 
         cursor.execute("""

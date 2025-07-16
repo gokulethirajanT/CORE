@@ -333,11 +333,11 @@ Bundesministerium für Gesundheit. (2020). *Selektivverträge und ihre Bedeutung
 
 ---
 
-## [33] Brauner et al. (2021)
+## [33] Kassenärztliche Vereinigung Berlin (2023)  
 **Citation:**  
-Brauner, M., & Schuler, T. (2021). *Ambulante Versorgung chronischer Krankheiten: Kassenärztliche Versorgung in Deutschland*. Gesundheitswesen, 83(11), 855–863.  
-**DOI:** https://doi.org/10.1055/a-1242-1211  
-**Used for:** BSNRKV — KV-number relevance in outpatient HIV service billing and PrEP delivery.
+Kassenärztliche Vereinigung Berlin. (2023). *HIV/AIDS – Genehmigungspflichtige Leistungen in der ambulanten Versorgung*.  
+**Link:** [https://www.kvberlin.de/fuer-praxen/alles-fuer-den-praxisalltag/qualitaetssicherung/genehmigungspfl-leistungen/hiv-aids](https://www.kvberlin.de/fuer-praxen/alles-fuer-den-praxisalltag/qualitaetssicherung/genehmigungspfl-leistungen/hiv-aids)  
+**Used for:** BSNRKV — Confirms that only certain outpatient practices (with valid BSNR) are authorized to bill HIV-specific EBM codes (e.g., 30920, 30922, 30924), validating enrichment of `BSNRKV` toward HIV/PrEP-capable providers.
 
 ---
 
@@ -349,11 +349,20 @@ ECDC. (2023). *HIV and STI prevention and control in Europe: Integration of serv
 
 ---
 
-## [35] Oppong et al. (2019)
-**Citation:**  
-Oppong, J. R., & Harold, J. (2019). *Spatial models of HIV health care access: Role of referral physician groups*. BMC Health Services Research, 19, 1018.  
-**DOI:** https://doi.org/10.1186/s12913-019-4865-7  
-**Used for:** LANRUEBFG — Enrichment reflecting medical group/case type forwarding HIV patients in outpatient settings.
+### [35] Reference – Physician Specialty Groups in HIV Care
+
+**Source**:  
+Robert Koch-Institut (RKI). (2024). *HIV in Deutschland 2023*. Epidemiologisches Bulletin 28/2024, pp. 1–12.  
+[PDF link](https://www.rki.de/EN/News/Publications/Epidemiologisches-Bulletin/HIV-Epid-Bull-28-2024.pdf?__blob=publicationFile&v=2)
+
+**Excerpt (Original, Page 7):**  
+> *„Die medizinische Versorgung erfolgt überwiegend in HIV-Schwerpunktpraxen (meist internistisch oder dermatologisch-venereologisch ausgerichtet) sowie in Kliniken mit infektiologischer Expertise.“*
+
+**Translation:**  
+> *"Medical care is provided primarily in HIV-specialized outpatient practices (mostly with an internal medicine or dermatology-venereology focus) as well as in clinics with infectiology expertise."*
+
+**Contextual Use:**  
+Used to justify variable `LANRUEBFG` in the seeder script:
 
 ---
 
