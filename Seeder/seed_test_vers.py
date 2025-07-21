@@ -38,7 +38,7 @@ def seed_vers_table(conn, row_count=1):
         # Reference: [1] Valbert et al. (2024), Table 2. Mean age 37.4 ± 9.6 → 80% distribution ≈ 27–47 years
         gebjahr = random.choices(
             population=list(range(1950, 2006)),
-            weights=[1 if 1977 <= y <= 1997 else 0.3 for y in range(1950, 2006)],
+            weights=[1 if 1977 <= y <= 1997 else 0.2 for y in range(1950, 2006)],
             k=1
         )[0]
 
