@@ -54,7 +54,7 @@ def seed_versqdmp_table(conn, row_count=1):
 
 if __name__ == "__main__":
     conn = psycopg2.connect(
-        dbname="CORE_MASTER_THESIS",
+        dbname="DM3_SEEDER",
         user="postgres",
         password="London@123",
         host="localhost",

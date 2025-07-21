@@ -9,7 +9,7 @@ TABLES = [
 ]
 
 conn = psycopg2.connect(
-    dbname="CORE_MASTER_THESIS",
+    dbname="DM3_SEEDER",
     user="postgres",
     password="London@123",
     host="localhost",

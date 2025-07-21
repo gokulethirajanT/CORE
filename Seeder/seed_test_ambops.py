@@ -84,7 +84,7 @@ def seed_ambops_table(conn, row_count: int = 1):
 # ───────────────────── run directly ─────────────────────────────────────────
 if __name__ == "__main__":
     conn = psycopg2.connect(
-        dbname   = "CORE_MASTER_THESIS",
+        dbname="DM3_SEEDER",
         user     = "postgres",
         password = "London@123",
         host     = "localhost",

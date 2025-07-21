@@ -75,7 +75,7 @@ def seed_ezd_table(conn, rows: int = 100):
 # ─────────────── Entrypoint ────────────────
 if __name__ == "__main__":
     conn = psycopg2.connect(
-        dbname   = "CORE_MASTER_THESIS",
+        dbname="DM3_SEEDER",
         user     = "postgres",
         password = "London@123",
         host     = "localhost",

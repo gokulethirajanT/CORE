@@ -184,7 +184,7 @@ def seed_khfall_table(conn, rows: int = 200):
 # ────────────────────── Entrypoint ───────────────────────────────
 if __name__ == "__main__":
     conn = psycopg2.connect(
-        dbname="CORE_MASTER_THESIS",
+        dbname="DM3_SEEDER",
         user="postgres",
         password="London@123",
         host="localhost",
