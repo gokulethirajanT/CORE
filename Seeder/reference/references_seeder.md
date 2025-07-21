@@ -135,9 +135,9 @@ GKV-Spitzenverband. (2022). *Leistungserbringer: Versicherungsstatus und Schlüs
 **Citation:**  
 European Centre for Disease Prevention and Control. (2023).  
 *HIV prevention and care among migrants in the EU/EEA – Technical Report*.  
-**Link:** https://www.ecdc.europa.eu/en/publications-data/hiv-prevention-and-care-among-migrants-europe  
+**Link:** https://www.ecdc.europa.eu/sites/default/files/documents/hiv-migrants-dublin-declaration-november-2024.pdf  
 **Used for:**  
-- Justifies assigning non-zero `VERSTAGEAUSL` to simulate migrant and mobile PrEP users  
+- Justifies assigning non-zero `VERSTAGEAUSL` to simulate migrant (15% approximation ) and mobile PrEP users  
 - Reflects care-seeking behaviors across EU countries
 
 ---
@@ -146,7 +146,7 @@ European Centre for Disease Prevention and Control. (2023).
 **Citation:**  
 GKV-Spitzenverband. (2023).  
 *Grenzüberschreitende Gesundheitsversorgung – Informationen zur Erstattung von Behandlungskosten im Ausland*.  
-**Link:** https://www.gkv-spitzenverband.de/krankenversicherung/ausland/ausland.jsp  
+**Link:** 
 **Used for:**  
 - Establishes legal basis for cross-border insurance coverage under German law  
 - Applies to EU coordination of care and migrant support

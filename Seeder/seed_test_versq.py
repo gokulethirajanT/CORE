@@ -56,30 +56,27 @@ def seed_versq_table(conn, row_count=1):
 
         # Enrichment for VERSTAGE: Higher duration for stable PrEP-related coverage
         if geschlecht == 1 and 1975 <= bjahr <= 2003:
-            verstage = random.randint(180, 365)  # Simulate full-year coverage for likely PrEP users  
-        else:                                    # [10] Spinner, C. D., Boesecke, C., Zink, A., Jessen, H., Stellbrink, H.-J., & Rockstroh, J. K. (2018). [11] WHO (2015). [12] Grant et al. (2010)
-            verstage = random.randint(30, 180)   # Less stable or short-term coverage 
+            verstage = random.randint(180, 365)  
+        else:                                    
+            verstage = random.randint(30, 180)   
 
         # VERSTAGEAUSL enrichment: Assign foreign care days to 10–15% of cases
-        if random.random() < 0.12:
-            verstageausl = random.randint(1, verstage // 4)  # [14] ECDC (2023)
+        if random.random() < 0.15:
+            verstageausl = random.randint(1, verstage // 4)  ## [7] ECDC (2023)
         else:
-            verstageausl = 0  # [15] GKV-Spitzenverband (2023)
+            verstageausl = 0  
 
         # Enrichment for VERSSTATUS: Stable insurance bias for HIV/PrEP-relevant population
         versstatus = random.choices(
-            population=[10001, 10002, 10003, 99999], # [13] GKV-Spitzenverband (2022)
-            weights=[70, 20, 8, 2],  # [3] Marcus et al. (2023), [9] FDZ DM3 (2023)
+            population=[10001, 10002, 10003, 99999], ## [8] Insurance Status Code Source Germany 
+            weights=[83, 10, 5, 2],  # [8] Müllerschön J., Koschollek C., Santos-Hövener C., et al. (2019).
             k=1                       
         )[0]
 
-        # Enrichment for specialized care days (PrEP users may use clinics, STI centers, etc.)
-        if geschlecht == 1 and 1975 <= bjahr <= 2003:
-            verstagekg = random.randint(15, verstage // 2)              # [3] Marcus et al. (2023)
-            verstagekosterstwahlt = random.randint(10, verstage // 2)   # [10] Spinner et al. (2018)
-        else:
-            verstagekg = random.randint(0, verstage // 4)
-            verstagekosterstwahlt = random.randint(0, verstage // 4)
+        # Randomized care days without HIV-/PrEP-specific bias
+        verstagekg = random.randint(0, verstage // 2)
+        verstagekosterstwahlt = random.randint(0, verstage // 2)
+
 
         datenmodell = 3  # [9] FDZ Datenmodell 3
 
@@ -97,7 +94,7 @@ def seed_versq_table(conn, row_count=1):
         inserted += 1
 
     conn.commit()
-    print(f"Inserted {inserted} unique synthetic rows into 'versq'")
+    print(f"Inserted {inserted} rows into 'versq'")
 
 
 if __name__ == "__main__":

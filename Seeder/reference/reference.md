@@ -71,5 +71,34 @@ Ensuring uniqueness of `PSID` (pseudonymized person identifier) in the `vers` ta
 >  
 > "Avoiding duplication of records across time and facilities is critical for estimating coverage and tracking continuation."
 
+---
 
+## [7] ECDC (2023)
+**Citation:**  
+European Centre for Disease Prevention and Control. (2023).  
+*HIV prevention and care among migrants in the EU/EEA – Technical Report*.  
+**Link:** https://www.ecdc.europa.eu/sites/default/files/documents/hiv-migrants-dublin-declaration-november-2024.pdf  
+**Used for:**  
+- Justifies assigning non-zero `VERSTAGEAUSL` to simulate migrant (15% approximation ) and mobile PrEP users  
+- Reflects care-seeking behaviors across EU countries
 
+---
+
+## [8] Insurance Status Code Source Germany
+
+The 5-digit `Versichertenstatus` used in the `versq` table follows the structure defined by GKV-Spitzenverband:
+
+> **Schlüsselbezeichnung:** Versichertenstatus  
+> **Schlüsselgröße:** 5 Stellen  
+> **1. Stelle:** 1 = Mitglieder (insured member)  
+> **5. Stelle:** 1 = West, 4 = Sozialhilfeempfänger (§264 SGB V), 9 = Ost  
+> — Source: *https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/sonstige_leistungserbringer/technische_anlagen_archiv_4/Anlage_3_TP5_V14_20200610.pdf, GKV-Spitzenverband, p.5   
+
+These codes are formatted as `1XXXX` and padded with zeroes to comply with machine-readable insurance card formats.  
+They are used in your synthetic data generation script to reflect real-world insurance demographics.
+
+---
+
+## [8] Müllerschön J., Koschollek C., Santos-Hövener C., et al. (2019).
+> "Impact of health insurance status among migrants from sub-Saharan Africa on access to health care and HIV testing in Germany: a participatory cross-sectional survey." 
+**Link:** https://bmcinthealthhumrights.biomedcentral.com/articles/10.1186/s12914-019-0189-3
