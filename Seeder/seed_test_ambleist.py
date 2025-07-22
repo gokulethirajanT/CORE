@@ -6,7 +6,11 @@ import random
 import string
 from datetime import date, timedelta
 import psycopg2
+from dotenv import load_dotenv
+import os
 
+
+load_dotenv()
 # ─────────────────── helper functions ────────────────────────────────────────
 def random_service_date(start_year: int = 2019,
                         end_year:   int | None = None) -> date:
@@ -248,13 +252,11 @@ def seed_ambleist_table(conn, row_count: int = 100):
 # ─────────────────── run as script ───────────────────────────────────────────
 if __name__ == "__main__":
     conn = psycopg2.connect(
-        dbname="DM3_SEEDER",
-        user     = "postgres",
-        password = "London@123",
-        host     = "localhost",
-        port     = "5432"
+        dbname=os.getenv("DB_NAME"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        host=os.getenv("DB_HOST", "localhost"),
+        port=os.getenv("DB_PORT", "5432")
     )
-    try:
-        seed_ambleist_table(conn, row_count=1)
-    finally:
-        conn.close()
+    seed_ambleist_table(conn)
+    conn.close()

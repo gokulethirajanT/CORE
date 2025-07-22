@@ -8,11 +8,6 @@ import os
 # ───── Load environment variables ─────
 load_dotenv()
 
-DB_NAME = os.getenv("DB_NAME")
-DB_USER = os.getenv("DB_USER")
-DB_PASSWORD = os.getenv("DB_PASSWORD")
-DB_HOST = os.getenv("DB_HOST", "localhost")
-DB_PORT = os.getenv("DB_PORT", "5432")
 
 def random_date_in_year(year: int) -> str:
     """Returns a random date in YYYYMMDD format within the given year."""
@@ -154,7 +149,7 @@ def generate_eigenbet_hiv_enriched() -> float:
     if random.random() < 0.9:
         return 0.00
     return round(random.uniform(1.00, 15.00), 2)
-def seed_rez_table(conn, rows: int = 500):
+def seed_rez_table(conn, rows: int = 1):
     cur = conn.cursor()
     cur.execute('SELECT "VSID", "PSID", "BJAHR", "BNR" FROM "vers";')
     ref_rows = cur.fetchall()
@@ -239,17 +234,12 @@ def seed_rez_table(conn, rows: int = 500):
 
 # ────────────────────── Entrypoint ───────────────────────────────
 if __name__ == "__main__":
-    try:
-        conn = psycopg2.connect(
-            dbname=DB_NAME,
-            user=DB_USER,
-            password=DB_PASSWORD,
-            host=DB_HOST,
-            port=DB_PORT,
-        )
-        seed_rez_table(conn, rows=1)
-    except Exception as e:
-        print(f"Error: {e}")
-    finally:
-        if 'conn' in locals():
-            conn.close()
+    conn = psycopg2.connect(
+        dbname=os.getenv("DB_NAME"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        host=os.getenv("DB_HOST", "localhost"),
+        port=os.getenv("DB_PORT", "5432")
+    )
+    seed_rez_table(conn)
+    conn.close()

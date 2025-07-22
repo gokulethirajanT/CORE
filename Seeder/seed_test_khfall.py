@@ -2,7 +2,11 @@ import random
 import psycopg2
 from datetime import date, timedelta
 import string
+from dotenv import load_dotenv
+import os
 
+
+load_dotenv()
 # ────────────────────── Date Generator ───────────────────────────
 def random_date_in_year(year: int) -> str:
     start = date(year, 1, 1)
@@ -92,7 +96,7 @@ def generate_veranlassstellepseudo_hiv() -> str: # [81] Mocroft, A., et al. (201
     return base
 
 # ────────────────────── Main Seeding Routine ─────────────────────
-def seed_khfall_table(conn, rows: int = 200):
+def seed_khfall_table(conn, rows: int = 1):
     cur = conn.cursor()
     cur.execute('SELECT "VSID", "PSID", "BJAHR", "BNR" FROM "vers";')
     ref_rows = cur.fetchall()
@@ -184,13 +188,11 @@ def seed_khfall_table(conn, rows: int = 200):
 # ────────────────────── Entrypoint ───────────────────────────────
 if __name__ == "__main__":
     conn = psycopg2.connect(
-        dbname="DM3_SEEDER",
-        user="postgres",
-        password="London@123",
-        host="localhost",
-        port="5432",
+        dbname=os.getenv("DB_NAME"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        host=os.getenv("DB_HOST", "localhost"),
+        port=os.getenv("DB_PORT", "5432")
     )
-    try:
-        seed_khfall_table(conn, rows=1)
-    finally:
-        conn.close()
+    seed_khfall_table(conn)
+    conn.close()

@@ -2,6 +2,10 @@ import random
 import psycopg2
 from datetime import datetime, timedelta
 import string
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 # HIV-specific enrichment for DIAGSICH
 def generate_diagsich(hiv_positive: bool = True) -> str: # [33] Kojic et al. (2011) – HIV+ patients may receive 'probable' or 'suspected' diagnoses more often due to co-infections and overlapping symptoms.
@@ -121,13 +125,14 @@ def seed_ambdiag_table(conn, row_count=1):
     conn.commit()
     print(f" Inserted {row_count} synthetic rows into 'ambdiag'")
 
+
 if __name__ == "__main__":
     conn = psycopg2.connect(
-        dbname="DM3_SEEDER",
-        user="postgres",
-        password="London@123",
-        host="localhost",
-        port="5432"
+        dbname=os.getenv("DB_NAME"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        host=os.getenv("DB_HOST", "localhost"),
+        port=os.getenv("DB_PORT", "5432")
     )
     seed_ambdiag_table(conn)
     conn.close()

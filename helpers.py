@@ -2,15 +2,15 @@ import psycopg2
 import pandas as pd
 
 
-def connect_to_database(dsn: str, username: str, password: str, data_model: int = 3):
+def connect_to_database(dsn: str, username: str, password: str, dbname: str):
     """
-    Establish a PostgreSQL connection for Data Model 3 only.
+    Establish a PostgreSQL connection to a given database.
 
     Parameters:
         dsn (str): Must be 'postgres'
         username (str): DB user
         password (str): DB password
-        data_model (int): Fixed at 3
+        dbname (str): Target database name (e.g., DM3_SEEDER, DM3_PUF_1)
 
     Returns:
         tuple: (connection, cursor)
@@ -20,17 +20,19 @@ def connect_to_database(dsn: str, username: str, password: str, data_model: int 
 
     try:
         cnxn = psycopg2.connect(
-            dbname="CORE_MASTER_THESIS",
-            user=username,        # <- From command line
-            password=password,    # <- From command line
+            dbname=dbname,
+            user=username,
+            password=password,
             host="localhost",
             port="5432"
-        ) 
+        )
         cursor = cnxn.cursor()
         return cnxn, cursor
     except Exception as e:
-        print(f"❌ PostgreSQL connection failed: {e}")
+        print(f"❌ PostgreSQL connection failed to {dbname} as {username}: {e}")
         return None, None
+
+
 
 
 def get_constant_variables(data_model=3):

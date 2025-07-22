@@ -1,6 +1,11 @@
 import random
 import psycopg2
 from datetime import date, timedelta
+from dotenv import load_dotenv
+import os
+
+
+load_dotenv()
 
 """Seed DM-7 table AMBOPS with synthetic OPS procedures."""
 
@@ -84,13 +89,11 @@ def seed_ambops_table(conn, row_count: int = 1):
 # ───────────────────── run directly ─────────────────────────────────────────
 if __name__ == "__main__":
     conn = psycopg2.connect(
-        dbname="DM3_SEEDER",
-        user     = "postgres",
-        password = "London@123",
-        host     = "localhost",
-        port     = "5432"
+        dbname=os.getenv("DB_NAME"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        host=os.getenv("DB_HOST", "localhost"),
+        port=os.getenv("DB_PORT", "5432")
     )
-    try:
-        seed_ambops_table(conn, row_count=1)
-    finally:
-        conn.close()
+    seed_ambops_table(conn)
+    conn.close()

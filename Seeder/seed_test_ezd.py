@@ -4,7 +4,11 @@ Seed DM-8 table EZD with realistic prescription data.
 """
 import random
 import psycopg2
+from dotenv import load_dotenv
+import os
 
+
+load_dotenv()
 # ─────────────── PZN checksum ────────────────
 _PZN_W = [3, 1, 9, 7, 3, 1]
 
@@ -75,13 +79,11 @@ def seed_ezd_table(conn, rows: int = 100):
 # ─────────────── Entrypoint ────────────────
 if __name__ == "__main__":
     conn = psycopg2.connect(
-        dbname="DM3_SEEDER",
-        user     = "postgres",
-        password = "London@123",
-        host     = "localhost",
-        port     = "5432"
+        dbname=os.getenv("DB_NAME"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        host=os.getenv("DB_HOST", "localhost"),
+        port=os.getenv("DB_PORT", "5432")
     )
-    try:
-        seed_ezd_table(conn, rows=1)  # ← this is where row count is defined
-    finally:
-        conn.close()
+    seed_ezd_table(conn)
+    conn.close()

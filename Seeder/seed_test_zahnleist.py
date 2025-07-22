@@ -1,7 +1,11 @@
 import random
 import psycopg2
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
+import os
 
+
+load_dotenv()
 def generate_enriched_leistungsdatum():
     # More weight toward recent years (esp. 2022–2023)
     year = random.choices([2019, 2020, 2021, 2022, 2023], weights=[1, 2, 3, 6, 8])[0]
@@ -61,11 +65,11 @@ def seed_zahnleist_table(conn, row_count=1):
 
 if __name__ == "__main__":
     conn = psycopg2.connect(
-        dbname="DM3_SEEDER",
-        user="postgres",
-        password="London@123",
-        host="localhost",
-        port="5432"
+        dbname=os.getenv("DB_NAME"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        host=os.getenv("DB_HOST", "localhost"),
+        port=os.getenv("DB_PORT", "5432")
     )
     seed_zahnleist_table(conn)
     conn.close()

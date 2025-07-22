@@ -1,7 +1,11 @@
 import random
 import psycopg2
 from datetime import date, timedelta
+from dotenv import load_dotenv
+import os
 
+
+load_dotenv()
 # Define function to generate OPS Codes from the ops_catalogue  
 # HIV-specific enrichment for PROZ field using known frequent OPS procedures
 def get_hiv_enriched_proz_pool(conn, limit=500):  # [75] Marcus et al. (2021)
@@ -48,7 +52,7 @@ def random_date_in_year(year: int) -> str:
     return d.strftime("%Y%m%d")  # JJJJMMTT
 
 # Generate synthetic KHPROZ data
-def seed_khproz_table(conn, rows: int = 500):
+def seed_khproz_table(conn, rows: int = 1):
     cur = conn.cursor()
 
     PROZ_CODE_POOL = get_hiv_enriched_proz_pool(conn)
@@ -91,13 +95,11 @@ def seed_khproz_table(conn, rows: int = 500):
 # ────────────────────── Entrypoint ───────────────────────────────
 if __name__ == "__main__":
     conn = psycopg2.connect(
-        dbname="DM3_SEEDER",
-        user="postgres",
-        password="London@123",
-        host="localhost",
-        port="5432",
+        dbname=os.getenv("DB_NAME"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        host=os.getenv("DB_HOST", "localhost"),
+        port=os.getenv("DB_PORT", "5432")
     )
-    try:
-        seed_khproz_table(conn, rows=1)
-    finally:
-        conn.close()
+    seed_khproz_table(conn)
+    conn.close()

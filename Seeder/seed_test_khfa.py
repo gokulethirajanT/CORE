@@ -2,7 +2,11 @@ import random
 import psycopg2
 from datetime import date, timedelta, datetime  
 import string
+from dotenv import load_dotenv
+import os
 
+
+load_dotenv()
 # FA generator based on Schlüssel 6 or fallback codes
 def generate_fa_hiv_enriched(hiv_positive=True) -> str: # [91] Deutsche AIDS-Hilfe (2021)
     """
@@ -48,7 +52,7 @@ def generate_entlassdat_enriched(aufndat: str, max_days: int = 45) -> str:
     return entlass_date.strftime("%Y%m%d")
 
 # Main seeding function for KHFA
-def seed_khfa_table(conn, rows: int = 500):
+def seed_khfa_table(conn, rows: int = 1):
     cur = conn.cursor()
 
     cur.execute('SELECT "VSID", "PSID", "FALLIDKH", "BJAHR", "BNR" FROM "khfall";')
@@ -83,13 +87,11 @@ def seed_khfa_table(conn, rows: int = 500):
 # ────────────────────── Entrypoint ───────────────────────────────
 if __name__ == "__main__":
     conn = psycopg2.connect(
-        dbname="DM3_SEEDER",
-        user="postgres",
-        password="London@123",
-        host="localhost",
-        port="5432",
+        dbname=os.getenv("DB_NAME"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        host=os.getenv("DB_HOST", "localhost"),
+        port=os.getenv("DB_PORT", "5432")
     )
-    try:
-        seed_khfa_table(conn, rows=1)
-    finally:
-        conn.close()
+    seed_khfa_table(conn)
+    conn.close()
