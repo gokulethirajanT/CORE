@@ -149,7 +149,7 @@ def generate_eigenbet_hiv_enriched() -> float:
     if random.random() < 0.9:
         return 0.00
     return round(random.uniform(1.00, 15.00), 2)
-def seed_rez_table(conn, rows: int = 1):
+def seed_rez_table(conn, rows: int = 100):
     cur = conn.cursor()
     cur.execute('SELECT "VSID", "PSID", "BJAHR", "BNR" FROM "vers";')
     ref_rows = cur.fetchall()

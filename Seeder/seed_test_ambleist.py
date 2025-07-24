@@ -247,7 +247,7 @@ def seed_ambleist_table(conn, row_count: int = 100):
         )
 
     conn.commit()
-    print(f" Inserted {row_count} synthetic rows into 'ambleist'")
+    print(f" Inserted {row_count}  rows into 'ambleist'")
 
 # ─────────────────── run as script ───────────────────────────────────────────
 if __name__ == "__main__":

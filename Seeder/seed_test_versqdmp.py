@@ -17,7 +17,7 @@ def generate_versq():
     quarter = random.randint(1, 4)
     return int(f"{year}{quarter}")  # Format: YYYYQ
 
-def seed_versqdmp_table(conn, row_count=1):
+def seed_versqdmp_table(conn, row_count=100):
     cursor = conn.cursor()
 
     # Get valid FK combinations from versq
@@ -54,7 +54,7 @@ def seed_versqdmp_table(conn, row_count=1):
         ))
 
     conn.commit()
-    print(f"Inserted {row_count} synthetic rows into 'versqdmp'")
+    print(f"Inserted {row_count}  rows into 'versqdmp'")
 
 if __name__ == "__main__":
     conn = psycopg2.connect(

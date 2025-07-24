@@ -24,7 +24,7 @@ def choose_geschlecht():
         k=1
     )[0]
 
-def seed_versq_table(conn, row_count=1):
+def seed_versq_table(conn, row_count=100):
     cursor = conn.cursor()
 
     # Get existing VSID, PSID, BJAHR, BNR from the vers table

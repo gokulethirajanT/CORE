@@ -96,7 +96,7 @@ def generate_veranlassstellepseudo_hiv() -> str: # [81] Mocroft, A., et al. (201
     return base
 
 # ────────────────────── Main Seeding Routine ─────────────────────
-def seed_khfall_table(conn, rows: int = 1):
+def seed_khfall_table(conn, rows: int = 100):
     cur = conn.cursor()
     cur.execute('SELECT "VSID", "PSID", "BJAHR", "BNR" FROM "vers";')
     ref_rows = cur.fetchall()

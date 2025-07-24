@@ -67,7 +67,7 @@ def generate_tageobe(hiv_positive: bool = True) -> str: # [88] Shubber, Z., et a
 
 
 # Main seeding function
-def seed_khentg_table(conn, rows: int = 1):
+def seed_khentg_table(conn, rows: int = 100):
     cur = conn.cursor()
 
     cur.execute('SELECT "VSID", "PSID", "FALLIDKH", "BJAHR", "BNR" FROM "khfall";')

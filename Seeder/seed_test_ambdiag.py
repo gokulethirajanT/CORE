@@ -83,7 +83,7 @@ def generate_diag_date(hiv_positive: bool = True) -> int:  # [50] BZgA – PrEP 
     
     return int(f"{year}{month:02d}{day:02d}")
 
-def seed_ambdiag_table(conn, row_count=1):
+def seed_ambdiag_table(conn, row_count=100):
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -123,7 +123,7 @@ def seed_ambdiag_table(conn, row_count=1):
         ))
 
     conn.commit()
-    print(f" Inserted {row_count} synthetic rows into 'ambdiag'")
+    print(f" Inserted {row_count} rows into 'ambdiag'")
 
 
 if __name__ == "__main__":

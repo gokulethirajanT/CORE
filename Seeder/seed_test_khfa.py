@@ -52,7 +52,7 @@ def generate_entlassdat_enriched(aufndat: str, max_days: int = 45) -> str:
     return entlass_date.strftime("%Y%m%d")
 
 # Main seeding function for KHFA
-def seed_khfa_table(conn, rows: int = 1):
+def seed_khfa_table(conn, rows: int = 100):
     cur = conn.cursor()
 
     cur.execute('SELECT "VSID", "PSID", "FALLIDKH", "BJAHR", "BNR" FROM "khfall";')

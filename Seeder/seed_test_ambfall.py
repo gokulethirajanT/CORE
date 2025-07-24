@@ -60,7 +60,7 @@ def generate_dialyse_cost(): # [40] Bundesministerium für Gesundheit (2022)
     else:
         return 0.0  # No dialysis billed in majority of cases
 
-def seed_ambfall_table(conn, row_count=1):
+def seed_ambfall_table(conn, row_count=100):
     cursor = conn.cursor()
 
     cursor.execute("""SELECT "VSID", "PSID", "BJAHR", "BNR" FROM "vers" """)
@@ -162,7 +162,7 @@ def seed_ambfall_table(conn, row_count=1):
         ))
 
     conn.commit()
-    print(f"Inserted {row_count} synthetic rows into 'ambfall'")
+    print(f"Inserted {row_count}  rows into 'ambfall'")
 
 if __name__ == "__main__":
     conn = psycopg2.connect(
