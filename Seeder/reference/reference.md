@@ -99,6 +99,6 @@ They are used in your synthetic data generation script to reflect real-world ins
 
 ---
 
-## [8] Müllerschön J., Koschollek C., Santos-Hövener C., et al. (2019).
+## [9] Müllerschön J., Koschollek C., Santos-Hövener C., et al. (2019).
 > "Impact of health insurance status among migrants from sub-Saharan Africa on access to health care and HIV testing in Germany: a participatory cross-sectional survey." 
 **Link:** https://bmcinthealthhumrights.biomedcentral.com/articles/10.1186/s12914-019-0189-3

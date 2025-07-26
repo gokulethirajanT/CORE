@@ -103,8 +103,9 @@ def generate_pseudonym(variable: str, table: str = None, conn=None, original_val
         if original_value not in _psid_map:
             _psid_map[original_value] = ''.join(random.choices(POSSIBLE_CHARACTERS, k=max_length))
         return _psid_map[original_value]
-
+    # Fallback for all other pseudonyms
     return ''.join(random.choices(POSSIBLE_CHARACTERS, k=max_length))
+    
 
 
 
