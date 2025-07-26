@@ -1,7 +1,6 @@
 import psycopg2
 import pandas as pd
 
-
 def connect_to_database(dsn: str, username: str, password: str, dbname: str):
     """
     Establish a PostgreSQL connection to a given database.
@@ -85,6 +84,16 @@ def get_data_types(data_model=3):
     dm3_df = df.query('Datamodel == 3')
     return dict(zip(dm3_df.Variable, dm3_df.Type))
 
+def get_data_type(column_name: str, data_model=3) -> str:
+    """
+    Return the standardized data type for a single column in DM3.
+    Falls back to 'category' if column is not found in data_types.csv.
+    """
+    try:
+        all_types = get_data_types(data_model)
+        return all_types.get(column_name.upper(), 'category')
+    except Exception:
+        return 'category'
 
 def get_pseudo_mapping(data_model=3):
     """

@@ -27,9 +27,9 @@ def seed_vers_table(conn, row_count=100):
     #    1. Previously inserted PSIDs in the database (existing_psids)
     #    2. PSIDs generated during this current run (generated_psids)
 
-    def generate_unique_psid(): # [6] European Centre for Disease Prevention and Control (2023)
+    def generate_unique_psid():  # [6] European Centre for Disease Prevention and Control (2023)
         while True:
-            psid = bytes.fromhex(''.join(random.choices('0123456789ABCDEF', k=32)))
+            psid = ''.join(random.choices('0123456789ABCDEF', k=32))  # generate as hex string
             if psid not in existing_psids and psid not in generated_psids:
                 generated_psids.add(psid)
                 return psid
@@ -63,7 +63,6 @@ def seed_vers_table(conn, row_count=100):
             int(g.datetime.date(start=2000, end=2024).strftime('%Y%m%d'))
             if vitalstatus == 1 else None
         )
-
         # BJAHR skew based on rollout + pandemic impact
         # Ref: # [4] Schmidt et al. (2024) – COVID-19 suppressed 2020 uptake; ~26k users by end of 2021
         bjahr = random.choices(
