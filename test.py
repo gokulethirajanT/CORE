@@ -1,6 +1,6 @@
-from helpers import connect_to_database
+# test_env.py
+import os
+from dotenv import load_dotenv
 
-conn, cur = connect_to_database(puf=True)
-cur.execute("SELECT COUNT(*) FROM vers_puf")
-print("Rows in PUF vers table:", cur.fetchone())
-conn.close()
+load_dotenv()
+print(os.getenv("DB_PASSWORD"))

@@ -97,7 +97,7 @@ CREATE TABLE "ambleist_puf" (
     "LANRFG" SMALLINT,                       -- Doctor's specialty
     "LANRPRUEF" VARCHAR(1),                 -- Validation flag
     "GONR" VARCHAR(25),                     -- Fee schedule number
-    "GONRDAT" DATE NOT NULL,                -- Service date
+    "GONRDAT" INTEGER NOT NULL,                -- Service date
     "MULTIPLIKATOR" VARCHAR(80),           -- Service multiplier
     "ABRBEGR" VARCHAR(200),                -- Billing justification
     "SACHKOBEZ" VARCHAR(200),              -- Description of material costs
@@ -153,7 +153,7 @@ CREATE TABLE "zahnleist_puf" (
     "VSID" VARCHAR(20),                            -- Insurance ID
     "PSID" VARCHAR(20),                   -- Person ID
     "FALLIDZAHN" VARCHAR(11) NOT NULL,      -- Dental case ID
-    "LEISTDAT" DATE,                        -- Date of service
+    "LEISTDAT" INTEGER,                        -- Date of service
     "ZAHN" VARCHAR(5),                      -- Tooth identifier
     "GEBNR" VARCHAR(25),                    -- Dental code
     "GEBPOS" VARCHAR(5),                    -- Position in jaw

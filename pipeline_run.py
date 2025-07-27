@@ -20,8 +20,7 @@ def main():
     run_command("python3 flush_puf_data.py")
 
     # Step 4: Generate PUFs
-    run_command("python3 generate_puf.py --tables vers versq versqdmp rez")
-
+    run_command("python3 generate_puf.py --tables vers")
 
     print("\n✅ Pipeline finished successfully.")
 

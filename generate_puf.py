@@ -3,9 +3,11 @@ import pandas as pd
 from datetime import datetime
 from helpers import (
     connect_to_database, get_data_types, get_pseudo_variables,
-    get_constant_variables, clean_data
+    get_constant_variables, clean_data, get_column_max_length
 )
 from functions import force_k, generate_pseudonym, shuffle_column
+from dotenv import load_dotenv
+load_dotenv()
 
 REPLACE_IDS = {}
 K = 3
@@ -23,28 +25,34 @@ def process_table(table: str):
     columns = [row[0] for row in seeder_cursor.fetchall()]
 
     for e, col in enumerate(columns):
-        seeder_conn, seeder_cursor = connect_to_database(puf=False)
+        # ⚠️ Reuse the same cursor instead of reconnecting every time
         seeder_cursor.execute(f'SELECT "{col}" FROM {table}')
         data = pd.Series([row[0] for row in seeder_cursor.fetchall()])
-        seeder_conn.close()
 
-        if col not in get_pseudo_variables() + get_constant_variables():
-            data_type = dtypes.get(col, "string")
+        data_type = dtypes.get(col.upper(), "string").lower()
+        
+        if col in get_constant_variables():
+            pass  # Leave unchanged
+        elif col in get_pseudo_variables():
+            # 🔐 Use actual max length from DB schema
+            max_len = get_column_max_length(table, col, seeder_cursor)
+            for val in data.unique():
+                if val not in REPLACE_IDS:
+                    REPLACE_IDS[val] = generate_pseudonym(variable=col, length=max_len)
+            data = data.map(REPLACE_IDS)
+        elif data_type == "pseudo":
+            continue  # Skip special pseudonyms like FALLIDAMB, REZNR
+        else:
             data = clean_data(data, data_type)
             data = shuffle_column(data)
             data = force_k(data, data_type, K)
-        elif col in get_pseudo_variables():
-            for val in data.unique():
-                if val not in REPLACE_IDS:
-                    REPLACE_IDS[val] = generate_pseudonym()
-            data = data.map(REPLACE_IDS)
 
-        # write to CSV
+        # 📤 Write to CSV
         if e == 0:
             os.makedirs("output_csv", exist_ok=True)
             with open(f"output_csv/{table}.csv", "w", newline="") as f:
                 writer = csv.writer(f)
-                writer.writerow([col.upper()])  # ⬅️ Uppercase column name
+                writer.writerow([col.upper()])
                 for val in data:
                     writer.writerow([val])
         else:
@@ -53,10 +61,15 @@ def process_table(table: str):
                 header, rows = reader[0], reader[1:]
             with open(f"output_csv/{table}.csv", "w", newline="") as f_out:
                 writer = csv.writer(f_out)
-                writer.writerow(header + [col.upper()])  # ⬅️ Uppercase column name
+                writer.writerow(header + [col.upper()])
                 for i, row in enumerate(rows):
                     row.append(data.iloc[i])
                     writer.writerow(row)
+
+    # 🔒 Close connection only once at the end
+    seeder_cursor.close()
+    seeder_conn.close()
+
 
 
 def write_to_puf_db(table: str):
