@@ -54,7 +54,14 @@ def clean_data(column_data, dt):
         return pd.to_datetime(column_data, errors='coerce').dt.strftime('%Y%m%d').astype('Int64')
     elif dt == "year":
         return pd.to_datetime(column_data, format='%Y', errors='coerce').dt.year
+    elif dt == "float":
+        return pd.to_numeric(column_data, errors="coerce")
     elif dt == "integer":
-        return pd.to_numeric(column_data, errors="coerce").astype("Int64")
+        try:
+            return pd.to_numeric(column_data, errors="coerce").astype("Int64")
+        except Exception as e:
+            print(f"❌ Failed to convert column to Int64:\n{column_data.head(10)}")
+            print("❌ Error:", e)
+            raise e
     else:
         return column_data

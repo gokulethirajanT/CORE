@@ -135,7 +135,7 @@ CREATE TABLE "zahnfall_puf" (
     "FALLIDZAHN" VARCHAR(11) NOT NULL,      -- Dental case ID
     "ZANRPSEUDO" BIGINT,                    -- Pseudonymized dentist ID
     "ZANRABRPSEUDO" BIGINT,                 -- Billing dentist pseudonym
-    "ZAKZV" SMALLINT,                        -- Dental insurance association
+    "ZAKZV" BIGINT,                        -- Dental insurance association
     "BEHANDARTZAHN" VARCHAR(2),             -- Dental treatment type
     "BEGINNDATZAHN" INTEGER NOT NULL,                   -- Treatment start date
     "ENDEDATZAHN" INTEGER NOT NULL,                     -- Treatment end date

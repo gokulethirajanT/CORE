@@ -43,6 +43,7 @@ def process_table(table: str):
         elif data_type == "pseudo":
             continue  # Skip special pseudonyms like FALLIDAMB, REZNR
         else:
+            print(f"🔍 Cleaning column: {col} | Type: {data_type}")
             data = clean_data(data, data_type)
             data = shuffle_column(data)
             data = force_k(data, data_type, K)

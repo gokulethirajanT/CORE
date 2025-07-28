@@ -17,11 +17,12 @@ def generate_secure_bytes(size: int, n_bytes=32):
 
 
 def shuffle_column(variable: pd.Series):
-    """Shuffle values securely based on random bytes."""
+    """Shuffle values securely based on random bytes, preserving dtype."""
     random_integers = generate_secure_bytes(len(variable))
     sorted_indices = np.argsort(random_integers)
     shuffled_variable = np.array(variable)[sorted_indices]
-    return pd.Series(shuffled_variable)
+    return pd.Series(shuffled_variable, dtype=variable.dtype)  #  Preserve original dtype
+
 
 
 def assert_k_condition(k: int):
@@ -50,7 +51,7 @@ def force_k(values: pd.Series, value_type: str, k: int):
                 if nearest is not None:
                     df['values'].fillna(nearest, inplace=True)
                 else:
-                    df['values'] = df['values'].fillna(0)  # Or pick a safe fallback like -1 or "Unknown"
+                    df['values'] = df['values'].fillna(0)  # Fallback to 0 if no nearest value
             else:
                 df.loc[df['values'] == current_value, 'values'] = nearest
         return pd.Series(df['values'].to_list())
@@ -63,17 +64,28 @@ def force_k(values: pd.Series, value_type: str, k: int):
     elif value_type in ['category', 'alphanumeric']:
         k_counts = df['values'].value_counts(dropna=False)
         under_k = k_counts[k_counts < k]
+
         if not under_k.empty:
             valid = k_counts[k_counts >= k].index
+
+            # Fallback: 0 for numeric-looking columns, else "O"
+            is_numeric_fallback = pd.api.types.is_numeric_dtype(df['values'])
+            fallback = 0 if is_numeric_fallback else "O"
+
             if len(under_k) == 1 or under_k.sum() < k:
-                smallest_valid = valid[-1] if len(valid) > 0 else "Other"
-                df['values'] = df['values'].apply(lambda x: x if x in valid and x != smallest_valid else "O")
+                smallest_valid = valid[-1] if len(valid) > 0 else fallback
+                df['values'] = df['values'].apply(
+                    lambda x: x if x in valid and x != smallest_valid else fallback
+                )
             else:
-                df['values'] = df['values'].apply(lambda x: x if x not in under_k.index else "O")
+                df['values'] = df['values'].apply(
+                    lambda x: x if x not in under_k.index else fallback
+                )
         return pd.Series(df['values'].to_list())
 
     else:
         sys.exit(f"Unsupported data type for k-anonymity: {value_type}")
+
 
 
 def find_nearest_number(values: pd.Series, single_value):
@@ -84,7 +96,6 @@ def find_nearest_number(values: pd.Series, single_value):
     if single_value is None:
         return min(values)
     return min(values, key=lambda x: abs(x - single_value))
-
 
 def generate_pseudonym(variable: str, table: str = "", length: int = None) -> str:
     """
@@ -101,6 +112,9 @@ def generate_pseudonym(variable: str, table: str = "", length: int = None) -> st
     # Otherwise match length of original column
     if length is None and table:
         length = get_column_max_length(table, variable, seeder_cursor)
-
     length = length or 8
+
+    if length > 18:
+        length = 18  #  ensure BIGINT compatibility
+
     return ''.join(random.choices(string.digits, k=length))
