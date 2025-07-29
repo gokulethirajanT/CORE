@@ -22,7 +22,7 @@ def connect_to_database(puf=False):
         )
         return conn, conn.cursor()
     except Exception as e:
-        print(f"❌ PostgreSQL connection failed to {dbname}: {e}")
+        print(f" PostgreSQL connection failed to {dbname}: {e}")
         return None, None
 
 def get_column_max_length(table: str, column: str, cursor) -> int:
@@ -60,8 +60,8 @@ def clean_data(column_data, dt):
         try:
             return pd.to_numeric(column_data, errors="coerce").astype("Int64")
         except Exception as e:
-            print(f"❌ Failed to convert column to Int64:\n{column_data.head(10)}")
-            print("❌ Error:", e)
+            print(f" Failed to convert column to Int64:\n{column_data.head(10)}")
+            print(" Error:", e)
             raise e
     else:
         return column_data
