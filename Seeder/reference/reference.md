@@ -17,6 +17,11 @@ This supports assigning higher probability to birth years **1977 to 1997** when 
 **Used for:**  
 Enriching `PLZ` by assigning a **70% probability to urban postal codes**, based on Table 2 which shows that **~88.6% of PrEP users resided in Germany's five largest cities or their surrounding areas** (Berlin, Cologne, Munich, Hamburg, Frankfurt).  
 This justifies over-representing city-level PLZ codes like `"10115"` (Berlin), `"20095"` (Hamburg), and `"80331"` (Munich) in synthetic insurance data.
+**Used for:**  
+Establishing ABGABEDAT as the primary timestamp for calculating PrEP indicators such as:
+> Current PrEP users
+> New PrEP users
+> Recent use before HIV diagnosis (PrEP failure rate)
 
 ---
 
@@ -118,3 +123,26 @@ The NEPOS study collected data from 47 HIV-specialist centers across Germany.
 Of the 4,620 PrEP users evaluated:
 - **99.2% were male**
 - **98.6% identified as MSM (men who have sex with men)**
+
+## [11] IFA GmbH (2025) – PZN Code Structure  
+**Citation:**  
+IFA GmbH. (2025).  
+*Technische Hinweise zur PZN-Codierung – PZN im Code 39 (Version 2.3, 01.04.2025).*  
+Informationsstelle für Arzneispezialitäten (IFA GmbH), Frankfurt am Main.  
+
+**Used for:**  
+Defining the valid format and encoding of Pharmazentralnummern (PZNs) used in German pharmacy systems. All PZN codes used in the PrEP prescription seeding follow this 8-digit format, in accordance with IFA specifications.
+
+**Key Observation:**  
+“Each PZN consists of 8 digits, followed optionally by a check digit, and is encoded as a barcode (Code 39 or Data Matrix) on all prescription drug packaging. The PZN serves as the national identifier for drugs reimbursed by statutory health insurance.”
+
+**Details:**  
+The PZN is issued by IFA GmbH and must be printed on all pharmacy-dispensed items in Germany.  
+For machine readability and billing systems:
+- Encoded in **Code 39 barcode**
+- Displayed in **plain text format** (e.g., `PZN - 12345678`)
+- Verified against IFA database and checksum
+
+**Source File:**  
+`IFA_Info_Code_39_DE.pdf` (pages 1–5)
+
