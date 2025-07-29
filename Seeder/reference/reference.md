@@ -64,7 +64,7 @@ European Centre for Disease Prevention and Control. (2023). *Monitoring of HIV p
 **URL:** https://www.ecdc.europa.eu/assets/hiv-monitoring-preexposure/prep-monitoring-tool.html  
 
 **Used for:**  
-Ensuring uniqueness of `PSID` (pseudonymized person identifier) in the `vers` table to avoid duplicate individuals in synthetic PrEP cohorts. This is necessary for accurate calculation of longitudinal indicators such as initiation, continuation, and coverage across reporting periods.
+Ensuring uniqueness of VERSQ (quasi-anonymized person identifier) in the versq table is essential to avoid duplicate individuals in synthetic PrEP cohorts. This guarantees that each person is represented only once across linked insurance cases (VSIDs), enabling accurate calculation of longitudinal indicators such as initiation, continuation, and coverage. Without unique VERSQ values, patient-level stratification and cohort tracking across reporting periods would be unreliable.
 
 **Relevant lines:**  
 > "Each person should only be counted once, even if they receive PrEP in multiple settings or during multiple periods."  
@@ -102,3 +102,19 @@ They are used in your synthetic data generation script to reflect real-world ins
 ## [9] Müllerschön J., Koschollek C., Santos-Hövener C., et al. (2019).
 > "Impact of health insurance status among migrants from sub-Saharan Africa on access to health care and HIV testing in Germany: a participatory cross-sectional survey." 
 **Link:** https://bmcinthealthhumrights.biomedcentral.com/articles/10.1186/s12914-019-0189-3
+
+## [10] Schmidt et al. (2020) – The NEPOS Study Group
+**Citation:**  
+Schmidt, D., Kollan, C., Bartmeyer, B., Bremer, V., Schikowski, T., Friebe, M., Schellberg, S., Scholten, S., Bickel, M., Hanhoff, N., Rüsenberg, R., Schewe, K., & the NEPOS Study Group. (2020).  
+*Low incidence of HIV infection and decreasing incidence of sexually transmitted infections among PrEP users in 2020 in Germany.*  
+Poster presentation, Conference on Retroviruses and Opportunistic Infections (CROI) 2021.
+
+**Used for:**  
+Supporting high probability assignment of `GESCHLECHT = 2` (male) in PrEP cohort seeding.
+**Key Observation:**  
+““4,620 PrEP users were included: 99.2% male, median age 38 years (IQR 32–45), 98.6% men who have sex with men (MSM). The median duration of PrEP exposure was 451 days (IQR 357–488).””
+**Details:**  
+The NEPOS study collected data from 47 HIV-specialist centers across Germany.  
+Of the 4,620 PrEP users evaluated:
+- **99.2% were male**
+- **98.6% identified as MSM (men who have sex with men)**

@@ -8,11 +8,17 @@ from itertools import product
 
 load_dotenv()
 g = Generic(locale=Locale.DE)
+used_versqs = set()
+ 
+def generate_valid_versq():
+    year = random.choice([2021, 2022, 2023])
+    quarter = random.randint(1, 4)
+    return int(f"{year}{quarter}")  # e.g., 20231, 20234
 
-def choose_geschlecht():        
+def choose_geschlecht():  # [10] Schmidt et al. (2020) – The NEPOS Study Group
     return random.choices(
-        population=[1, 2, 3, 4],  # Male-Dominated Gender Distribution
-        weights=[75, 20, 3, 2],   # [7] BZgA (2023) - PrEP Monitoring
+        population=[2, 1, 3, 4],  # 2 = male, 1 = female, 3 = unknown, 4 = diverse
+        weights=[98.6, 0.8, 0.4, 0.2],  # Based on NEPOS 2020 proportions
         k=1
     )[0]
 
@@ -29,16 +35,20 @@ def seed_versq_table(conn, row_count=100):
     cursor.execute('SELECT "PSID", "VERSQ" FROM "versq";')
     used_combinations = set(cursor.fetchall())
 
-    # Generate all possible VERSQ values (20 total)
-    valid_versq = [int(f"{year}{q}") for year in range(2019, 2024) for q in range(1, 5)]
+    # Fill the global used_versqs set
+    used_versqs.update(vq for _, vq in used_combinations)
 
-    # Build all unique (PSID, VERSQ) pairs, skip already used
-    all_combinations = [
-        (vsid, psid, bjahr, bnr, versq)
-        for vsid, psid, bjahr, bnr in vers_rows
-        for versq in valid_versq
-        if (psid, versq) not in used_combinations
-    ]
+    # Ensure each PSID gets exactly one unique VERSQ
+    generated_versqs = {}
+
+    # Build (VSID, PSID, BJAHR, BNR, VERSQ) tuples
+    all_combinations = []
+    for vsid, psid, bjahr, bnr in vers_rows:
+        if psid not in generated_versqs:
+            generated_versqs[psid] = generate_valid_versq()
+        versq = generated_versqs[psid]
+        if (psid, versq) not in used_combinations:
+            all_combinations.append((vsid, psid, bjahr, bnr, versq))
 
     # Shuffle and slice
     random.shuffle(all_combinations)
@@ -53,16 +63,26 @@ def seed_versq_table(conn, row_count=100):
 
             geschlecht = choose_geschlecht()
 
-            if geschlecht == 1 and 1975 <= bjahr <= 2003:
-                verstage = random.randint(180, 365)
+            if geschlecht == 1 and 1975 <= bjahr <= 2003: # [10] Schmidt et al. (2020) – The NEPOS Study Group
+                verstage = random.randint(360, 500)  # centered around 451 days
             else:
-                verstage = random.randint(30, 180)
+                verstage = random.randint(30, 180)   # lower retention group
+
 
             verstageausl = random.randint(1, verstage // 4) if random.random() < 0.15 else 0
-
             versstatus = random.choices(
-                population=[10001, 10002, 10003, 99999],
-                weights=[83, 10, 5, 2],
+                population=[ # [8] Insurance Status Code Source Germany
+                    10001,  # Member of statutory insurance (GKV) – most common among PrEP users [8]
+                    10002,  # Retired/disabled – less common in PrEP cohort due to younger age profile [8]
+                    10003,  # Dependent/family-insured – some younger or migrant users fall under this [8]
+                    99999   # Placeholder for unknown/undocumented status (e.g., asylum seekers, irregular access) [9]
+                ],
+                weights=[ # [9] Müllerschön J., Koschollek C., Santos-Hövener C., et al. (2019). Migrants from sub-Saharan Africa on access to health care and HIV testing in Germany 
+                    83,     # Majority are full GKV members (working adults, students, etc.)
+                    10,     # Retired/disabled – small portion
+                    5,      # Family-insured partners or dependents – minority
+                    2       # No valid insurance/unknown – aligns with vulnerability data from migrant PrEP access studies [9]
+                ],
                 k=1
             )[0]
 

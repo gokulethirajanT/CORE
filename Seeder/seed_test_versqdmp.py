@@ -15,7 +15,7 @@ def get_existing_versqdmp_keys(cursor):
 def seed_versqdmp_table(conn, row_count=100):
     cursor = conn.cursor()
 
-    # ✅ Step 1: Get deduplicated FK-valid keys from versq
+    #  Step 1: Get deduplicated FK-valid keys from versq
     cursor.execute("""
         SELECT DISTINCT ON ("PSID", "VERSQ")
             "VSID", "PSID", "VERSQ", "BJAHR", "BNR"
@@ -28,7 +28,7 @@ def seed_versqdmp_table(conn, row_count=100):
     # Step 2: Get existing keys from versqdmp
     existing_keys = get_existing_versqdmp_keys(cursor)
 
-    # ✅ Step 3: Filter for only FK-valid, non-duplicate keys
+    #  Step 3: Filter for only FK-valid, non-duplicate keys
     to_insert_keys = list(all_possible_keys - existing_keys)
     random.shuffle(to_insert_keys)
     print(f"🔍 Available keys: {len(all_possible_keys)}, Already used: {len(existing_keys)}, Usable: {len(to_insert_keys)}")
@@ -37,31 +37,20 @@ def seed_versqdmp_table(conn, row_count=100):
 
     inserted = 0
     for psid, versq in selected_keys:
-        # ✅ Match (PSID, VERSQ) to full row
+        #  Match (PSID, VERSQ) to full row
         match = next((row for row in all_possible if row[1] == psid and row[2] == versq), None)
         if not match:
             continue
         vsid, psid, versq, bjahr, bnr = match
 
-        # Assign HIV-relevant DMP programs with skewed probabilities
-        dmpprog = random.choices(
-            ['DM', 'CH', 'KO', 'AS', 'BP'], 
-            weights=[5, 2, 1, 2, 3]
-        )[0]  
-        # [16] Nash et al. (2018), [17] Sax et al. (2012), [21] Schmidt et al. (2020)
+        dmpprog = random.choice(['DM', 'CH', 'KO', 'AS', 'BP'])  
 
-        # Enrich DMPTAGE based on chosen program
         if dmpprog in ['DM', 'CH', 'BP']: 
             dmptage = random.randint(40, 99)  
-            # [17] Sax et al. (2012), [18] EACS Guidelines (2023), [20] Barrett et al. (2019)
         else:
             dmptage = random.randint(10, 60)  
-            # Less intense DMP involvement
 
-        datenmodell = 3  
-        # [9] Forschungsdatenzentrum Gesundheit. (2023). Datenmodell 3: Datenstruktur und Variablenbeschreibung. BfArM.
-        # https://fdz-gesundheit.github.io/datensatzbeschreibung_fdz_gesundheit/
-        # [19] BMG (2021)
+        datenmodell = 3   
 
         cursor.execute("""
             INSERT INTO versqdmp (
@@ -72,7 +61,7 @@ def seed_versqdmp_table(conn, row_count=100):
         inserted += 1
 
     conn.commit()
-    print(f"✅ Inserted {inserted} new versqdmp rows")
+    print(f" Inserted {inserted} new versqdmp rows")
 
 if __name__ == '__main__':
     conn = psycopg2.connect(
