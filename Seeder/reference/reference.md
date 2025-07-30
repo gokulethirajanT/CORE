@@ -146,3 +146,19 @@ For machine readability and billing systems:
 **Source File:**  
 `IFA_Info_Code_39_DE.pdf` (pages 1–5)
 
+## [12] WHO/CDC (2014) – HIV Surveillance ICD Coding Guidance  
+**Citation:**  
+World Health Organization (WHO) & Centers for Disease Control and Prevention (CDC). (2014).  
+*Annex 2: ICD-10 codes for HIV – HIV mortality surveillance: methods and applications in generalized epidemics.*  
+Retrieved from: [https://www.ncbi.nlm.nih.gov/books/NBK236995/bin/annex2-m1.pdf](https://www.ncbi.nlm.nih.gov/books/NBK236995/bin/annex2-m1.pdf)  
+
+**Used for:**  
+Defines all ICD-10 codes used to document HIV-related diagnoses, including B20–B24 for HIV disease, Z21 for asymptomatic status, and R75 for inconclusive test results.  
+Supports enrichment of `ICDAMB_CODE` with these specific HIV-related terms to reflect real-world diagnosis coding patterns in PrEP surveillance and synthetic data generation.
+
+## [13] BZgA – PrEP Monitoring Report (2023)   
+**Citation:**  
+Bundeszentrale für gesundheitliche Aufklärung. (2023). *Monitoring der HIV-Präexpositionsprophylaxe (PrEP) in Deutschland: Jahresbericht 2023*.  
+**Internal Report:** Köln: BZgA.  
+**Used for:**  
+Supports enrichment of `DIAGDAT` toward 2020–2023 diagnosis dates, especially in Q2–Q4, reflecting regular quarterly HIV screenings as required by PrEP reimbursement regulations post-TSVG (2019).

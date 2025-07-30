@@ -7,36 +7,24 @@ import os
 
 load_dotenv()
 
-# HIV-specific enrichment for DIAGSICH
-def generate_diagsich(hiv_positive: bool = True) -> str: # [33] Kojic et al. (2011) – HIV+ patients may receive 'probable' or 'suspected' diagnoses more often due to co-infections and overlapping symptoms.
-    """
-    Return enriched diagnosis certainty (DIAGSICH) based on HIV status.
-    HIV+ patients more likely to receive 'V' (suspected) or 'G' (probable) codes.
-    """
-    if hiv_positive:
-        return random.choices(['V', 'G', 'Z', 'A'], weights=[0.45, 0.35, 0.15, 0.05])[0]  # More uncertainty
-    else:
-        return random.choices(['A', 'G', 'V', 'Z'], weights=[0.5, 0.3, 0.15, 0.05])[0]  # More confirmed diagnoses
 
-def generate_diaglokal(hiv_positive: bool = True) -> str:  # [48] Riedel et al. (2005) – Bilateral symptoms more common in HIV+ due to symmetrical or systemic manifestations
+def generate_diaglokal() -> str:
     """
-    Return enriched diagnosis laterality (DIAGLOKAL) based on HIV status.
-    HIV+ patients more likely to show bilateral findings (e.g., lymphadenopathy).
+    Return a completely random diagnosis laterality (DIAGLOKAL) with no enrichment.
     """
-    if hiv_positive:
-        return random.choices(['-', 'B', 'L', 'R'], weights=[0.95, 0.025, 0.0125, 0.0125])[0]  # 5% total with laterality
-    else:
-        return random.choices(['-', 'L', 'R', 'B'], weights=[0.95, 0.02, 0.02, 0.01])[0]
+    return random.choice(['-', 'L', 'R', 'B'])
 
-def get_weighted_icd_pool(conn, sti_ratio=0.6, total=1000): # [51] Robert Koch-Institut (2023) #referenced from the TABLE icd10_catalogue
+def get_weighted_icd_pool(conn, sti_ratio=0.5, total=1000):  # [51] WHO/CDC (2014); RKI Catalogue Crosscheck
     cur = conn.cursor()
     cur.execute('SELECT "SCHLÜSSELNUMMER", "TITEL_LANG" FROM "icd10_catalogue";')
     rows = cur.fetchall()
 
-    sti_keywords = [
-        "hiv", "syphilis", "gonorrhoe", "chlamydien", "genital",
-        "herpes", "trichomon", "urethritis", "vaginitis"
-    ]
+    #  ICD-10 codes confirmed to exist in your icd10_catalogue table (from WHO HIV surveillance guide)
+    confirmed_sti_codes = {
+        "B20", "B21", "B22", "B23", "B24",  # HIV disease codes
+        "Z21",                             # Asymptomatic HIV
+        "R75"                              # Inconclusive lab evidence of HIV
+    }
 
     sti_icd = []
     non_sti_icd = []
@@ -44,11 +32,11 @@ def get_weighted_icd_pool(conn, sti_ratio=0.6, total=1000): # [51] Robert Koch-I
     for code, title in rows:
         if not code:
             continue
-        title_lower = (title or "").lower()
-        if any(kw in title_lower for kw in sti_keywords):
-            sti_icd.append(code)
+        code_clean = code.strip().upper()
+        if code_clean in confirmed_sti_codes:
+            sti_icd.append(code_clean)
         else:
-            non_sti_icd.append(code)
+            non_sti_icd.append(code_clean)
 
     if not sti_icd or not non_sti_icd:
         raise ValueError("Could not find both STI and non-STI ICD codes.")
@@ -57,6 +45,7 @@ def get_weighted_icd_pool(conn, sti_ratio=0.6, total=1000): # [51] Robert Koch-I
     non_sti_count = total - sti_count
 
     return random.choices(sti_icd, k=sti_count) + random.choices(non_sti_icd, k=non_sti_count)
+
 
 def extract_icd_parts(code: str): 
     """Splits an ICD code into cleaned code and Zusatz (e.g. '.', '-', '!')."""
@@ -70,18 +59,22 @@ def extract_icd_parts(code: str):
 def generate_diag_date(hiv_positive: bool = True) -> int:  # [50] BZgA – PrEP Monitoring Report (2023)
     """
     Return enriched diagnosis date (DIAGDAT) as YYYYMMDD integer.
-    HIV+ patients have clustered diagnosis events, especially post-enrollment.
+    PrEP patients typically receive quarterly screenings, especially in Q2–Q4,
+    and more frequently between 2020–2023 following TSVG regulations.
     """
     if hiv_positive:
-        year = random.choices([2019, 2020, 2021, 2022, 2023], weights=[5, 10, 15, 30, 40])[0]
-        month = random.choices([3, 6, 9, 12], weights=[1, 3, 3, 3])[0]  # Screening in Q2–Q4
-        day = random.randint(1, 28)  # avoid invalid dates
-    else:   
+        # Years reflect post-TSVG monitoring intensity
+        year = random.choices([2019, 2020, 2021, 2022, 2023], weights=[2, 10, 20, 30, 38])[0]
+        # Quarterly distribution favors Q2–Q4 for routine testing
+        month = random.choices([3, 6, 9, 12], weights=[1, 3, 3, 3])[0]  # Q2–Q4 emphasis
+    else:
+        # Uniform random for non-HIV patients
         year = random.randint(2019, 2023)
         month = random.randint(1, 12)
-        day = random.randint(1, 28)
     
+    day = random.randint(1, 28)  # Safe for all months
     return int(f"{year}{month:02d}{day:02d}")
+
 
 def seed_ambdiag_table(conn, row_count=100):
     cursor = conn.cursor()
@@ -102,9 +95,9 @@ def seed_ambdiag_table(conn, row_count=100):
     for _ in range(row_count):
         vsid, psid, fallidamb, bjahr, bnr = random.choice(ambfall_rows)
 
-        diagsich = generate_diagsich(hiv_positive=True)  # [47] Kojic et al. (2011) – Enriched for HIV+ diagnosis certainty
-        diaglokal = generate_diaglokal(hiv_positive=True)  # [48] Riedel et al. (2005) – Bilateral symptoms in HIV+
-        diagdat = generate_diag_date()                      # [50] BZgA – PrEP Monitoring Report (2023)
+        diagsich = random.choice(['A', 'G', 'V', 'Z'])  
+        diaglokal = generate_diaglokal()  
+        diagdat = generate_diag_date()                      
         raw_icdamb_code = random.choice(ICD_POOL)
         icdamb_code, icdamb_zusatz = extract_icd_parts(raw_icdamb_code)# [51] Robert Koch-Institut (2023) #referenced from the TABLE icd10_catalogue
         datenmodell = 3 # [9] Forschungsdatenzentrum Gesundheit. (2023). Datenmodell 3: Datenstruktur und Variablenbeschreibung. BfArM. https://fdz-gesundheit.github.io/datensatzbeschreibung_fdz_gesundheit/ # FDZ Data Model 3 — see [19] BMG (2021)

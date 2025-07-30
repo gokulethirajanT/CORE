@@ -14,7 +14,6 @@ def random_date_in_year(year: int) -> str:
     d = date(year, 1, 1) + timedelta(days=random.randint(0, 364))
     return d.strftime("%Y%m%d")
 
-
 def generate_pznrez() -> str: # [11] IFA GmbH (2025) – PZN Code Structure 
     """Return a random PZN code from both PrEP and non-PrEP medications with equal probability."""
 
@@ -57,7 +56,6 @@ def random_abgabedat(start_year=2019, end_year=2025, end_quarter=1) -> str: # [1
     d = start_date + timedelta(days=rand_day)
     return d.strftime("%Y%m%d")
 
-
 def generate_bsnrvovb() -> int:
     """Generate a BSNR contractual area code with no bias (completely random)."""
     return random.randint(10, 99)
@@ -90,31 +88,31 @@ def generate_aporegknz() -> str:
     """Return a REGKNZ code for pharmacy region with no bias (completely random)."""
     return f"{random.randint(1, 16):02d}"
 
-def generate_menge() -> int:  # [62] Robert Koch-Institut & Deutsche AIDS-Hilfe (2024)
+def generate_menge() -> int: # Skew toward 85-90
     """Return dispensed quantity (completely random)."""
     return random.randint(1, 200)
 
-def generate_noctu() -> str:  # [63] Deutsche AIDS-Hilfe (2023)
+def generate_noctu() -> str:  
     """Return NOCTU code (completely random emergency dispensing indicator)."""
     return random.choice(["", "1", "2"])
 
-def generate_autidem() -> str:  # Deutsche AIDS-Hilfe. (2022)
+def generate_autidem() -> str:  
     """Return 'Aut-idem' substitution flag (completely random)."""
     return random.choice(["0", "1"])
 
-def generate_wirkstoffvo() -> str:  # [65] Wissenschaftliches Institut der AOK (WIdO). (2023)
+def generate_wirkstoffvo() -> str:  
     """Return 'Wirkstoffverordnung' flag (completely random)."""
     return random.choice(["", "0", "1"])
 
-def generate_ambetrag() -> float:  # [66] GKV Spitzenverband (2023)
+def generate_ambetrag() -> float:  
     """Return reimbursed amount (completely random float between €10 and €200)."""
     return round(random.uniform(10.0, 200.0), 2)
 
-def generate_abschlaege() -> float:  # [67] Deutsches Ärzteblatt (2022)
+def generate_abschlaege() -> float:  
     """Return discount value (completely random float between €1 and €10)."""
     return round(random.uniform(1.0, 10.0), 2)
 
-def generate_zuzahlkz() -> str:  # [66] GKV Spitzenverband (2023)
+def generate_zuzahlkz() -> str:  
     """Return co-payment category code (completely random)."""
     return random.choice(["0", "1", "2"])
 
@@ -126,7 +124,7 @@ def generate_eigenbet() -> float:
     """Return additional patient cost (Eigenbeteiligung) with no bias."""
     return round(random.uniform(0.0, 20.0), 2)
 
-def seed_rez_table(conn, rows: int = 100):
+def seed_rez_table(conn, rows: int = 1000):
     cur = conn.cursor()
     cur.execute('SELECT "VSID", "PSID", "BJAHR", "BNR" FROM "vers";')
     ref_rows = cur.fetchall()
