@@ -38,7 +38,7 @@ def random_faktor_hiv(fkenn: str) -> int:
 
 
 # ─────────────── Seeding Function ────────────────
-def seed_ezd_table(conn, rows: int = 100):
+def seed_ezd_table(conn, rows: int = 1000):
     cur = conn.cursor()
 
     cur.execute('SELECT "REZNR", "VSID", "PSID", "BJAHR", "BNR" FROM "rez";')

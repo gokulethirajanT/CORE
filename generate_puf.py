@@ -30,7 +30,12 @@ def process_table(table: str):
         data = pd.Series([row[0] for row in seeder_cursor.fetchall()])
 
         data_type = dtypes.get(col.upper(), "string").lower()
-        
+
+        # 🧪 PRINT raw date values before cleaning
+        if col.upper() in ["VODAT", "ABGABEDAT"]:
+            print(f"\n🧪 RAW DATA for column '{col}':")
+            print(data.head(10))  # Show first 10 values before any processing
+            
         if col in get_constant_variables():
             pass  # Leave unchanged
         elif col in get_pseudo_variables():

@@ -12,7 +12,7 @@ def get_existing_versqdmp_keys(cursor):
     cursor.execute('SELECT "PSID", "VERSQ" FROM versqdmp')
     return set(cursor.fetchall())
 
-def seed_versqdmp_table(conn, row_count=100):
+def seed_versqdmp_table(conn, row_count=1000):
     cursor = conn.cursor()
 
     #  Step 1: Get deduplicated FK-valid keys from versq

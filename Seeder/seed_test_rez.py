@@ -4,29 +4,35 @@ import string
 import psycopg2
 from dotenv import load_dotenv
 import os
+import pandas as pd
 
 # ───── Load environment variables ─────
 load_dotenv()
-
 
 def random_date_in_year(year: int) -> str:
     """Returns a random date in YYYYMMDD format within the given year."""
     d = date(year, 1, 1) + timedelta(days=random.randint(0, 364))
     return d.strftime("%Y%m%d")
 
-def generate_pznrez() -> str: # [11] IFA GmbH (2025) – PZN Code Structure 
-    """Return a random PZN code from both PrEP and non-PrEP medications with equal probability."""
+def select_and_store_fixed_prep_pzns() -> list:
+    """Pull 103 PrEP PZNs from DB, select 10, add 5 other meds, and store locally."""
+    conn = psycopg2.connect(
+        dbname=os.getenv("DB_NAME"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        host=os.getenv("DB_HOST"),
+        port=os.getenv("DB_PORT")
+    )
+    cursor = conn.cursor()
+    cursor.execute("SELECT pzn FROM pzn_prep_j05ar03;")
+    full_pzns = [row[0].zfill(8) for row in cursor.fetchall()]
+    cursor.close()
+    conn.close()
 
-    # PrEP-related PZNs (real and simulated generics)
-    prep_pzn_pool = [
-        "01380424",  # Truvada https://www.apotheken-umschau.de/medikamente/beipackzettel/truvada-200-mg245-mg-filmtabletten-1380424.html
-        "12724393",  # FTC/TDF - ratiopharm https://www.shop-apotheke.com/arzneimittel/12724393/emtricitabin-tenofovirdisoproxil-ratiopharm-200-mg-245-mg.htm
-        "12546796",  # FTC/TDF - Mylan                              ----- Generic Versions https://investor.mylan.com/news-releases/news-release-details/mylan-receives-tentative-approval-combination-hiv-treatment
-        "12457896",  # FTC/TDF - AbZ Pharma (simulated)             ----- Generic Versions
-        "12634597",  # FTC/TDF - TAD Pharma (simulated)     ---------
-    ]
+    # Sample 10 PrEP PZNs
+    fixed_prep_10 = random.sample(full_pzns, 10)
 
-    # Non-PrEP medications (simulated co-treatments)
+    # Fixed non-PrEP PZNs (simulated)
     other_pzn_pool = [
         "04567891",  # Simvastatin
         "05678912",  # Amoxicillin
@@ -35,25 +41,31 @@ def generate_pznrez() -> str: # [11] IFA GmbH (2025) – PZN Code Structure
         "08912345",  # Ramipril
     ]
 
-    # Combine both pools and randomly select one
-    all_pzn_pool = prep_pzn_pool + other_pzn_pool
-    return random.choice(all_pzn_pool)
+    # Save to CSV (force all to str)
+    combined_df = pd.DataFrame({
+        "PZN": [str(p) for p in fixed_prep_10 + other_pzn_pool],
+        "TYPE": ["PREP"] * 10 + ["OTHER"] * 5
+    })
 
-def random_abgabedat(start_year=2019, end_year=2025, end_quarter=1) -> str: # [11] IFA GmbH (2025) – PZN Code Structure
-    """Returns a random date between 01.01.2019 and end of Q1 2025 in YYYYMMDD format."""
-    start_date = date(2019, 1, 1)
-    if end_quarter == 1:
-        end_date = date(2025, 3, 31)
-    elif end_quarter == 2:
-        end_date = date(2025, 6, 30)
-    elif end_quarter == 3:
-        end_date = date(2025, 9, 30)
-    else:
-        end_date = date(2025, 12, 31)
-    
+    os.makedirs("reference", exist_ok=True)
+    combined_df.to_csv("reference/fixed_prep_pzns.csv", index=False)
+    print(" Saved 10 PREP + 5 OTHER PZNs to reference/fixed_prep_pzns.csv")
+    return fixed_prep_10
+
+
+def generate_pznrez() -> str:
+    """Return a random PZN code from both PrEP and other medications."""
+    df = pd.read_csv("reference/fixed_prep_pzns.csv")
+    prep = df[df["TYPE"] == "PREP"]["PZN"].tolist()
+    other = df[df["TYPE"] == "OTHER"]["PZN"].tolist()
+    return random.choice(prep if random.random() < 0.5 else other)
+
+def random_abgabedat() -> str: # [11] IFA GmbH (2025) – PZN Code Structure
+    """Generate a prescription date within the past 12 months in YYYYMMDD format."""
+    end_date = date.today()
+    start_date = end_date - timedelta(days=365)
     delta_days = (end_date - start_date).days
-    rand_day = random.randint(0, delta_days)
-    d = start_date + timedelta(days=rand_day)
+    d = start_date + timedelta(days=random.randint(0, delta_days))
     return d.strftime("%Y%m%d")
 
 def generate_bsnrvovb() -> int:
@@ -213,6 +225,15 @@ def seed_rez_table(conn, rows: int = 1000):
 
 # ────────────────────── Entrypoint ───────────────────────────────
 if __name__ == "__main__":
+    #Remove the old pzn values
+    pzn_file_path = "reference/fixed_prep_pzns.csv"
+    if os.path.exists(pzn_file_path):
+        os.remove(pzn_file_path)
+        print(f"🧹 Removed old {pzn_file_path}")
+
+    if not os.path.exists("reference/fixed_prep_pzns.csv"):
+        select_and_store_fixed_prep_pzns()
+
     conn = psycopg2.connect(
         dbname=os.getenv("DB_NAME"),
         user=os.getenv("DB_USER"),

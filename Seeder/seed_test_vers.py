@@ -11,7 +11,7 @@ load_dotenv()
 # Use German locale for realistic PLZ, dates, etc.
 g = Generic(locale=Locale.DE)
 
-def seed_vers_table(conn, row_count=100):
+def seed_vers_table(conn, row_count=1000):
     cursor = conn.cursor()
 
     # Fetch existing PSIDs from the database

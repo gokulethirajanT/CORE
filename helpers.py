@@ -51,7 +51,12 @@ def clean_data(column_data, dt):
     if dt == "category":
         return column_data.astype("category")
     elif dt == "date":
-        return pd.to_datetime(column_data, errors='coerce').dt.strftime('%Y%m%d').astype('Int64')
+        # Convert 8-digit integer format like 20240825 into datetime safely
+        column_data = column_data.astype(str).str.zfill(8)  # Ensure it's 8 digits
+        parsed = pd.to_datetime(column_data, format='%Y%m%d', errors='coerce')
+        parsed = parsed.fillna(pd.Timestamp("2020-01-01"))  # Safe fallback
+        return parsed.dt.strftime('%Y%m%d').astype("Int64")
+
     elif dt == "year":
         return pd.to_datetime(column_data, format='%Y', errors='coerce').dt.year
     elif dt == "float":

@@ -22,7 +22,7 @@ def generate_end_date(beginn_yyyymmdd: int) -> int:
     end_date = beginn_date + timedelta(days=random.randint(0, 30))  # within ~1 month
     return int(end_date.strftime('%Y%m%d'))
 
-def seed_zahnfall_table(conn, row_count=100):
+def seed_zahnfall_table(conn, row_count=1000):
     cursor = conn.cursor()
     
     #  Fetch required join values from vers

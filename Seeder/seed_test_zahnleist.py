@@ -18,7 +18,7 @@ def generate_enriched_leistungsdatum():
     day = random.randint(1, 28)  # Simplification: avoid month-end issues
     return int(datetime(year, month, day).strftime("%Y%m%d"))  # YYYYMMDD
 
-def seed_zahnleist_table(conn, row_count=100):
+def seed_zahnleist_table(conn, row_count=1000):
     cursor = conn.cursor()
 
     # Pull valid combinations from zahnfall (since FALLIDZAHN must exist)

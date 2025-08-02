@@ -173,7 +173,7 @@ TSVG_GROUP_CODES = [
 ]
 
 # ─────────────────── main seeding routine ────────────────────────────────────
-def seed_ambleist_table(conn, row_count: int = 100):
+def seed_ambleist_table(conn, row_count: int = 1000):
     cur = conn.cursor()
 
     # reference patients

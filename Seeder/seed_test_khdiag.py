@@ -118,7 +118,7 @@ def get_icd_extra_pool(conn, limit=20):
     return [None] + random.sample(codes, min(limit, len(codes)))
 
 # ────────────────────── Main Seeding Routine ────────────────────────
-def seed_khdiag_table(conn, rows: int = 100):
+def seed_khdiag_table(conn, rows: int = 1000):
     cur = conn.cursor()
 
     ICD_MAIN_POOL = get_weighted_icd_pool(conn, sti_ratio=0.6, total=1000)

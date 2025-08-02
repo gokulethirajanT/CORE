@@ -9,7 +9,7 @@ import os
 load_dotenv() 
 g = Generic(locale=Locale.DE)
 
-def seed_zahnbef_table(conn, row_count=100):
+def seed_zahnbef_table(conn, row_count=1000):
     cursor = conn.cursor()
 
     #  Fetch FALLIDZAHN and associated values from zahnfall

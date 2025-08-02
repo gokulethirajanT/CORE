@@ -22,7 +22,7 @@ def choose_geschlecht():  # [10] Schmidt et al. (2020) – The NEPOS Study Group
         k=1
     )[0]
 
-def seed_versq_table(conn, row_count=100):
+def seed_versq_table(conn, row_count=1000):
     cursor = conn.cursor()
 
     # Get existing VSID, PSID, BJAHR, BNR from the vers table

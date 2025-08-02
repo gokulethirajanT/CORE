@@ -48,7 +48,7 @@ def generate_ops_lokal(): #[53] Martinez et al. (2006)
 
 # ───────────────────── main seeding routine ────────────────────────────────
 
-def seed_ambops_table(conn, row_count: int = 100):
+def seed_ambops_table(conn, row_count: int = 1000):
     cur = conn.cursor()
     OPS_CODE_POOL = get_ops_code_pool(conn)
     # reference patients (same as DM-3)

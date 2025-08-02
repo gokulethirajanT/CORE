@@ -52,7 +52,7 @@ def random_date_in_year(year: int) -> str:
     return d.strftime("%Y%m%d")  # JJJJMMTT
 
 # Generate synthetic KHPROZ data
-def seed_khproz_table(conn, rows: int = 100):
+def seed_khproz_table(conn, rows: int = 1000):
     cur = conn.cursor()
 
     PROZ_CODE_POOL = get_hiv_enriched_proz_pool(conn)

@@ -76,7 +76,7 @@ def generate_diag_date(hiv_positive: bool = True) -> int:  # [50] BZgA – PrEP 
     return int(f"{year}{month:02d}{day:02d}")
 
 
-def seed_ambdiag_table(conn, row_count=100):
+def seed_ambdiag_table(conn, row_count=1000):
     cursor = conn.cursor()
 
     cursor.execute("""
