@@ -47,7 +47,7 @@ def main():
     run_command("python3 flush_puf_data.py")
 
     # Step 4: Generate PUFs
-    run_command("python3 generate_puf.py --tables vers versq versqdmp ambfall ambdiag ambleist ambops zahnfall zahnleist zahnbef rez ezd khfall khfa khdiag khproz khentg")
+    run_command("python3 generate_puf_class2.py --tables vers versq versqdmp ambfall ambdiag ambleist ambops zahnfall zahnleist zahnbef rez ezd khfall khfa khdiag khproz khentg")
 
     # Step 5: Final message 
     print_pipeline_summary()
