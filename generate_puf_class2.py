@@ -3,7 +3,8 @@ import pandas as pd
 from datetime import datetime
 from helpers_class2 import (
     connect_to_database, get_data_types, get_pseudo_variables,
-    get_constant_variables, clean_data, get_column_max_length
+    get_constant_variables, clean_data, get_column_max_length,
+    get_class2_technique
 )
 from dotenv import load_dotenv
 load_dotenv()
@@ -30,55 +31,60 @@ def get_columns(table: str, cursor):
     return [r[0] for r in cursor.fetchall()]
 
 def process_table(table: str):
+    print(f"🔐 Anonymizing (Class 2): {table}")
     dtypes = get_data_types()
-    columns = []
-    seeder_conn, seeder_cursor = connect_to_database(puf=False)
-    seeder_cursor.execute(f"SELECT column_name FROM information_schema.columns WHERE table_name = %s", (table,))
-    columns = [row[0] for row in seeder_cursor.fetchall()]
+    seeder_conn, cursor = connect_to_database(puf=False)
 
-    for e, col in enumerate(columns):
-        seeder_cursor.execute(f'SELECT "{col}" FROM {table}')
-        data = pd.Series([row[0] for row in seeder_cursor.fetchall()])
+    # Step 1: Load all rows and columns from the original table
+    cursor.execute(f'SELECT * FROM {table}')
+    df = pd.DataFrame(cursor.fetchall(), columns=[desc[0] for desc in cursor.description])
 
-        data_type = dtypes.get(col.upper(), "string").lower()
-
-        if col.upper() in ["VODAT", "ABGABEDAT"]:
-            print(f"\n🧪 RAW DATA for column '{col}':")
-            print(data.head(10))
-
-        if col.upper() in get_constant_variables():
-            pass
-
-        elif col.upper() in get_pseudo_variables():
-            print(f" Applying swapping to {col}...")
-            data = clean_data(data, data_type, variable_name=col)
-
-        elif data_type == "pseudo":
+    # Step 2: Process each column based on its Class 2 technique
+    for e, col in enumerate(df.columns):
+        col_upper = col.upper()
+        if col_upper not in dtypes:
+            print(f"⚠️ Skipping column (no dtype found): {col}")
             continue
 
-        else:
-            print(f" Cleaning column: {col} | Type: {data_type}")
-            data = clean_data(data, data_type, variable_name=col)
+        dtype = dtypes[col_upper].lower()
+        technique = get_class2_technique(col)
+        max_len = get_column_max_length(table.lower(), col.lower(), cursor)
 
-        if e == 0:
-            os.makedirs("output_csv", exist_ok=True)
-            with open(f"output_csv/{table}.csv", "w", newline="") as f:
-                writer = csv.writer(f)
-                writer.writerow([col.upper()])
-                for val in data:
-                    writer.writerow([normalize_value(val)])
-        else:
-            with open(f"output_csv/{table}.csv", "r") as f_in:
-                reader = list(csv.reader(f_in))
-                header, rows = reader[0], reader[1:]
-            with open(f"output_csv/{table}.csv", "w", newline="") as f_out:
-                writer = csv.writer(f_out)
-                writer.writerow(header + [col.upper()])
-                for i, row in enumerate(rows):
-                    row.append(normalize_value(data.iloc[i]))
-                    writer.writerow(row)
+        print(f" Processing column: {col_upper} | Type: {dtype} | Technique: {technique}")
 
-    seeder_cursor.close()
+        try:
+            if technique in [None, "None", "", float("nan")]:
+                data = df[col]
+            else:
+                # Convert category to numeric if needed for Noise
+                if technique == "Noise":
+                    df[col] = pd.to_numeric(df[col], errors="coerce")
+                data = clean_data(df[col], dtype, variable_name=col, max_len=max_len)
+
+            # Step 3: Write to output_csv
+            if e == 0:
+                os.makedirs("output_csv", exist_ok=True)
+                with open(f"output_csv/{table}.csv", "w", newline="") as f:
+                    writer = csv.writer(f)
+                    writer.writerow([col_upper])
+                    for val in data:
+                        writer.writerow([normalize_value(val)])
+            else:
+                with open(f"output_csv/{table}.csv", "r") as f_in:
+                    reader = list(csv.reader(f_in))
+                    header, rows = reader[0], reader[1:]
+                with open(f"output_csv/{table}.csv", "w", newline="") as f_out:
+                    writer = csv.writer(f_out)
+                    writer.writerow(header + [col_upper])
+                    for i, row in enumerate(rows):
+                        row.append(normalize_value(data.iloc[i]))
+                        writer.writerow(row)
+
+        except Exception as err:
+            print(f"❌ Error processing {col}: {err}")
+            continue
+
+    cursor.close()
     seeder_conn.close()
 
 def write_to_puf_db(table: str):

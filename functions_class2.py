@@ -16,15 +16,16 @@ def micro_aggregate(series, group_size=3):
 
 # ========== Bucketing (Binning) ==========
 def bucket_numeric(series, bins):
-    binned = pd.cut(series, bins=bins, include_lowest=True)
-    return binned.astype(str)
+    bucketed = pd.cut(series, bins=bins, include_lowest=True, precision=0)
+    return bucketed.astype(str).str.extract(r'\(([^,]+),\s*([^)]+)\]')[1]  # returns only upper bound
 
 # ========== Masking & Reduction ==========
-def mask_sensitive_text(series):
-    return series.apply(lambda x: "XXX" if isinstance(x, str) and x.strip() != "" else x)
+def mask_sensitive_text(series, max_len=3):
+    return series.apply(lambda x: "X" * max_len if isinstance(x, str) and x.strip() != "" else x)
 
 # ========== Noise Addition (Data Perturbation) ==========
 def add_noise(series, percentage=5):
+    series = pd.to_numeric(series, errors="coerce")  
     noise = np.random.uniform(-percentage, percentage, size=len(series)) / 100
     return (series * (1 + noise)).round().astype(series.dtype)
 

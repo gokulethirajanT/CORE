@@ -30,10 +30,12 @@ def get_column_max_length(table: str, column: str, cursor) -> int:
     cursor.execute("""
         SELECT character_maximum_length 
         FROM information_schema.columns 
-        WHERE table_name = %s AND column_name = %s
-    """, (table, column))
+        WHERE UPPER(table_name) = %s AND UPPER(column_name) = %s
+    """, (table.upper(), column.upper()))
     result = cursor.fetchone()
-    return result[0] if result and result[0] else 19
+    return result[0] if result and result[0] else 3  # fallback to safe short length
+
+
 
 def get_pseudo_variables():
     df = pd.read_csv("data_processing_DM3_class2.csv")
@@ -53,7 +55,9 @@ def get_class2_technique(variable):
         return match.iloc[0]["PUF_2 Methode"]
     return "None"
 
-def clean_data(column_data, dt, variable_name=None):
+
+def clean_data(column_data, dt, variable_name=None, max_len=None):
+
     technique = get_class2_technique(variable_name)
 
     if dt == "category":
@@ -66,7 +70,9 @@ def clean_data(column_data, dt, variable_name=None):
         column_data = parsed.dt.strftime('%Y%m%d').astype(int)
 
     elif dt == "year":
-        column_data = pd.to_datetime(column_data, format='%Y', errors='coerce').dt.year
+        column_data = pd.to_numeric(column_data, errors="coerce")
+        column_data = column_data.apply(lambda x: 1930 if pd.notnull(x) and x < 1930 else x)
+        column_data = column_data.fillna(1930).astype(int)
 
     elif dt == "integer":
         column_data = pd.to_numeric(column_data, errors="coerce").fillna(0).astype("Int64")
@@ -74,32 +80,65 @@ def clean_data(column_data, dt, variable_name=None):
     elif dt == "float":
         column_data = pd.to_numeric(column_data, errors="coerce")
 
+    # ✅ PLZ Bucketing before anything else
+    if variable_name and variable_name.upper() == "PLZ":
+        column_data = column_data.astype(str).str.zfill(5)
+        column_data = column_data.str[:3]
+        return column_data
 
-    # Apply Class 2 logic
-    if technique == "Top-Coding":
+    # ✅ Apply Class 2 techniques
+    if technique == "Top-Coding" and variable_name.upper() != "GEBJAHR":
         column_data = apply_top_coding(column_data)
+
     elif technique == "Bucketing":
         column_data = bucket_numeric(column_data, bins=[0, 1000, 2000, 3000, 5000, 10000])
+
     elif technique == "Noise":
-        column_data = add_noise(column_data)
+        # Skip noise if dtype is not numeric
+        if dt in ["integer", "float", "numeric"]:
+            column_data = add_noise(column_data)
+        else:
+            print(f"⚠️ Skipping Noise on non-numeric column: {variable_name}")
+            column_data = column_data  # fallback to original
+
+
     elif technique == "Masking":
-        column_data = mask_sensitive_text(column_data)
+        print(f"🔍 Masking {variable_name} with max_len={max_len}")
+        column_data = mask_sensitive_text(column_data, max_len=max_len or 3)
+
     elif technique == "Micro-Aggregation":
         column_data = micro_aggregate(column_data)
+
     elif technique == "Swapping":
         column_data = swap_data(column_data)
-
+        # Recast to original type
         if dt in ["integer", "year"]:
             column_data = pd.to_numeric(column_data, errors="coerce").fillna(0).astype("Int64")
-
         elif dt == "float":
-            column_data = pd.to_numeric(column_data, errors="coerce").round(3)  # round to avoid long decimals
-
+            column_data = pd.to_numeric(column_data, errors="coerce").round(3)
         elif dt == "category":
             column_data = column_data.astype("category")
-
         elif dt in ["alphanumeric", "string"]:
             column_data = column_data.astype(str).str[:20]
+    
+    #  Ensure no NULLs for NOT NULL columns
+        # 🛡️ Ensure no NULLs for NOT NULL columns
+    if variable_name and column_data.isnull().any():
+        if dt == "integer":
+            column_data = column_data.fillna(0)
+        elif dt == "float":
+            column_data = column_data.fillna(0.0)
+        elif dt in ["category", "alphanumeric", "string"]:
+            # Fallback for categorical or string types → use single-char "X" if max_len = 1
+            fallback = "X" if max_len == 1 else "XX"
+            if pd.api.types.is_categorical_dtype(column_data):
+                if fallback not in column_data.cat.categories:
+                    column_data = column_data.cat.add_categories([fallback])
+            column_data = column_data.fillna(fallback)
 
+
+    # If no anonymization technique, return column as-is
+    if technique in [None, "None", np.nan]:
+        return column_data
 
     return column_data

@@ -1,67 +1,217 @@
-Datenmodell,Tabellenname,Datenfeldname,Datenfeldbezeichnung,PUF Methode,Pool,PUF_2 Methode
-DM3,VERS,VSID,Einjähriges Pseudonym / Arbeitsnummer des Versicherten,Pool,VSID,Swapping
-DM3,VERS,BNR,Betriebsnummer,Pool,BNR,Swapping
-DM3,VERS,PSID,Periodenübergreifendes Pseudonym,Pool,VSID,Swapping
-DM3,VERSQ,VSID,Einjähriges Pseudonym / Arbeitsnummer des Versicherten,Pool,VSID,Swapping
-DM3,VERSQ,PSID,Periodenübergreifendes Pseudonym,Pool,PSID,Swapping
-DM3,VERSQ,BNR,Betriebsnummer,Pool,BNR,Swapping
-DM3,VERSQDMP,VSID,Einjähriges Pseudonym / Arbeitsnummer des Versicherten,Pool,VSID,Swapping
-DM3,VERSQDMP,PSID,Periodenübergreifendes Pseudonym,Pool,PSID,Swapping
-DM3,AMBFALL,VSID,Einjähriges Pseudonym / Arbeitsnummer des Versicherten,Pool,VSID,Swapping
-DM3,AMBFALL,PSID,Periodenübergreifendes Pseudonym,Pool,PSID,Swapping
-DM3,AMBFALL,FALLIDAMB,Fall-ID des ambulanten Arztfalls,Pool,FALLIDAMB,Swapping
-DM3,AMBFALL,SVNR,Vertragsnummer des Selektivvertrags,Pool,SVNR,Swapping
-DM3,AMBFALL,BSNRPSEUDO,Pseudonym der Betriebsstätte des behandelnden Arztes,Pool,BSNRPSEUDO,Swapping
-DM3,AMBFALL,BSNRUEBPSEUDO,Pseudonym der Betriebsstätte des überweisenden Arztes,Pool,BSNRPSEUDO,Swapping
-DM3,AMBFALL,LANRUEBPSEUDO,Pseudonym des überweisenden Arztes,Pool,LANR,Swapping
-DM3,AMBDIAG,VSID,Einjähriges Pseudonym / Arbeitsnummer des Versicherten,Pool,VSID,Swapping
-DM3,AMBDIAG,PSID,Periodenübergreifendes Pseudonym,Pool,PSID,Swapping
-DM3,AMBDIAG,FALLIDAMB,Fall-ID des ambulanten Arztfalls,Pool,FALLIDAMB,Swapping
-DM3,AMBLEIST,VSID,Einjähriges Pseudonym / Arbeitsnummer des Versicherten,Pool,VSID,Swapping
-DM3,AMBLEIST,PSID,Periodenübergreifendes Pseudonym,Pool,PSID,Swapping
-DM3,AMBLEIST,FALLIDAMB,Fall-ID des ambulanten Arztfalls,Pool,FALLIDAMB,Swapping
-DM3,AMBLEIST,NBSNRPSEUDO,Pseudonym der Nebenbetriebsstätte des behandelnden Arztes,Pool,BSNRPSEUDO,Swapping
-DM3,AMBLEIST,LANRPSEUDO,Pseudonym des behandelnden Arztes,Pool,LANR,Swapping
-DM3,AMBLEIST,TSVGBSNRPSEUDO,(N)BSNR des Facharztes bei TSVG-Hausarztvermittlung,Pool,BSNRPSEUDO,Swapping
-DM3,AMBOPS,VSID,Einjähriges Pseudonym / Arbeitsnummer des Versicherten,Pool,VSID,Swapping
-DM3,AMBOPS,PSID,Periodenübergreifendes Pseudonym,Pool,PSID,Swapping
-DM3,AMBOPS,FALLIDAMB,Fall-ID des ambulanten Arztfalls,Pool,FALLIDAMB,Swapping
-DM3,ZAHNFALL,VSID,Einjähriges Pseudonym / Arbeitsnummer des Versicherten,Pool,VSID,Swapping
-DM3,ZAHNFALL,PSID,Periodenübergreifendes Pseudonym,Pool,PSID,Swapping
-DM3,ZAHNFALL,FALLIDZAHN,Fall-ID des ambulanten Zahnarztfalls,Pool,FALLIDZAHN,Swapping
-DM3,ZAHNFALL,ZANRPSEUDO,Pseudonym (überjährig) der Zahnarztnummer,Pool,ZANRPSEUDO,Swapping
-DM3,ZAHNFALL,ZANRABRPSEUDO,Pseudonym des Zahnarztes in der abrechnenden Zahnartpraxis,Pool,ZANRABRPSEUDO,Swapping
-DM3,ZAHNFALL,ZAKZV,KZV-Bereich des Zahnarztes,Pool,ZAKZV,Swapping
-DM3,ZAHNLEIST,VSID,Einjähriges Pseudonym / Arbeitsnummer des Versicherten,Pool,VSID,Swapping
-DM3,ZAHNLEIST,PSID,Periodenübergreifendes Pseudonym,Pool,PSID,Swapping
-DM3,ZAHNLEIST,FALLIDZAHN,Fall-ID des ambulanten Zahnarztfalls,Pool,FALLIDZAHN,Swapping
-DM3,ZAHNBEF,VSID,Einjähriges Pseudonym / Arbeitsnummer des Versicherten,Pool,VSID,Swapping
-DM3,ZAHNBEF,PSID,Periodenübergreifendes Pseudonym,Pool,PSID,Swapping
-DM3,ZAHNBEF,FALLIDZAHN,Fall-ID des ambulanten Zahnarztfalls,Pool,FALLIDZAHN,Swapping
-DM3,REZ,VSID,Einjähriges Pseudonym / Arbeitsnummer des Versicherten,Pool,VSID,Swapping
-DM3,REZ,PSID,Periodenübergreifendes Pseudonym,Pool,PSID,Swapping
-DM3,REZ,REZNR,Rezeptnummer,Pool,REZNR,Swapping
-DM3,REZ,BSNRVOPSEUDO,Pseudonym der verordnenden Betriebsstätte,Pool,BSNRPSEUDO,Swapping
-DM3,REZ,LENRVOPSEUDO,Pseudonym des verordnenden Leistungserbringers,Pool,LENRVOPSEUDO,Swapping
-DM3,REZ,APOPSEUDO,Pseudonym der Apotheke,Pool,APOPSEUDO,Swapping
-DM3,EZD,VSID,Einjähriges Pseudonym / Arbeitsnummer des Versicherten,Pool,VSID,Swapping
-DM3,EZD,PSID,Periodenübergreifendes Pseudonym,Pool,PSID,Swapping
-DM3,EZD,REZNR,Rezeptnummer,Pool,REZNR,Swapping
-DM3,KHFALL,VSID,Einjähriges Pseudonym / Arbeitsnummer des Versicherten,Pool,VSID,Swapping
-DM3,KHFALL,PSID,Periodenübergreifendes Pseudonym,Pool,PSID,Swapping
-DM3,KHFALL,FALLIDKH,Fall-ID des Krankenhausfalls,Pool,KHFALL,Swapping
-DM3,KHFALL,KHPSEUDO,Pseudonym des Krankenhauses,Pool,KHPSEUDO,Swapping
-DM3,KHFALL,EINWEISPSEUDO,Pseudonym des einweisenden Arztes oder KZV-Nummer des einweisenden Zahnarztes,Pool,LENRVOPSEUDO,Swapping
-DM3,KHFALL,VERANLASSKHPSEUDO,Pseudonym des veranlassenden Krankenhauses bei Verlegung,Pool,KHPSEUDO,Swapping
-DM3,KHFA,VSID,Einjähriges Pseudonym / Arbeitsnummer des Versicherten,Pool,VSID,Swapping
-DM3,KHFA,PSID,Periodenübergreifendes Pseudonym,Pool,PSID,Swapping
-DM3,KHFA,FALLIDKH,Fall-ID des Krankenhausfalls,Pool,KHFALL,Swapping
-DM3,KHDIAG,VSID,Einjähriges Pseudonym / Arbeitsnummer des Versicherten,Pool,VSID,Swapping
-DM3,KHDIAG,PSID,Periodenübergreifendes Pseudonym,Pool,PSID,Swapping
-DM3,KHDIAG,FALLIDKH,Fall-ID des Krankenhausfalls,Pool,KHFALL,Swapping
-DM3,KHPROZ,VSID,Einjähriges Pseudonym / Arbeitsnummer des Versicherten,Pool,VSID,Swapping
-DM3,KHPROZ,PSID,Periodenübergreifendes Pseudonym,Pool,PSID,Swapping
-DM3,KHPROZ,FALLIDKH,Fall-ID des Krankenhausfalls,Pool,KHFALL,Swapping
-DM3,KHENTG,VSID,Einjähriges Pseudonym / Arbeitsnummer des Versicherten,Pool,VSID,Swapping
-DM3,KHENTG,PSID,Periodenübergreifendes Pseudonym,Pool,PSID,Swapping
-DM3,KHENTG,FALLIDKH,Fall-ID des Krankenhausfalls,Pool,KHFALL,Swapping
+Tabellenname,Datenfeldname,PUF_2 Methode
+VERS,VSID,None
+VERS,BNR,None
+VERS,PSID,None
+VERS,DATENMODELL,None
+VERS,BJAHR,None
+VERS,GEBJAHR,None
+VERS,PLZ,Bucketing
+VERS,VITALSTATUS,Masking
+VERS,STERBEDAT,None
+VERSQ,VSID,None
+VERSQ,PSID,None
+VERSQ,DATENMODELL,None
+VERSQ,BJAHR,None
+VERSQ,BNR,None
+VERSQ,VERSQ,Swapping
+VERSQ,GESCHLECHT,Swapping
+VERSQ,VERSTAGE,Swapping
+VERSQ,VERSTAGEAUSL,Swapping
+VERSQ,VERSSTATUS,Masking
+VERSQ,VERSTAGEKG,Swapping
+VERSQ,VERSTAGEKOSTERSTWAHLT,Swapping
+VERSQDMP,VSID,None
+VERSQDMP,PSID,None
+VERSQDMP,DATENMODELL,None
+VERSQDMP,BJAHR,None
+VERSQDMP,VERSQ,Swapping
+VERSQDMP,DMPPROG,Swapping
+VERSQDMP,DMPTAGE,Swapping
+AMBFALL,VSID,None
+AMBFALL,PSID,None
+AMBFALL,ABRQ,Swapping
+AMBFALL,DATENMODELL,None
+AMBFALL,BJAHR,None
+AMBFALL,FALLIDAMB,None
+AMBFALL,SVNR,None
+AMBFALL,SVTYP,Swapping
+AMBFALL,BSNRPSEUDO,None
+AMBFALL,BSNRKV,Swapping
+AMBFALL,BSNRUEBPSEUDO,None
+AMBFALL,BSNRUEBKV,Swapping
+AMBFALL,LANRUEBPSEUDO,None
+AMBFALL,LANRUEBFG,Masking
+AMBFALL,INANSPRARTAMB,Masking
+AMBFALL,UNFALL,Swapping
+AMBFALL,BEHANDARTAMB,Masking
+AMBFALL,ENTBINDUNGSDAT,None
+AMBFALL,PUNKTZAHL,Noise
+AMBFALL,FALLKOAMB,Swapping
+AMBFALL,DIALYSESACHKO,Swapping
+AMBFALL,BEGINNDATAMB,Swapping
+AMBFALL,ENDEDATAMB,Swapping
+AMBDIAG,VSID,None
+AMBDIAG,PSID,None
+AMBDIAG,DATENMODELL,None
+AMBDIAG,BJAHR,None
+AMBDIAG,FALLIDAMB,None
+AMBDIAG,ICDAMB_CODE,None
+AMBDIAG,ICDAMB_ZUSATZ,None
+AMBDIAG,DIAGSICH,Masking
+AMBDIAG,DIAGLOKAL,Masking
+AMBDIAG,DIAGDAT,None
+AMBLEIST,VSID,None
+AMBLEIST,PSID,None
+AMBLEIST,DATENMODELL,None
+AMBLEIST,BJAHR,None
+AMBLEIST,FALLIDAMB,None
+AMBLEIST,NBSNRPSEUDO,None
+AMBLEIST,NBSNRKV,Swapping
+AMBLEIST,LANRPSEUDO,None
+AMBLEIST,LANRFG,Masking
+AMBLEIST,GONR,Masking
+AMBLEIST,GONRDAT,None
+AMBLEIST,MULTIPLIKATOR,Noise
+AMBLEIST,AMBLEISTZEIT,Bucketing
+AMBLEIST,TSVGART,Masking
+AMBLEIST,TSVGDAT,None
+AMBLEIST,TSVGARZT,Masking
+AMBLEIST,TSVGBSNRPSEUDO,None
+AMBLEIST,TSVGBSNRKV,Swapping
+AMBLEIST,ZWEITMEIN,Swapping
+AMBLEIST,GONRBEWERT,Micro-Aggregation
+AMBOPS,VSID,None
+AMBOPS,PSID,None
+AMBOPS,DATENMODELL,None
+AMBOPS,BJAHR,None
+AMBOPS,FALLIDAMB,None
+AMBOPS,OPS,None
+AMBOPS,OPSLOKAL,None
+AMBOPS,OPSDAT,None
+ZAHNFALL,VSID,None
+ZAHNFALL,PSID,None
+ZAHNFALL,DATENMODELL,None
+ZAHNFALL,BJAHR,None
+ZAHNFALL,LEISTQ,Swapping
+ZAHNFALL,FALLIDZAHN,None
+ZAHNFALL,ZANRPSEUDO,None
+ZAHNFALL,ZANRABRPSEUDO,None
+ZAHNFALL,ZAKZV,None
+ZAHNFALL,BEHANDARTZAHN,Masking
+ZAHNFALL,BEGINNDATZAHN,Swapping
+ZAHNFALL,ENDEDATZAHN,Swapping
+ZAHNFALL,FALLKOZAHN,Swapping
+ZAHNFALL,EIGENLABOR,Swapping
+ZAHNFALL,FREMDLABOR,Swapping
+ZAHNFALL,INANSPRARTZAHN,Masking
+ZAHNLEIST,VSID,None
+ZAHNLEIST,PSID,None
+ZAHNLEIST,DATENMODELL,None
+ZAHNLEIST,BJAHR,None
+ZAHNLEIST,FALLIDZAHN,None
+ZAHNLEIST,LEISTDAT,None
+ZAHNLEIST,ZAHN,Swapping
+ZAHNLEIST,GEBNR,Swapping
+ZAHNLEIST,GEBPOS,Swapping
+ZAHNLEIST,GEBNRZZAHL,Swapping
+ZAHNBEF,VSID,None
+ZAHNBEF,PSID,None
+ZAHNBEF,DATENMODELL,None
+ZAHNBEF,BJAHR,None
+ZAHNBEF,FALLIDZAHN,None
+ZAHNBEF,BEFNR,Swapping
+ZAHNBEF,ZAHN,Swapping
+ZAHNBEF,REFART,Masking
+ZAHNBEF,BEFNRZAHL,Swapping
+REZ,VSID,None
+REZ,PSID,None
+REZ,DATENMODELL,None
+REZ,BJAHR,None
+REZ,REZNR,None
+REZ,PZNREZ,Swapping
+REZ,VODAT,None
+REZ,BSNRVOPSEUDO,None
+REZ,BSNRVOREGKNZ,Swapping
+REZ,LENRVOPSEUDO,None
+REZ,LENRVOFG,Masking
+REZ,ABGABEDAT,None
+REZ,VERTRAGSKZ,Swapping
+REZ,APOPSEUDO,None
+REZ,APOKLASS,Swapping
+REZ,APOREGKNZ,Swapping
+REZ,APOSITZ,Swapping
+REZ,MENGE,Noise
+REZ,NOCTU,Swapping
+REZ,AUTIDEM,Swapping
+REZ,WIRKSTOFFVO,Swapping
+REZ,AMBETRAG,Noise
+REZ,ABSCHLAEGE,Noise
+REZ,ZUZAHLKZ,Noise
+REZ,ZUZAHLGES,Noise
+REZ,EIGENBET,Noise
+EZD,VSID,None
+EZD,PSID,None
+EZD,DATENMODELL,None
+EZD,BJAHR,None
+EZD,REZNR,None
+EZD,PZNEZD,Swapping
+EZD,FAKTOR,Noise
+EZD,FAKTORKENNZEICHEN,Noise
+KHFALL,VSID,None
+KHFALL,PSID,None
+KHFALL,DATENMODELL,None
+KHFALL,BJAHR,None
+KHFALL,FALLIDKH,None
+KHFALL,KHPSEUDO,None
+KHFALL,KHKLASS,Swapping
+KHFALL,KHREGKZ,Swapping
+KHFALL,AUFNDAT,None
+KHFALL,AUFNGRUND,Swapping
+KHFALL,ENTLASSGRUND,Swapping
+KHFALL,AUFNFA,Swapping
+KHFALL,EINWEISPSEUDO,None
+KHFALL,EINWEISFG,Masking
+KHFALL,VERANLASSKHPSEUDO,None
+KHFALL,VERANLASSKHKLASS,Swapping
+KHFALL,VERANLASSKHREGKNZ,Swapping
+KHFALL,BEATSTD,Swapping
+KHFALL,VERANLASSSTELLEPSEUDO,Swapping
+KHFA,VSID,None
+KHFA,PSID,None
+KHFA,BJAHR,None
+KHFA,DATENMODELL,None
+KHFA,FALLIDKH,None
+KHFA,FA,Swapping
+KHFA,ENTLASSDAT,None
+KHFA,ENTLASSZEIT,Bucketing
+KHDIAG,VSID,None
+KHDIAG,PSID,None
+KHDIAG,BJAHR,None
+KHDIAG,DATENMODELL,None
+KHDIAG,FALLIDKH,None
+KHDIAG,DIAGART,Masking
+KHDIAG,ICDKH_CODE,None
+KHDIAG,ICDKH_ZUSATZ,None
+KHDIAG,ICDLOKAL,None
+KHDIAG,SEKICD_CODE,None
+KHDIAG,SEKICD_ZUSATZ,None
+KHDIAG,SEKICDLOKAL,None
+KHPROZ,VSID,None
+KHPROZ,PSID,None
+KHPROZ,DATENMODELL,None
+KHPROZ,BJAHR,None
+KHPROZ,FALLIDKH,None
+KHPROZ,PROZ,Swapping
+KHPROZ,PROZDAT,None
+KHPROZ,PROZLOKAL,Masking
+KHENTG,VSID,None
+KHENTG,PSID,None
+KHENTG,DATENMODELL,None
+KHENTG,BJAHR,None
+KHENTG,FALLIDKH,None
+KHENTG,ENTGART,Masking
+KHENTG,ENTGBETRAG,Noise
+KHENTG,ABRVONDAT,None
+KHENTG,ABRBISDAT,None
+KHENTG,ENTGZAHL,Swapping
+KHENTG,TAGEOBE,Swapping

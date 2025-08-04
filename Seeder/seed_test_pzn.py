@@ -38,4 +38,4 @@ conn.commit()
 cursor.close()
 conn.close()
 
-print("✅ PZN values inserted into 'pzn_prep_j05ar03' table.")
+print(" PZN values inserted into 'pzn_prep_j05ar03' table.")
