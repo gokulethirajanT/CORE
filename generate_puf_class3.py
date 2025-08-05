@@ -1,37 +1,31 @@
 import os, argparse, csv
 import pandas as pd
 from datetime import datetime
-from helpers_class2 import (
-    connect_to_database, get_data_types, get_pseudo_variables,
-    get_constant_variables, clean_data, get_column_max_length,
-    get_class2_technique
+from helpers_class3 import (
+    connect_to_database, get_data_types, get_column_max_length, clean_data
 )
 from dotenv import load_dotenv
 load_dotenv()
 
 REPLACE_IDS = {}
 
-def normalize_value(val):
+def normalize_value(val, max_len=20):
     if isinstance(val, memoryview):
         val = val.tobytes().decode(errors='ignore')
     if pd.isna(val) or val in ("", "NaT", "nan", "NaN", "<NA>"):
         return None
-
-    # 🧠 Properly cast numeric types
     if isinstance(val, float) and val.is_integer():
-        return int(val)  # e.g., 123456789012.0 → 123456789012 (as int)
+        return int(val)
     elif isinstance(val, float):
-        return round(val, 6)  # limit precision if truly float
-
-    return str(val)[:20]  # truncate long strings
-
+        return round(val, 6)
+    return str(val)[:max_len]
 
 def get_columns(table: str, cursor):
     cursor.execute(f"SELECT column_name FROM information_schema.columns WHERE table_name = %s", (table,))
     return [r[0] for r in cursor.fetchall()]
 
 def process_table(table: str):
-    print(f"🔐 Anonymizing (Class 2): {table}")
+    print(f"🔐 Anonymizing (Class 3): {table}")
     dtypes = get_data_types()
     seeder_conn, cursor = connect_to_database(puf=False)
 
@@ -39,7 +33,8 @@ def process_table(table: str):
     cursor.execute(f'SELECT * FROM {table}')
     df = pd.DataFrame(cursor.fetchall(), columns=[desc[0] for desc in cursor.description])
 
-    # Step 2: Process each column based on its Class 2 technique
+    column_lengths = {}
+
     for e, col in enumerate(df.columns):
         col_upper = col.upper()
         if col_upper not in dtypes:
@@ -47,28 +42,21 @@ def process_table(table: str):
             continue
 
         dtype = dtypes[col_upper].lower()
-        technique = get_class2_technique(col)
         max_len = get_column_max_length(table.lower(), col.lower(), cursor)
+        column_lengths[col_upper] = max_len  # Store for later during normalization
 
-        print(f" Processing column: {col_upper} | Type: {dtype} | Technique: {technique}")
+        print(f" Processing column: {col_upper} | Type: {dtype}")
 
         try:
-            if technique in [None, "None", "", float("nan")]:
-                data = df[col]
-            else:
-                # Convert category to numeric if needed for Noise
-                if technique == "Noise":
-                    df[col] = pd.to_numeric(df[col], errors="coerce")
-                data = clean_data(df[col], dtype, variable_name=col, max_len=max_len)
+            data = clean_data(df[col], dtype, variable_name=col, max_len=max_len)
 
-            # Step 3: Write to output_csv
             if e == 0:
                 os.makedirs("output_csv", exist_ok=True)
                 with open(f"output_csv/{table}.csv", "w", newline="") as f:
                     writer = csv.writer(f)
                     writer.writerow([col_upper])
                     for val in data:
-                        writer.writerow([normalize_value(val)])
+                        writer.writerow([normalize_value(val, max_len)])
             else:
                 with open(f"output_csv/{table}.csv", "r") as f_in:
                     reader = list(csv.reader(f_in))
@@ -77,7 +65,7 @@ def process_table(table: str):
                     writer = csv.writer(f_out)
                     writer.writerow(header + [col_upper])
                     for i, row in enumerate(rows):
-                        row.append(normalize_value(data.iloc[i]))
+                        row.append(normalize_value(data.iloc[i], max_len))
                         writer.writerow(row)
 
         except Exception as err:
@@ -110,13 +98,19 @@ def write_to_puf_db(table: str):
                 print(f" CSV file is empty: {csv_path}")
                 return
 
+            # Load max lengths from DB
+            max_lens = {col.upper(): get_column_max_length(table, col, puf_cursor) for col in columns}
+
             print(f" Columns loaded: {columns}")
             placeholders = ", ".join(["%s"] * len(columns))
             column_names = ', '.join([f'"{col.upper()}"' for col in columns])
             insert_sql = f'INSERT INTO {table_name} ({column_names}) VALUES ({placeholders})'
 
             for i, row in enumerate(reader, start=1):
-                cleaned_row = [normalize_value(v) for v in row]
+                cleaned_row = [
+                    normalize_value(v, max_len=max_lens.get(col.upper(), 20))
+                    for v, col in zip(row, columns)
+                ]
                 try:
                     puf_cursor.execute(insert_sql, cleaned_row)
                     if i % 100 == 0:
@@ -125,15 +119,15 @@ def write_to_puf_db(table: str):
                     print(f" Row {i} failed: {cleaned_row} | Error: {row_err}")
 
         puf_conn.commit()
-        print(f" Finished inserting into: {table_name}")
+        print(f" ✅ Finished inserting into: {table_name}")
 
     except Exception as e:
-        print(f" General failure during insert into {table_name}: {e}")
+        print(f"❌ General failure during insert into {table_name}: {e}")
 
     finally:
         puf_cursor.close()
         puf_conn.close()
-        print(f" Database connection closed.")
+        print(f" 🔌 Database connection closed.")
 
 if __name__ == "__main__":
     import time
@@ -143,7 +137,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     for table in args.tables:
-        print(f"\n🔐 Anonymizing (Class 2): {table}")
+        print(f"\n🔐 Anonymizing (Class 3): {table}")
         start = time.time()
 
         try:

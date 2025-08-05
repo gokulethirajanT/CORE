@@ -1,0 +1,217 @@
+,Table,Variable,Type,Datamodel,PUF_3 Methode
+0,VERS,VSID,pseudo,3.0,Homomorphic Encryption
+1,VERS,BNR,pseudo,3.0,
+2,VERS,PSID,pseudo,3.0,Homomorphic Encryption
+3,VERS,DATENMODELL,integer,3.0,Differential Privacy
+4,VERS,BJAHR,year,3.0,Differential Privacy
+5,VERS,GEBJAHR,year,3.0,Differential Privacy
+6,VERS,PLZ,category,3.0,
+7,VERS,VITALSTATUS,integer,3.0,Differential Privacy
+8,VERS,STERBEDAT,integer,3.0,Differential Privacy
+9,VERSQ,VSID,pseudo,3.0,Homomorphic Encryption
+10,VERSQ,PSID,pseudo,3.0,Homomorphic Encryption
+11,VERSQ,DATENMODELL,integer,3.0,Differential Privacy
+12,VERSQ,BJAHR,integer,3.0,Differential Privacy
+13,VERSQ,BNR,pseudo,3.0,
+14,VERSQ,VERSQ,integer,3.0,Differential Privacy
+15,VERSQ,GESCHLECHT,integer,3.0,Differential Privacy
+16,VERSQ,VERSTAGE,integer,3.0,Differential Privacy
+17,VERSQ,VERSTAGEAUSL,integer,3.0,Differential Privacy
+18,VERSQ,VERSSTATUS,integer,3.0,Differential Privacy
+19,VERSQ,VERSTAGEKG,integer,3.0,Differential Privacy
+20,VERSQ,VERSTAGEKOSTERSTWAHLT,integer,3.0,Differential Privacy
+21,VERSQDMP,VSID,pseudo,3.0,Homomorphic Encryption
+22,VERSQDMP,PSID,pseudo,3.0,Homomorphic Encryption
+23,VERSQDMP,DATENMODELL,,,
+24,VERSQDMP,BJAHR,integer,3.0,Differential Privacy
+25,VERSQDMP,VERSQ,,,
+26,VERSQDMP,DMPPROG,category,3.0,
+27,VERSQDMP,DMPTAGE,integer,3.0,Differential Privacy
+28,AMBFALL,VSID,pseudo,3.0,Homomorphic Encryption
+29,AMBFALL,PSID,pseudo,3.0,Homomorphic Encryption
+30,AMBFALL,ABRQ,integer,3.0,Differential Privacy
+31,AMBFALL,DATENMODELL,,,
+32,AMBFALL,BJAHR,integer,3.0,Differential Privacy
+33,AMBFALL,FALLIDAMB,pseudo,3.0,Homomorphic Encryption
+34,AMBFALL,SVNR,pseudo,3.0,
+35,AMBFALL,SVTYP,category,3.0,
+36,AMBFALL,BSNRPSEUDO,pseudo,3.0,
+37,AMBFALL,BSNRKV,category,3.0,
+38,AMBFALL,BSNRUEBPSEUDO,pseudo,3.0,
+39,AMBFALL,BSNRUEBKV,category,3.0,
+40,AMBFALL,LANRUEBPSEUDO,pseudo,3.0,
+41,AMBFALL,LANRUEBFG,category,3.0,
+42,AMBFALL,INANSPRARTAMB,category,3.0,
+43,AMBFALL,UNFALL,category,3.0,
+44,AMBFALL,BEHANDARTAMB,category,3.0,
+45,AMBFALL,ENTBINDUNGSDAT,date,3.0,
+46,AMBFALL,PUNKTZAHL,float,3.0,Differential Privacy
+47,AMBFALL,FALLKOAMB,float,3.0,Differential Privacy
+48,AMBFALL,DIALYSESACHKO,float,3.0,Differential Privacy
+49,AMBFALL,BEGINNDATAMB,date,3.0,
+50,AMBFALL,ENDEDATAMB,date,3.0,
+51,AMBDIAG,VSID,,,Homomorphic Encryption
+52,AMBDIAG,PSID,,,Homomorphic Encryption
+53,AMBDIAG,DATENMODELL,,,
+54,AMBDIAG,BJAHR,,,
+55,AMBDIAG,FALLIDAMB,,,Homomorphic Encryption
+56,AMBDIAG,ICDAMB_CODE,category,3.0,
+57,AMBDIAG,ICDAMB_ZUSATZ,category,3.0,
+58,AMBDIAG,DIAGSICH,category,3.0,
+59,AMBDIAG,DIAGLOKAL,category,3.0,
+60,AMBDIAG,DIAGDAT,date,3.0,
+61,AMBLEIST,VSID,pseudo,3.0,Homomorphic Encryption
+62,AMBLEIST,PSID,pseudo,3.0,Homomorphic Encryption
+63,AMBLEIST,DATENMODELL,,,
+64,AMBLEIST,BJAHR,integer,3.0,Differential Privacy
+65,AMBLEIST,FALLIDAMB,,,Homomorphic Encryption
+66,AMBLEIST,NBSNRPSEUDO,pseudo,3.0,
+67,AMBLEIST,NBSNRKV,category,3.0,
+68,AMBLEIST,LANRPSEUDO,pseudo,3.0,
+69,AMBLEIST,LANRFG,category,3.0,
+70,AMBLEIST,GONR,alphanumeric,3.0,
+71,AMBLEIST,GONRDAT,date,3.0,
+72,AMBLEIST,MULTIPLIKATOR,float,3.0,Differential Privacy
+73,AMBLEIST,AMBLEISTZEIT,integer,3.0,Differential Privacy
+74,AMBLEIST,TSVGART,category,3.0,
+75,AMBLEIST,TSVGDAT,integer,3.0,Differential Privacy
+76,AMBLEIST,TSVGARZT,category,3.0,
+77,AMBLEIST,TSVGBSNRPSEUDO,pseudo,3.0,
+78,AMBLEIST,TSVGBSNRKV,integer,3.0,Differential Privacy
+79,AMBLEIST,ZWEITMEIN,category,3.0,
+80,AMBLEIST,GONRBEWERT,float,3.0,Differential Privacy
+81,AMBOPS,VSID,,,Homomorphic Encryption
+82,AMBOPS,PSID,,,Homomorphic Encryption
+83,AMBOPS,DATENMODELL,,,
+84,AMBOPS,BJAHR,,,
+85,AMBOPS,FALLIDAMB,,,Homomorphic Encryption
+86,AMBOPS,OPS,category,3.0,
+87,AMBOPS,OPSLOKAL,category,3.0,
+88,AMBOPS,OPSDAT,date,3.0,
+89,ZAHNFALL,VSID,pseudo,3.0,Homomorphic Encryption
+90,ZAHNFALL,PSID,pseudo,3.0,Homomorphic Encryption
+91,ZAHNFALL,DATENMODELL,,,
+92,ZAHNFALL,BJAHR,integer,3.0,Differential Privacy
+93,ZAHNFALL,LEISTQ,category,3.0,
+94,ZAHNFALL,FALLIDZAHN,pseudo,3.0,Homomorphic Encryption
+95,ZAHNFALL,ZANRPSEUDO,pseudo,3.0,
+96,ZAHNFALL,ZANRABRPSEUDO,pseudo,3.0,
+97,ZAHNFALL,ZAKZV,integer,3.0,Differential Privacy
+98,ZAHNFALL,BEHANDARTZAHN,category,3.0,
+99,ZAHNFALL,BEGINNDATZAHN,date,3.0,
+100,ZAHNFALL,ENDEDATZAHN,date,3.0,
+101,ZAHNFALL,FALLKOZAHN,float,3.0,Differential Privacy
+102,ZAHNFALL,EIGENLABOR,float,3.0,Differential Privacy
+103,ZAHNFALL,FREMDLABOR,float,3.0,Differential Privacy
+104,ZAHNFALL,INANSPRARTZAHN,category,3.0,
+105,ZAHNLEIST,VSID,pseudo,3.0,Homomorphic Encryption
+106,ZAHNLEIST,PSID,pseudo,3.0,Homomorphic Encryption
+107,ZAHNLEIST,DATENMODELL,,,
+108,ZAHNLEIST,BJAHR,,,
+109,ZAHNLEIST,FALLIDZAHN,,,Homomorphic Encryption
+110,ZAHNLEIST,LEISTDAT,date,3.0,
+111,ZAHNLEIST,ZAHN,category,3.0,
+112,ZAHNLEIST,GEBNR,category,3.0,
+113,ZAHNLEIST,GEBPOS,category,3.0,
+114,ZAHNLEIST,GEBNRZZAHL,,,
+115,ZAHNBEF,VSID,,,Homomorphic Encryption
+116,ZAHNBEF,PSID,,,Homomorphic Encryption
+117,ZAHNBEF,DATENMODELL,,,
+118,ZAHNBEF,BJAHR,,,
+119,ZAHNBEF,FALLIDZAHN,,,Homomorphic Encryption
+120,ZAHNBEF,BEFNR,,,Homomorphic Encryption
+121,ZAHNBEF,ZAHN,,,
+122,ZAHNBEF,REFART,,,
+123,ZAHNBEF,BEFNRZAHL,,,
+124,REZ,VSID,pseudo,3.0,Homomorphic Encryption
+125,REZ,PSID,pseudo,3.0,Homomorphic Encryption
+126,REZ,DATENMODELL,,,
+127,REZ,BJAHR,integer,3.0,Differential Privacy
+128,REZ,REZNR,pseudo,3.0,
+129,REZ,PZNREZ,category,3.0,
+130,REZ,VODAT,date,3.0,
+131,REZ,BSNRVOPSEUDO,pseudo,3.0,
+132,REZ,BSNRVOREGKNZ,category,3.0,
+133,REZ,LENRVOPSEUDO,pseudo,3.0,
+134,REZ,LENRVOFG,category,3.0,
+135,REZ,ABGABEDAT,date,3.0,
+136,REZ,VERTRAGSKZ,category,3.0,
+137,REZ,APOPSEUDO,pseudo,3.0,
+138,REZ,APOKLASS,category,3.0,
+139,REZ,APOREGKNZ,category,3.0,
+140,REZ,APOSITZ,category,3.0,
+141,REZ,MENGE,category,3.0,
+142,REZ,NOCTU,category,3.0,
+143,REZ,AUTIDEM,category,3.0,Homomorphic Encryption
+144,REZ,WIRKSTOFFVO,category,3.0,
+145,REZ,AMBETRAG,float,3.0,Differential Privacy
+146,REZ,ABSCHLAEGE,float,3.0,Differential Privacy
+147,REZ,ZUZAHLKZ,category,3.0,
+148,REZ,ZUZAHLGES,float,3.0,Differential Privacy
+149,REZ,EIGENBET,float,3.0,Differential Privacy
+150,EZD,VSID,pseudo,3.0,Homomorphic Encryption
+151,EZD,PSID,pseudo,3.0,Homomorphic Encryption
+152,EZD,DATENMODELL,,,
+153,EZD,BJAHR,,,
+154,EZD,REZNR,pseudo,3.0,
+155,EZD,PZNEZD,category,3.0,
+156,EZD,FAKTOR,category,3.0,
+157,EZD,FAKTORKENNZEICHEN,category,3.0,
+158,KHFALL,VSID,pseudo,3.0,Homomorphic Encryption
+159,KHFALL,PSID,pseudo,3.0,Homomorphic Encryption
+160,KHFALL,DATENMODELL,,,
+161,KHFALL,BJAHR,integer,3.0,Differential Privacy
+162,KHFALL,FALLIDKH,pseudo,3.0,Homomorphic Encryption
+163,KHFALL,KHPSEUDO,pseudo,3.0,
+164,KHFALL,KHKLASS,category,3.0,
+165,KHFALL,KHREGKZ,category,3.0,
+166,KHFALL,AUFNDAT,date,3.0,
+167,KHFALL,AUFNGRUND,category,3.0,
+168,KHFALL,ENTLASSGRUND,category,3.0,
+169,KHFALL,AUFNFA,category,3.0,
+170,KHFALL,EINWEISPSEUDO,pseudo,3.0,
+171,KHFALL,EINWEISFG,category,3.0,
+172,KHFALL,VERANLASSKHPSEUDO,pseudo,3.0,
+173,KHFALL,VERANLASSKHKLASS,category,3.0,
+174,KHFALL,VERANLASSKHREGKNZ,category,3.0,
+175,KHFALL,BEATSTD,integer,3.0,Differential Privacy
+176,KHFALL,VERANLASSSTELLEPSEUDO,category,3.0,
+177,KHFA,VSID,pseudo,3.0,Homomorphic Encryption
+178,KHFA,PSID,pseudo,3.0,Homomorphic Encryption
+179,KHFA,BJAHR,,,
+180,KHFA,DATENMODELL,,,
+181,KHFA,FALLIDKH,pseudo,3.0,Homomorphic Encryption
+182,KHFA,FA,category,3.0,
+183,KHFA,ENTLASSDAT,date,3.0,
+184,KHFA,ENTLASSZEIT,integer,3.0,Differential Privacy
+185,KHDIAG,VSID,,,Homomorphic Encryption
+186,KHDIAG,PSID,,,Homomorphic Encryption
+187,KHDIAG,BJAHR,,,
+188,KHDIAG,DATENMODELL,,,
+189,KHDIAG,FALLIDKH,pseudo,3.0,Homomorphic Encryption
+190,KHDIAG,DIAGART,category,3.0,
+191,KHDIAG,ICDKH_CODE,category,3.0,
+192,KHDIAG,ICDKH_ZUSATZ,category,3.0,
+193,KHDIAG,ICDLOKAL,category,3.0,
+194,KHDIAG,SEKICD_CODE,category,3.0,
+195,KHDIAG,SEKICD_ZUSATZ,category,3.0,
+196,KHDIAG,SEKICDLOKAL,category,3.0,
+197,KHPROZ,VSID,pseudo,3.0,Homomorphic Encryption
+198,KHPROZ,PSID,pseudo,3.0,Homomorphic Encryption
+199,KHPROZ,DATENMODELL,,,
+200,KHPROZ,BJAHR,,,
+201,KHPROZ,FALLIDKH,pseudo,3.0,Homomorphic Encryption
+202,KHPROZ,PROZ,alphanumeric,3.0,
+203,KHPROZ,PROZDAT,date,3.0,
+204,KHPROZ,PROZLOKAL,category,3.0,
+205,KHENTG,VSID,pseudo,3.0,Homomorphic Encryption
+206,KHENTG,PSID,pseudo,3.0,Homomorphic Encryption
+207,KHENTG,DATENMODELL,,,
+208,KHENTG,BJAHR,,,
+209,KHENTG,FALLIDKH,pseudo,3.0,Homomorphic Encryption
+210,KHENTG,ENTGART,category,3.0,
+211,KHENTG,ENTGBETRAG,float,3.0,Differential Privacy
+212,KHENTG,ABRVONDAT,date,3.0,
+213,KHENTG,ABRBISDAT,date,3.0,
+214,KHENTG,ENTGZAHL,float,3.0,Differential Privacy
+215,KHENTG,TAGEOBE,integer,3.0,Differential Privacy
