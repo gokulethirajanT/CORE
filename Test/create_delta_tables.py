@@ -6,21 +6,18 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-PUF_URL    = os.getenv("DATABASE_URL")        # e.g., DM3_PUF_1
-SEEDER_URL = os.getenv("BASELINE_DB_URL")     # e.g., DM3_SEEDER
+PUF_URL    = os.getenv("DATABASE_URL")        # e.g. postgresql+psycopg2://...
+SEEDER_URL = os.getenv("BASELINE_DB_URL")     # e.g. postgresql+psycopg2://...
 
 if not PUF_URL or not SEEDER_URL:
     raise SystemExit("Missing DATABASE_URL or BASELINE_DB_URL in .env")
 
 # --- Helpers -----------------------------------------------------------------
 def run_sql_script(engine, sql_blob: str, label: str = ""):
-    """
-    Execute multiple SQL statements separated by ';' inside a single transaction.
-    Compatible with SQLAlchemy 2.0.
-    """
+    """Execute multiple SQL statements separated by ';' in one transaction."""
     stmts = [s.strip() for s in sql_blob.split(";") if s.strip()]
     try:
-        with engine.begin() as conn:  # transaction; commits on success
+        with engine.begin() as conn:
             for s in stmts:
                 conn.exec_driver_sql(s)
     except SQLAlchemyError as e:
@@ -32,7 +29,7 @@ def scalar_count(engine, table: str) -> int:
 
 # --- SQL (Seeder) -------------------------------------------------------------
 SEEDER_SQL = r"""
--- Latest gender per person from versq (population DB)
+-- Latest gender per person from versq (baseline DB)
 DROP TABLE IF EXISTS vers_qi_seed_gender;
 CREATE TABLE vers_qi_seed_gender AS
 SELECT DISTINCT ON ("VSID")
@@ -40,21 +37,38 @@ SELECT DISTINCT ON ("VSID")
 FROM versq
 ORDER BY "VSID", "BJAHR" DESC, "VERSQ" DESC;
 
--- Presence QIs: PLZ3 (digits-only → pad → left 3), decade of birth, gender
+CREATE INDEX IF NOT EXISTS vers_qi_seed_gender_vsid_idx ON vers_qi_seed_gender ("VSID");
+
+-- One sensitive value (PZN) per person from rez (deterministic)
+DROP TABLE IF EXISTS rez_seed_sens;
+CREATE TABLE rez_seed_sens AS
+SELECT
+  "VSID",
+  MIN(LPAD(COALESCE("PZNREZ"::text, ''), 10, '0')) AS sens
+FROM rez
+GROUP BY "VSID";
+
+CREATE INDEX IF NOT EXISTS rez_seed_sens_vsid_idx ON rez_seed_sens ("VSID");
+CREATE INDEX IF NOT EXISTS rez_seed_sens_sens_idx ON rez_seed_sens (sens);
+
+-- Presence QIs + sens
 DROP TABLE IF EXISTS vers_qi_seed_plus;
 CREATE TABLE vers_qi_seed_plus AS
 SELECT
   v."VSID",
   LEFT(LPAD(NULLIF(regexp_replace(COALESCE(v."PLZ", ''), '[^0-9]', '', 'g'), ''), 5, '0'), 3) AS "PLZ3",
   (FLOOR(v."GEBJAHR"/10)*10)::int AS "GEBJAHR_BAND",
-  g."GESCHLECHT"
+  g."GESCHLECHT",
+  COALESCE(s.sens, 'UNK') AS sens
 FROM vers v
-LEFT JOIN vers_qi_seed_gender g USING ("VSID");
+LEFT JOIN vers_qi_seed_gender g USING ("VSID")
+LEFT JOIN rez_seed_sens s ON s."VSID" = v."VSID";
 
-CREATE INDEX IF NOT EXISTS vers_qi_seed_plus_plz3_idx ON vers_qi_seed_plus ("PLZ3");
-CREATE INDEX IF NOT EXISTS vers_qi_seed_plus_gebband_idx ON vers_qi_seed_plus ("GEBJAHR_BAND");
-CREATE INDEX IF NOT EXISTS vers_qi_seed_plus_geschl_idx ON vers_qi_seed_plus ("GESCHLECHT");
-CREATE INDEX IF NOT EXISTS vers_qi_seed_plus_vsid_idx ON vers_qi_seed_plus ("VSID");
+CREATE INDEX IF NOT EXISTS vers_qi_seed_plus_plz3_idx     ON vers_qi_seed_plus ("PLZ3");
+CREATE INDEX IF NOT EXISTS vers_qi_seed_plus_gebband_idx  ON vers_qi_seed_plus ("GEBJAHR_BAND");
+CREATE INDEX IF NOT EXISTS vers_qi_seed_plus_geschl_idx   ON vers_qi_seed_plus ("GESCHLECHT");
+CREATE INDEX IF NOT EXISTS vers_qi_seed_plus_sens_idx     ON vers_qi_seed_plus (sens);
+CREATE INDEX IF NOT EXISTS vers_qi_seed_plus_vsid_idx     ON vers_qi_seed_plus ("VSID");
 """
 
 # --- SQL (PUF) ---------------------------------------------------------------
@@ -67,21 +81,38 @@ SELECT DISTINCT ON ("VSID")
 FROM versq_puf
 ORDER BY "VSID", "BJAHR" DESC, "VERSQ" DESC;
 
--- Presence QIs: PLZ3 (digits-only → pad → left 3), decade of birth, gender
+CREATE INDEX IF NOT EXISTS vers_qi_puf_gender_vsid_idx ON vers_qi_puf_gender ("VSID");
+
+-- One sensitive value (PZN) per person from rez_puf (deterministic)
+DROP TABLE IF EXISTS rez_puf_sens;
+CREATE TABLE rez_puf_sens AS
+SELECT
+  "VSID",
+  MIN(LPAD(COALESCE("PZNREZ"::text, ''), 10, '0')) AS sens
+FROM rez_puf
+GROUP BY "VSID";
+
+CREATE INDEX IF NOT EXISTS rez_puf_sens_vsid_idx ON rez_puf_sens ("VSID");
+CREATE INDEX IF NOT EXISTS rez_puf_sens_sens_idx ON rez_puf_sens (sens);
+
+-- Presence QIs + sens
 DROP TABLE IF EXISTS vers_qi_puf_plus;
 CREATE TABLE vers_qi_puf_plus AS
 SELECT
   v."VSID",
   LEFT(LPAD(NULLIF(regexp_replace(COALESCE(v."PLZ", ''), '[^0-9]', '', 'g'), ''), 5, '0'), 3) AS "PLZ3",
   (FLOOR(v."GEBJAHR"/10)*10)::int AS "GEBJAHR_BAND",
-  g."GESCHLECHT"
+  g."GESCHLECHT",
+  COALESCE(s.sens, 'UNK') AS sens
 FROM vers_puf v
-LEFT JOIN vers_qi_puf_gender g USING ("VSID");
+LEFT JOIN vers_qi_puf_gender g USING ("VSID")
+LEFT JOIN rez_puf_sens s ON s."VSID" = v."VSID";
 
-CREATE INDEX IF NOT EXISTS vers_qi_puf_plus_plz3_idx ON vers_qi_puf_plus ("PLZ3");
-CREATE INDEX IF NOT EXISTS vers_qi_puf_plus_gebband_idx ON vers_qi_puf_plus ("GEBJAHR_BAND");
-CREATE INDEX IF NOT EXISTS vers_qi_puf_plus_geschl_idx ON vers_qi_puf_plus ("GESCHLECHT");
-CREATE INDEX IF NOT EXISTS vers_qi_puf_plus_vsid_idx ON vers_qi_puf_plus ("VSID");
+CREATE INDEX IF NOT EXISTS vers_qi_puf_plus_plz3_idx     ON vers_qi_puf_plus ("PLZ3");
+CREATE INDEX IF NOT EXISTS vers_qi_puf_plus_gebband_idx  ON vers_qi_puf_plus ("GEBJAHR_BAND");
+CREATE INDEX IF NOT EXISTS vers_qi_puf_plus_geschl_idx   ON vers_qi_puf_plus ("GESCHLECHT");
+CREATE INDEX IF NOT EXISTS vers_qi_puf_plus_sens_idx     ON vers_qi_puf_plus (sens);
+CREATE INDEX IF NOT EXISTS vers_qi_puf_plus_vsid_idx     ON vers_qi_puf_plus ("VSID");
 """
 
 # --- Main --------------------------------------------------------------------

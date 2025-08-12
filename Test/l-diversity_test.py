@@ -1,8 +1,14 @@
 import os
 import math
+import numpy as np
 import pandas as pd
 from sqlalchemy import create_engine, text
 from dotenv import load_dotenv
+
+# --- plotting (headless) ---
+import matplotlib
+matplotlib.use("Agg")  # server/CI safe
+import matplotlib.pyplot as plt
 
 load_dotenv()
 
@@ -56,6 +62,88 @@ def entropy(series: pd.Series) -> float:
     probs = counts / counts.sum()
     return float(-(probs * probs.apply(lambda p: math.log(p) if p > 0 else 0)).sum())
 
+def normalize_group_cols(qis):
+    return [(q.split(" AS ")[-1] if " AS " in q else q).replace('"', '') for q in qis]
+
+# ---------- Plots ----------
+def plot_l_distribution(df: pd.DataFrame, l_target: int, out_path: str = "l_diversity_l_dist.png"):
+    plt.figure(figsize=(8,5))
+    plt.hist(df["l_div"], bins=range(1, int(df["l_div"].max()) + 2), edgecolor="black", align="left")
+    plt.axvline(l_target, linestyle="--", linewidth=2, label=f"L_TARGET = {l_target}")
+    plt.title("DM3 CORE Class 1 — l-Diversity (distinct count) Distribution", fontsize=14, fontweight="bold")
+    plt.xlabel("Distinct sensitive values per group (l)")
+    plt.ylabel("Number of Groups")
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=300)
+    plt.close()
+    return out_path
+
+def plot_entropy_distribution(df: pd.DataFrame, entropy_min: float, out_path: str = "l_diversity_entropy_dist.png"):
+    plt.figure(figsize=(8,5))
+    plt.hist(df["entropy_l"], bins=30, edgecolor="black")
+    plt.axvline(entropy_min, linestyle="--", linewidth=2, label=f"ENTROPY_L_MIN = {entropy_min}")
+    plt.title("DM3 CORE Class 1 — Entropy l-Diversity Distribution", fontsize=14, fontweight="bold")
+    plt.xlabel("Shannon entropy of sensitive value distribution")
+    plt.ylabel("Number of Groups")
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=300)
+    plt.close()
+    return out_path
+
+def plot_cumulative_l(df: pd.DataFrame, out_path: str = "l_diversity_cumulative_l.png"):
+    sizes = sorted(df["l_div"].unique())
+    total_groups = len(df)
+    xs, ys = [], []
+    for k in sizes:
+        pct = (df["l_div"] >= k).sum() / total_groups * 100.0
+        xs.append(k)
+        ys.append(pct)
+    plt.figure(figsize=(8,5))
+    plt.plot(xs, ys, marker="o")
+    plt.title("DM3 Class 1: Cumulative Coverage by l (distinct count)")
+    plt.xlabel("l (minimum distinct sensitive values)")
+    plt.ylabel("Groups with l ≥ x (%)")
+    plt.grid(True, linewidth=0.3)
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=300)
+    plt.close()
+    return out_path
+
+def plot_cumulative_entropy(df: pd.DataFrame, out_path: str = "l_diversity_cumulative_entropy.png"):
+    xs = np.linspace(0, max(1.0, df["entropy_l"].max()), 200)
+    ys = [(df["entropy_l"] >= x).mean() * 100.0 for x in xs]
+    plt.figure(figsize=(8,5))
+    plt.plot(xs, ys)
+    plt.title("DM3 Class 1: Cumulative Coverage by Entropy-l")
+    plt.xlabel("Entropy bound (x)")
+    plt.ylabel("Groups with entropy ≥ x (%)")
+    plt.grid(True, linewidth=0.3)
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=300)
+    plt.close()
+    return out_path
+
+def plot_top_violations(bad_df: pd.DataFrame, group_cols: list[str], out_path: str = "l_diversity_top_violations.png", top_n: int = 20):
+    if bad_df.empty:
+        return None
+    def mk_label(row):
+        return " | ".join(f"{c}={row[c]}" for c in group_cols)
+    tmp = bad_df.copy()
+    tmp["group"] = tmp.apply(mk_label, axis=1)
+    # Worst = smallest l_div, then smallest entropy; show top_n
+    tmp = tmp.sort_values(["l_div", "entropy_l", "n"], ascending=[True, True, True]).head(top_n)
+    plt.figure(figsize=(10, max(4, 0.4 * len(tmp))))
+    plt.barh(tmp["group"], tmp["l_div"], edgecolor="black")
+    plt.gca().invert_yaxis()
+    plt.xlabel("l (distinct sensitive values)")
+    plt.title(f"Top {len(tmp)} l-Diversity Violations (lower is worse)")
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=300)
+    plt.close()
+    return out_path
+
 # --------------- Main check -------------
 def check_l_diversity(return_violations=True):
     if not object_exists(TABLE):
@@ -69,19 +157,14 @@ def check_l_diversity(return_violations=True):
 
     # Build QIs: accept raw fields or precomputed aliases
     qis = []
-    # PLZ or PLZ3
     if "PLZ" in cols:
         qis.append('LEFT("PLZ",3) AS PLZ3')
     elif "PLZ3" in cols:
         qis.append('"PLZ3"')
-
-    # GEBJAHR or GEBJAHR_BAND
     if "GEBJAHR" in cols:
         qis.append('(FLOOR("GEBJAHR"::int/5)*5)::int AS GEBJAHR_BAND')
     elif "GEBJAHR_BAND" in cols:
         qis.append('"GEBJAHR_BAND"')
-
-    # GESCHLECHT (optional extra QI if present)
     if "GESCHLECHT" in cols:
         qis.append('"GESCHLECHT"')
 
@@ -89,8 +172,7 @@ def check_l_diversity(return_violations=True):
         return {"status": "FAIL", "reason": "No quasi-identifiers available (expecting PLZ/PLZ3, GEBJAHR/GEBJAHR_BAND, or GESCHLECHT)."}
 
     select_qis = ", ".join(qis)
-    # Normalize group column names: strip quotes and pick alias if present
-    group_cols = [(q.split(" AS ")[-1] if " AS " in q else q).replace('"', '') for q in qis]
+    group_cols = normalize_group_cols(qis)
 
     # Pull row-level data (QIs + sensitive), then aggregate in pandas
     sql = text(f"""
@@ -99,7 +181,6 @@ def check_l_diversity(return_violations=True):
         WHERE "{SENSITIVE_COL}" IS NOT NULL
     """)
     df = pd.read_sql_query(sql, engine)
-
     if df.empty:
         return {"status": "FAIL", "reason": f"No rows with non-null {SENSITIVE_COL} in {TABLE}"}
 
@@ -112,8 +193,24 @@ def check_l_diversity(return_violations=True):
     ent = grp["sens"].apply(entropy).reset_index(name="entropy_l")
     metrics = metrics.merge(ent, on=group_cols, how="left")
 
+    # Persist all groups
+    groups_csv = "l_diversity_groups.csv"
+    metrics.to_csv(groups_csv, index=False)
+
     # Violations
     bad = metrics[(metrics["l_div"] < L_TARGET) | (metrics["entropy_l"] < ENTROPY_L_MIN)].copy()
+
+    viol_csv = None
+    if not bad.empty and EXPORT_VIOLATIONS:
+        viol_csv = "l_diversity_violations.csv"
+        bad.sort_values(by=["l_div", "entropy_l", "n"], ascending=[True, True, True]).to_csv(viol_csv, index=False)
+
+    # Visualizations
+    l_dist_png       = plot_l_distribution(metrics, L_TARGET)
+    ent_dist_png     = plot_entropy_distribution(metrics, ENTROPY_L_MIN)
+    l_cum_png        = plot_cumulative_l(metrics)
+    ent_cum_png      = plot_cumulative_entropy(metrics)
+    top_viol_png     = plot_top_violations(bad, group_cols) if not bad.empty else None
 
     result = {
         "status": "PASS" if bad.empty else "FAIL",
@@ -123,16 +220,19 @@ def check_l_diversity(return_violations=True):
         "violating_groups": int(bad.shape[0]),
         "l_target": L_TARGET,
         "entropy_l_min": ENTROPY_L_MIN,
+        "groups_csv": groups_csv,
+        "l_dist_plot": l_dist_png,
+        "entropy_dist_plot": ent_dist_png,
+        "l_cumulative_plot": l_cum_png,
+        "entropy_cumulative_plot": ent_cum_png,
     }
+    if viol_csv:
+        result["violations_csv"] = viol_csv
+    if top_viol_png:
+        result["top_violations_plot"] = top_viol_png
 
     if return_violations and not bad.empty:
-        bad = bad.sort_values(by=["l_div", "entropy_l", "n"],
-                              ascending=[True, True, True]).reset_index(drop=True)
-        result["violations"] = bad
-        if EXPORT_VIOLATIONS:
-            out = "l_diversity_violations.csv"
-            bad.to_csv(out, index=False)
-            result["violations_csv"] = out
+        result["violations"] = bad.sort_values(by=["l_div", "entropy_l", "n"], ascending=[True, True, True]).reset_index(drop=True)
 
     return result
 

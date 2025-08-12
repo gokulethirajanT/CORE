@@ -6,6 +6,11 @@ import pandas as pd
 from sqlalchemy import create_engine, text
 from dotenv import load_dotenv
 
+# --- plotting (headless) ---
+import matplotlib
+matplotlib.use("Agg")  # server/CI-safe
+import matplotlib.pyplot as plt
+
 load_dotenv()
 
 # -------- Config --------
@@ -101,6 +106,66 @@ def tvd_numeric(sample: pd.Series, ref: pd.Series, bins: int = 20) -> float:
     pr = hist_r / hist_r.sum() if hist_r.sum() > 0 else np.zeros_like(hist_r, dtype=float)
     return 0.5 * np.abs(ps - pr).sum()
 
+# ---------- Plots ----------
+def plot_tvd_distribution(df: pd.DataFrame, threshold: float, out_path: str = "t_closeness_distribution.png"):
+    """Histogram of group TVD with a vertical line at threshold."""
+    plt.figure(figsize=(8, 5))
+    plt.hist(df["tvd"], bins=30, edgecolor="black")
+    plt.axvline(threshold, linestyle="--", linewidth=2, label=f"T_THRESHOLD = {threshold}")
+    plt.title("DM3 CORE Class 1 — T‑closeness (TVD) Distribution", fontsize=14, fontweight="bold")
+    plt.xlabel("Total Variation Distance (per group)")
+    plt.ylabel("Number of Groups")
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=300)
+    plt.close()
+    return out_path
+
+def plot_tvd_cumulative(df: pd.DataFrame, out_path: str = "t_closeness_cumulative.png"):
+    """
+    Cumulative coverage curve:
+    x = TVD threshold, y = % of groups with TVD ≤ x.
+    Helpful to show how many groups meet a given closeness bound.
+    """
+    xs = np.linspace(0, max(1.0, df["tvd"].max()), 200)
+    ys = [(df["tvd"] <= x).mean() * 100.0 for x in xs]
+
+    plt.figure(figsize=(8, 5))
+    plt.plot(xs, ys, marker=None)
+    plt.title("DM3 Class 1: Cumulative Coverage by TVD bound")
+    plt.xlabel("TVD bound (x)")
+    plt.ylabel("Groups with TVD ≤ x (%)")
+    plt.grid(True, linewidth=0.3)
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=300)
+    plt.close()
+    return out_path
+
+def plot_top_violations(bad_df: pd.DataFrame, group_cols: list[str], out_path: str = "t_closeness_top_violations.png", top_n: int = 20):
+    """Bar chart of the top-N violating groups by TVD."""
+    if bad_df.empty:
+        return None
+    # Build a compact group label
+    def mk_label(row):
+        parts = []
+        for c in group_cols:
+            parts.append(f"{c}={row[c]}")
+        return " | ".join(parts)
+
+    tmp = bad_df.copy()
+    tmp["group"] = tmp.apply(mk_label, axis=1)
+    tmp = tmp.sort_values("tvd", ascending=False).head(top_n)
+
+    plt.figure(figsize=(10, max(4, 0.4 * len(tmp))))
+    plt.barh(tmp["group"], tmp["tvd"], edgecolor="black")
+    plt.gca().invert_yaxis()
+    plt.xlabel("TVD")
+    plt.title(f"Top {len(tmp)} T‑closeness Violations (higher is worse)")
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=300)
+    plt.close()
+    return out_path
+
 # -------- Main --------
 def check_t_closeness():
     if not object_exists(TABLE):
@@ -137,7 +202,6 @@ def check_t_closeness():
     grp = df.groupby(group_cols, dropna=False)
     rows = []
     for keys, sub in grp:
-        # ensure tuple for consistent unpacking
         key_tuple = keys if isinstance(keys, tuple) else (keys,)
         n = sub.shape[0]
         s = sub["sens"]
@@ -150,8 +214,22 @@ def check_t_closeness():
 
     # Build result frame
     res_cols = group_cols + ["n", "tvd"]
-    metrics = pd.DataFrame(rows, columns=res_cols)
+    metrics = pd.DataFrame(rows, columns=res_cols).sort_values(by=group_cols).reset_index(drop=True)
+
+    # Persist all groups
+    groups_csv = "t_closeness_groups.csv"
+    metrics.to_csv(groups_csv, index=False)
+
     bad = metrics[metrics["tvd"] > T_THRESHOLD].sort_values(by=["tvd", "n"], ascending=[False, True])
+    viol_csv = None
+    if not bad.empty and EXPORT_VIOLATIONS:
+        viol_csv = "t_closeness_violations.csv"
+        bad.to_csv(viol_csv, index=False)
+
+    # Visualizations (match style from k_anonymity_check.py)
+    dist_png = plot_tvd_distribution(metrics, T_THRESHOLD)
+    cum_png  = plot_tvd_cumulative(metrics)
+    top_png  = plot_top_violations(bad, group_cols) if not bad.empty else None
 
     out = {
         "status": "PASS" if bad.empty else "FAIL",
@@ -160,11 +238,15 @@ def check_t_closeness():
         "t_threshold": T_THRESHOLD,
         "max_tvd": float(metrics["tvd"].max()) if not metrics.empty else None,
         "min_tvd": float(metrics["tvd"].min()) if not metrics.empty else None,
+        "groups_csv": groups_csv,
+        "distribution_plot": dist_png,
+        "cumulative_plot": cum_png,
     }
 
-    if not bad.empty and EXPORT_VIOLATIONS:
-        bad.to_csv("t_closeness_violations.csv", index=False)
-        out["violations_csv"] = "t_closeness_violations.csv"
+    if viol_csv:
+        out["violations_csv"] = viol_csv
+    if top_png:
+        out["top_violations_plot"] = top_png
 
     if not bad.empty:
         out["violations_preview"] = bad.head(20)

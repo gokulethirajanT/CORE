@@ -4,11 +4,17 @@ import pandas as pd
 from sqlalchemy import create_engine, inspect, text
 from dotenv import load_dotenv
 
+# --- plotting (headless) ---
+import matplotlib
+matplotlib.use("Agg")  # safe for servers/CI
+import matplotlib.pyplot as plt
+
 load_dotenv()
 
 # --- Config ---
 PUF_VERS_TABLE = os.getenv("PUF_VERS_TABLE", "vers_puf")
 K_TARGET = int(os.getenv("K_TARGET", 3))
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 def build_pg_url(prefix: str):
     user = os.getenv(f"{prefix}_DB_USER") or os.getenv("DB_USER")
@@ -20,7 +26,9 @@ def build_pg_url(prefix: str):
         return None
     return f"postgresql+psycopg2://{user}:{pwd}@{host}:{port}/{name}"
 
-DATABASE_URL = os.getenv("DATABASE_URL") or build_pg_url("PUF")
+if not DATABASE_URL:
+    DATABASE_URL = build_pg_url("PUF")
+
 engine = create_engine(DATABASE_URL)
 
 def table_exists(tbl: str) -> bool:
@@ -37,7 +45,7 @@ def get_columns(tbl: str):
         return [r[0] for r in conn.execute(sql, {"tbl": tbl}).all()]
 
 def build_group_sql(tbl: str, cols: list[str]) -> tuple[str, list[str]]:
-    """Return SQL that groups by available QIs (PLZ->PLZ3, GEBJAHR->5y band, optional GESCHLECHT) using a CTE."""
+    """Return SQL that groups by available QIs (PLZ->PLZ3, GEBJAHR->5y band, optional GESCHLECHT)."""
     select_parts, aliases = [], []
 
     if "PLZ" in cols:
@@ -65,6 +73,49 @@ def build_group_sql(tbl: str, cols: list[str]) -> tuple[str, list[str]]:
     """
     return sql, aliases
 
+# ---------- Plots ----------
+def plot_k_distribution(df: pd.DataFrame, k_target: int, out_path: str = "k_anonymity_distribution.png"):
+    """Histogram of equivalence-class sizes with a vertical line at k_target."""
+    counts = df["n"].value_counts().sort_index()
+    plt.figure(figsize=(8, 5))
+    plt.bar(counts.index, counts.values, edgecolor="black")
+    plt.axvline(k_target, linestyle="--", linewidth=2, label=f"k_target = {k_target}")
+    plt.title(f"DM3 CORE Class 1 — Equivalence Class Size Distribution (k={k_target})",
+              fontsize=14, fontweight="bold")
+    plt.xlabel("Equivalence Class Size (n)")
+    plt.ylabel("Number of Groups")
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=300)
+    plt.close()
+    return out_path
+
+def plot_k_cumulative(df: pd.DataFrame, out_path: str = "k_anonymity_cumulative.png"):
+    """
+    Cumulative coverage curve:
+    x = k threshold, y = % of groups with size >= k.
+    Useful for showing how coverage improves as k increases.
+    """
+    sizes = sorted(df["n"].unique())
+    total_groups = len(df)
+    xs, ys = [], []
+    for k in sizes:
+        pct = (df["n"] >= k).sum() / total_groups * 100.0
+        xs.append(k)
+        ys.append(pct)
+
+    plt.figure(figsize=(8, 5))
+    plt.plot(xs, ys, marker="o")
+    plt.title("DM3 Class 1: Cumulative Coverage by k")
+    plt.xlabel("k (minimum group size)")
+    plt.ylabel("Groups with size ≥ k (%)")
+    plt.grid(True, linewidth=0.3)
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=300)
+    plt.close()
+    return out_path
+
+# ---------- Main check ----------
 def check_k_anonymity():
     if not table_exists(PUF_VERS_TABLE):
         return {"status": "FAIL", "reason": f"Missing table {PUF_VERS_TABLE}"}
@@ -83,6 +134,11 @@ def check_k_anonymity():
     groups_csv = "k_anonymity_groups.csv"
     df.to_csv(groups_csv, index=False)
 
+    # Visualizations
+    dist_png = plot_k_distribution(df, K_TARGET)
+    cum_png  = plot_k_cumulative(df)
+
+    # Metrics
     min_k = int(df["n"].min())
     viol_df = df[df["n"] < K_TARGET].copy()
     small = int(viol_df.shape[0])
@@ -92,7 +148,9 @@ def check_k_anonymity():
         "min_k": min_k,
         "small_cells": small,
         "k_target": K_TARGET,
-        "groups_csv": groups_csv
+        "groups_csv": groups_csv,
+        "distribution_plot": dist_png,
+        "cumulative_plot": cum_png,
     }
 
     if small > 0:
