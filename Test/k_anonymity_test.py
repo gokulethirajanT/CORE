@@ -80,7 +80,7 @@ def plot_k_distribution(df: pd.DataFrame, k_target: int, out_path: str = "k_anon
     plt.figure(figsize=(8, 5))
     plt.bar(counts.index, counts.values, edgecolor="black")
     plt.axvline(k_target, linestyle="--", linewidth=2, label=f"k_target = {k_target}")
-    plt.title(f"DM3 CORE Class 1 — Equivalence Class Size Distribution (k={k_target})",
+    plt.title(f"DM3 CORE Class 2 — Equivalence Class Size Distribution (k={k_target})",
               fontsize=14, fontweight="bold")
     plt.xlabel("Equivalence Class Size (n)")
     plt.ylabel("Number of Groups")
@@ -106,7 +106,7 @@ def plot_k_cumulative(df: pd.DataFrame, out_path: str = "k_anonymity_cumulative.
 
     plt.figure(figsize=(8, 5))
     plt.plot(xs, ys, marker="o")
-    plt.title("DM3 Class 1: Cumulative Coverage by k")
+    plt.title("DM3 Class 2: Cumulative Coverage by k")
     plt.xlabel("k (minimum group size)")
     plt.ylabel("Groups with size ≥ k (%)")
     plt.grid(True, linewidth=0.3)

@@ -112,7 +112,7 @@ def plot_delta_distribution(df: pd.DataFrame, dmin: float, dmax: float, out_path
     plt.hist(df["delta"], bins=30, edgecolor="black")
     plt.axvline(dmin, linestyle="--", linewidth=2, label=f"DELTA_MIN = {dmin}")
     plt.axvline(dmax, linestyle="--", linewidth=2, label=f"DELTA_MAX = {dmax}")
-    plt.title("DM3 CORE Class 1 — δ-Presence Distribution", fontsize=14, fontweight="bold")
+    plt.title("DM3 CORE Class 2 — δ-Presence Distribution", fontsize=14, fontweight="bold")
     plt.xlabel("δ = n_sample / n_pop")
     plt.ylabel("Number of Groups")
     plt.legend()
@@ -129,7 +129,7 @@ def plot_delta_cumulative(df: pd.DataFrame, out_path: str = "delta_presence_cumu
     ys = [(df["delta"] <= x).mean() * 100.0 for x in xs]
     plt.figure(figsize=(8,5))
     plt.plot(xs, ys)
-    plt.title("DM3 Class 1: Cumulative Coverage by δ Threshold")
+    plt.title("DM3 Class 2: Cumulative Coverage by δ Threshold")
     plt.xlabel("δ threshold (t)")
     plt.ylabel("Groups with δ ≤ t (%)")
     plt.grid(True, linewidth=0.3)

@@ -112,7 +112,7 @@ def plot_tvd_distribution(df: pd.DataFrame, threshold: float, out_path: str = "t
     plt.figure(figsize=(8, 5))
     plt.hist(df["tvd"], bins=30, edgecolor="black")
     plt.axvline(threshold, linestyle="--", linewidth=2, label=f"T_THRESHOLD = {threshold}")
-    plt.title("DM3 CORE Class 1 — T‑closeness (TVD) Distribution", fontsize=14, fontweight="bold")
+    plt.title("DM3 CORE Class 2 — T‑closeness (TVD) Distribution", fontsize=14, fontweight="bold")
     plt.xlabel("Total Variation Distance (per group)")
     plt.ylabel("Number of Groups")
     plt.legend()
@@ -132,7 +132,7 @@ def plot_tvd_cumulative(df: pd.DataFrame, out_path: str = "t_closeness_cumulativ
 
     plt.figure(figsize=(8, 5))
     plt.plot(xs, ys, marker=None)
-    plt.title("DM3 Class 1: Cumulative Coverage by TVD bound")
+    plt.title("DM3 Class 2: Cumulative Coverage by TVD bound")
     plt.xlabel("TVD bound (x)")
     plt.ylabel("Groups with TVD ≤ x (%)")
     plt.grid(True, linewidth=0.3)
