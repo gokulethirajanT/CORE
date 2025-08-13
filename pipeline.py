@@ -74,7 +74,7 @@ def main():
 
     # Step 8: Run other privacy metric tests if needed
     run_command("python3 delta-diversity_test.py", cwd="Test")
-    run_command("python3 i-diversity_test.py", cwd="Test")
+    run_command("python3 l-diversity_test.py", cwd="Test")
     run_command("python3 t-closeness.py", cwd="Test")
 
     # Final Summary
