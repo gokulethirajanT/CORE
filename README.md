@@ -1,4 +1,4 @@
-# REZ Table Seeder for CORE_MASTER_THESIS
+# CORE_MASTER_THESIS
 
 This Python script generates and inserts synthetic data into the `rez` table in the `CORE_MASTER_THESIS` PostgreSQL database.
 
