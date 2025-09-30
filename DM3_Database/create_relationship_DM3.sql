@@ -1,46 +1,44 @@
 -- ============================================================================
---  DM3: Foreign Key & Primary Key Constraints
---  Author      : Gokul Thothathri
+--  DM3: Foreign Key & Primary Key Constraints T-SQL 
 --  Purpose     : Establish referential integrity according to DM3 ER diagram [https://fdz-gesundheit.github.io/datensatzbeschreibung_fdz_gesundheit/]
---  Date        : 06.06.2025
+--  Date        : 30.09.2025
 -- ============================================================================
-
 
 -- ============================================================================
 -- (Blue) MODULE: INSURANCE MASTER & PERSON RECORDS (VERS)
 -- ============================================================================
 
 -- Ensure PSID is the unique identifier for a person
-ALTER TABLE vers
-ADD CONSTRAINT pk_vers_psid PRIMARY KEY ("PSID");
+ALTER TABLE [vers_puf]
+ADD CONSTRAINT pk_vers_psid PRIMARY KEY ([PSID]);
 
 -- Each quarterly insurance record in VERSQ must belong to a person in VERS
-ALTER TABLE versq
-ADD CONSTRAINT fk_versq_vers FOREIGN KEY ("PSID") REFERENCES vers("PSID");
+ALTER TABLE [versq_puf]
+ADD CONSTRAINT fk_versq_vers FOREIGN KEY ([PSID]) REFERENCES [vers]([PSID]);
 
 -- Each DMP participation record must match a VERSQ entry (by PSID + quarter)
-ALTER TABLE versq
-ADD CONSTRAINT uq_versq_psid_versq UNIQUE ("PSID", "VERSQ");
+ALTER TABLE [versq_puf]
+ADD CONSTRAINT uq_versq_psid_versq UNIQUE ([PSID], [VERSQ]);
 
-ALTER TABLE versqdmp
-ADD CONSTRAINT fk_versqdmp_versq FOREIGN KEY ("PSID", "VERSQ")
-REFERENCES versq("PSID", "VERSQ");
+ALTER TABLE [versqdmp_puf]
+ADD CONSTRAINT fk_versqdmp_versq FOREIGN KEY ([PSID], [VERSQ])
+REFERENCES [versq]([PSID], [VERSQ]);
 
 -- Each prescription (REZ) belongs to a person in VERS
-ALTER TABLE rez
-ADD CONSTRAINT fk_rez_vers FOREIGN KEY ("PSID") REFERENCES vers("PSID");
+ALTER TABLE [rez]
+ADD CONSTRAINT fk_rez_vers FOREIGN KEY ([PSID]) REFERENCES [vers]([PSID]);
 
 -- Each outpatient case (AMB) is associated with a person
-ALTER TABLE ambfall
-ADD CONSTRAINT fk_ambfall_vers FOREIGN KEY ("PSID") REFERENCES vers("PSID");
+ALTER TABLE [ambfall_puf]
+ADD CONSTRAINT fk_ambfall_vers FOREIGN KEY ([PSID]) REFERENCES [vers]([PSID]);
 
 -- Each hospital case (KH) is linked optionally to a person
-ALTER TABLE khfall
-ADD CONSTRAINT fk_khfall_vers FOREIGN KEY ("PSID") REFERENCES vers("PSID");
+ALTER TABLE [khfall_puf]
+ADD CONSTRAINT fk_khfall_vers FOREIGN KEY ([PSID]) REFERENCES [vers]([PSID]);
 
 -- Each dental case (ZAHN) is associated with a person in VERS
-ALTER TABLE zahnfall
-ADD CONSTRAINT fk_zahnfall_vers FOREIGN KEY ("PSID") REFERENCES vers("PSID");
+ALTER TABLE [zahnfall_puf]
+ADD CONSTRAINT fk_zahnfall_vers FOREIGN KEY ([PSID]) REFERENCES [vers]([PSID]);
 
 
 -- ============================================================================
@@ -48,20 +46,20 @@ ADD CONSTRAINT fk_zahnfall_vers FOREIGN KEY ("PSID") REFERENCES vers("PSID");
 -- ============================================================================
 
 -- Primary key: each outpatient case is uniquely identified by FALLIDAMB
-ALTER TABLE ambfall
-ADD CONSTRAINT pk_ambfall_fallid PRIMARY KEY ("FALLIDAMB");
+ALTER TABLE [ambfall_puf]
+ADD CONSTRAINT pk_ambfall_fallid PRIMARY KEY ([FALLIDAMB]);
 
 -- Diagnoses linked to outpatient case
-ALTER TABLE ambdiag
-ADD CONSTRAINT fk_ambdiag_ambfall FOREIGN KEY ("FALLIDAMB") REFERENCES ambfall("FALLIDAMB");
+ALTER TABLE [ambdiag_puf]
+ADD CONSTRAINT fk_ambdiag_ambfall FOREIGN KEY ([FALLIDAMB]) REFERENCES [ambfall]([FALLIDAMB]);
 
 -- Services linked to outpatient case
-ALTER TABLE ambleist
-ADD CONSTRAINT fk_ambleist_ambfall FOREIGN KEY ("FALLIDAMB") REFERENCES ambfall("FALLIDAMB");
+ALTER TABLE [ambleist_puf]
+ADD CONSTRAINT fk_ambleist_ambfall FOREIGN KEY ([FALLIDAMB]) REFERENCES [ambfall]([FALLIDAMB]);
 
 -- Procedures linked to outpatient case
-ALTER TABLE ambops
-ADD CONSTRAINT fk_ambops_ambfall FOREIGN KEY ("FALLIDAMB") REFERENCES ambfall("FALLIDAMB");
+ALTER TABLE [ambops_puf]
+ADD CONSTRAINT fk_ambops_ambfall FOREIGN KEY ([FALLIDAMB]) REFERENCES [ambfall]([FALLIDAMB]);
 
 
 -- ============================================================================
@@ -69,24 +67,24 @@ ADD CONSTRAINT fk_ambops_ambfall FOREIGN KEY ("FALLIDAMB") REFERENCES ambfall("F
 -- ============================================================================
 
 -- Primary key: each hospital case is uniquely identified by FALLIDKH
-ALTER TABLE khfall
-ADD CONSTRAINT pk_khfall_fallid PRIMARY KEY ("FALLIDKH");
+ALTER TABLE [khfall_puf]
+ADD CONSTRAINT pk_khfall_fallid PRIMARY KEY ([FALLIDKH]);
 
 -- Discharge info linked to hospital case
-ALTER TABLE khfa
-ADD CONSTRAINT fk_khfa_khfall FOREIGN KEY ("FALLIDKH") REFERENCES khfall("FALLIDKH");
+ALTER TABLE [khfa_puf]
+ADD CONSTRAINT fk_khfa_khfall FOREIGN KEY ([FALLIDKH]) REFERENCES [khfall]([FALLIDKH]);
 
 -- Diagnoses linked to hospital case
-ALTER TABLE khdiag
-ADD CONSTRAINT fk_khdiag_khfall FOREIGN KEY ("FALLIDKH") REFERENCES khfall("FALLIDKH");
+ALTER TABLE [khdiag_puf]
+ADD CONSTRAINT fk_khdiag_khfall FOREIGN KEY ([FALLIDKH]) REFERENCES [khfall]([FALLIDKH]);
 
 -- Procedures linked to hospital case
-ALTER TABLE khproz
-ADD CONSTRAINT fk_khproz_khfall FOREIGN KEY ("FALLIDKH") REFERENCES khfall("FALLIDKH");
+ALTER TABLE [khproz_puf]
+ADD CONSTRAINT fk_khproz_khfall FOREIGN KEY ([FALLIDKH]) REFERENCES [khfall]([FALLIDKH]);
 
 -- Billing info linked to hospital case
-ALTER TABLE khentg
-ADD CONSTRAINT fk_khentg_khfall FOREIGN KEY ("FALLIDKH") REFERENCES khfall("FALLIDKH");
+ALTER TABLE [khentg_puf]
+ADD CONSTRAINT fk_khentg_khfall FOREIGN KEY ([FALLIDKH]) REFERENCES [khfall]([FALLIDKH]);
 
 
 -- ============================================================================
@@ -94,12 +92,12 @@ ADD CONSTRAINT fk_khentg_khfall FOREIGN KEY ("FALLIDKH") REFERENCES khfall("FALL
 -- ============================================================================
 
 -- Primary key: each prescription uniquely identified by REZNR
-ALTER TABLE rez
-ADD CONSTRAINT pk_rez_reznr PRIMARY KEY ("REZNR");
+ALTER TABLE [rez_puf]
+ADD CONSTRAINT pk_rez_reznr PRIMARY KEY ([REZNR]);
 
 -- Each prescription detail (EZD) must refer to an existing REZ entry
-ALTER TABLE ezd
-ADD CONSTRAINT fk_ezd_rez FOREIGN KEY ("REZNR") REFERENCES rez("REZNR");
+ALTER TABLE [ezd_puf]
+ADD CONSTRAINT fk_ezd_rez FOREIGN KEY ([REZNR]) REFERENCES [rez]([REZNR]);
 
 
 -- ============================================================================
@@ -107,16 +105,17 @@ ADD CONSTRAINT fk_ezd_rez FOREIGN KEY ("REZNR") REFERENCES rez("REZNR");
 -- ============================================================================
 
 -- Primary key: each dental case is uniquely identified by FALLIDZAHN
-ALTER TABLE zahnfall
-ADD CONSTRAINT pk_zahnfall_fallid PRIMARY KEY ("FALLIDZAHN");
+ALTER TABLE [zahnfall_puf]
+ADD CONSTRAINT pk_zahnfall_fallid PRIMARY KEY ([FALLIDZAHN]);
 
 -- Dental services linked to dental case
-ALTER TABLE zahnleist
-ADD CONSTRAINT fk_zahnleist_zahnfall FOREIGN KEY ("FALLIDZAHN") REFERENCES zahnfall("FALLIDZAHN");
+ALTER TABLE [zahnleist_puf]
+ADD CONSTRAINT fk_zahnleist_zahnfall FOREIGN KEY ([FALLIDZAHN]) REFERENCES [zahnfall]([FALLIDZAHN]);
 
 -- Dental findings linked to dental case
-ALTER TABLE zahnbef
-ADD CONSTRAINT fk_zahnbef_zahnfall FOREIGN KEY ("FALLIDZAHN") REFERENCES zahnfall("FALLIDZAHN");
+ALTER TABLE [zahnbef_puf]
+ADD CONSTRAINT fk_zahnbef_zahnfall FOREIGN KEY ([FALLIDZAHN]) REFERENCES [zahnfall]([FALLIDZAHN]);
+
 
 -- ============================================================================
 --  END OF CONSTRAINTS
